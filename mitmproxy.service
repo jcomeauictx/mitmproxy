@@ -4,16 +4,16 @@ Description=MITM Proxy and Logger
 [Service]
 ExecStartPre=+mkdir -p /var/log/mitmproxy
 ExecStartPre=+chown $USER.$USER /var/log/mitmproxy
-User=$USER
-WorkingDirectory=$PWD
-ExecStart=make start
-ExecStartPost=bash -c "cd /var/log/mitmproxy && \
+ExecStartPre=bash -c "cd /var/log/mitmproxy && \
  for i in $(seq 9 -1 1); do \
   if [ -e dumplog.$i ]; then mv dumplog.$i dumplog.$((i + 1)); fi; \
   if [ -e errorlog.$i ]; then mv errorlog.$i errorlog.$((i + 1)); fi; \
  done; \
  for log in dumplog errorlog; do touch $log; mv $log $log.1; done; \
  rm -f *log.10"
+User=$USER
+WorkingDirectory=$PWD
+ExecStart=make start
 Restart=always
 
 [Install]

@@ -13,8 +13,8 @@ start: venv/bin/activate env
 env:
 	env
 venv/bin/activate: dev.sh
-	./$< || echo 'Must install python3-virtualenv (RedHat)' \
-	 ' or python3-venv (Debian)' >&2; false
+	./$< || (echo 'Must install python3-virtualenv (RedHat)' \
+	 ' or python3-venv (Debian)' >&2; false)
 install: mitmproxy.service /etc/systemd/system
 	envsubst '$$PWD$$USER' < $< | sudo tee /etc/systemd/system/$<
 	sudo systemctl daemon-reload
