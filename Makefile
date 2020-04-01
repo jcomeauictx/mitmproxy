@@ -3,7 +3,7 @@ PATH := $(PWD)/venv/bin:$(PATH)
 export
 shell: venv/bin/activate
 	bash --rcfile $< -i
-start: env
+start: venv/bin/activate env
 	mitmdump \
 	 --listen-port=5888 \
 	 --flow-detail 3 \
