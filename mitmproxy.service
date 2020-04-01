@@ -2,8 +2,8 @@
 Description=MITM Proxy and Logger
 
 [Service]
-ExecStartPre=mkdir -p /var/log/mitmproxy
-ExecStartPre=chown $USER.$USER /var/log/mitmproxy
+ExecStartPre=+mkdir -p /var/log/mitmproxy
+ExecStartPre=+chown $USER.$USER /var/log/mitmproxy
 User=$USER
 WorkingDirectory=$PWD
 ExecStart=make start > /var/log/mitmproxy/dumplog 2>/var/log/mitmproxy/errorlog
