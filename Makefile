@@ -1,8 +1,9 @@
+PWD ?= $(CURDIR)
 PATH := $(PWD)/venv/bin:$(PATH)
 export
 shell: venv/bin/activate
 	bash --rcfile $< -i
-start:
+start: env
 	mitmdump \
 	 --listen-port=5888 \
 	 --flow-detail 3 \
