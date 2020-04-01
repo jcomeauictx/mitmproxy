@@ -7,7 +7,9 @@ start: venv/bin/activate env
 	mitmdump \
 	 --listen-port=5888 \
 	 --flow-detail 3 \
-	 --set block_global=false
+	 --set block_global=false \
+	 >>/var/log/mitmproxy/dumplog \
+	 2>>/var/log/mitmproxy/errorlog
 env:
 	env
 venv/bin/activate: dev.sh

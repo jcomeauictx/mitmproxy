@@ -6,7 +6,7 @@ ExecStartPre=+mkdir -p /var/log/mitmproxy
 ExecStartPre=+chown $USER.$USER /var/log/mitmproxy
 User=$USER
 WorkingDirectory=$PWD
-ExecStart=make start > /var/log/mitmproxy/dumplog 2>/var/log/mitmproxy/errorlog
+ExecStart=make start
 ExecStartPost=bash -c "cd /var/log/mitmproxy && \
  for i in $(seq 9 -1 1); do \
   if [ -e dumplog.$i ]; then mv dumplog.$i dumplog.$((i + 1)); fi; \
