@@ -9,19 +9,25 @@ def response(flow):
     fromport = str(fromaddr[1])
     tohost = flow.request.host
     toport = str(flow.request.port)
-    logname = '.'.join((fromhost, fromport, tohost, toport)) + '.log'
+    logname = '.'.join((fromhost, tohost)) + '.log'
     with open(f'/var/log/mitmproxy/{logname}', 'a') as logfile:
         print(f'Request from {fromhost}:{fromport} to'
               f' {tohost}:{toport}', file=logfile)
         print(f'Headers:', file=logfile)
+        print(f'{flow.request.method} {flow.request.path}'
+              '{flow.request.http_version}', file=logfile)
         for k, v in flow.request.headers.items():
-            print(f'{k}: {v}', file=logfile)
+            value=' '.join(v.split())
+            print(f'{k}: {value}', file=logfile)
         print(file=logfile)
         print(f'Response from {tohost}:{toport} to'
               f' {fromhost}:{fromport}', file=logfile)
         print(f'Headers:', file=logfile)
+        print(f'{flow.response.http_version} {flow.response.status_code}'
+              '{reason}', file=logfile)
         for k, v in flow.response.headers.items():
-            print(f'{k}: {v}', file=logfile)
+            value=' '.join(v.split())
+            print(f'{k}: {value}', file=logfile)
         print(file=logfile)
         print('Response payload:', file=logfile)
         print(flow.response.content.decode(), file=logfile)
