@@ -13,3 +13,15 @@ def response(flow):
     with open(f'/var/log/mitmproxy/{logname}', 'a') as logfile:
         print(f'Request from {fromhost}:{fromport} to'
               f' {tohost}:{toport}', file=logfile)
+        print(f'Headers:', file=logfile)
+        for k, v in flow.request.headers.items():
+            print(f'{k}: {v}', file=logfile)
+        print(f'Headers:', file=logfile)
+        print(file=logfile)
+        print(f'Response from {tohost}:{toport} to'
+              f' {fromhost}:{fromport}', file=logfile)
+        for k, v in flow.response.headers.items():
+            print(f'{k}: {v}', file=logfile)
+        print(file=logfile)
+        print('Response payload:', file=logfile)
+        print(flow.request.content.decode(), file=logfile)
