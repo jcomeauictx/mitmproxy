@@ -1,6 +1,8 @@
 PWD ?= $(CURDIR)
 PATH := $(PWD)/venv/bin:$(PATH)
-PORT ?= 5888
+PORT ?= 8080
+LOGDIR ?= /var/log/mitmproxy
+CONFDIR ?= $(HOME)/.mitmproxy
 export
 shell: venv/bin/activate
 	bash --rcfile $< -i
@@ -10,15 +12,16 @@ start: venv/bin/activate env
 	 --flow-detail 3 \
 	 --set block_global=false \
 	 --script filter.py \
-	 >>/var/log/mitmproxy/dumplog \
-	 2>>/var/log/mitmproxy/errorlog
+	 >>$(LOGDIR)/dumplog \
+	 2>>$(LOGDIR)/errorlog
 env:
 	env
 venv/bin/activate: dev.sh
 	./$< || (echo 'Must install python3-virtualenv (RedHat)' \
 	 ' or python3-venv (Debian)' >&2; false)
 install: mitmproxy.service /etc/systemd/system venv/bin/activate
-	envsubst '$$PWD$$USER' < $< | sudo tee /etc/systemd/system/$<
+	envsubst '$$LOGDIR$$PWD$$USER' < $< \
+	 | sudo tee /etc/systemd/system/$<
 	sudo systemctl daemon-reload
 	sudo systemctl enable mitmproxy
 	sudo systemctl start mitmproxy

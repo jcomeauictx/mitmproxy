@@ -29,3 +29,4 @@ sslkeylogfile.log
 coverage.xml
 web/coverage/
 .mypy_cache/
+GNUmakefile

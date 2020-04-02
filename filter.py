@@ -2,17 +2,20 @@
 'https://stackoverflow.com/a/45044199/493161'
 import os
 
+LOGDIR = os.getenv('LOGDIR') or os.path.join('var', 'log', 'mitmproxy')
+HOME = os.path.expanduser('~')
+CONFDIR = os.getenv('CONFDIR') or os.path.join(HOME, '.mitmproxy')
+
 def response(flow):
     '''
     Log response to a unique log for these host-port combinations
     '''
-    home = os.path.expanduser('~')
     clientfilter, serverfilter = [], []
-    filterfile = os.path.join(home, '.mitmproxy', 'clientfilter.txt')
+    filterfile = os.path.join(CONFDIR, 'clientfilter.txt')
     if os.path.exists(filterfile):
         with open(filterfile) as infile:
             clientfilter = [line.rstrip() for line in infile.readlines()]
-    filterfile = os.path.join(home, '.mitmproxy', 'serverfilter.txt')
+    filterfile = os.path.join(CONFDIR, 'serverfilter.txt')
     if os.path.exists(filterfile):
         with open(filterfile) as infile:
             serverfilter = [line.rstrip() for line in infile.readlines()]
@@ -29,7 +32,8 @@ def response(flow):
         flow.kill()
     toport = str(flow.request.port)
     logname = '.'.join((fromhost, tohost)) + '.log'
-    with open(f'/var/log/mitmproxy/{logname}', 'a') as logfile:
+    logpath = os.path.join(LOGDIR, logname)
+    with open(logpath, 'a') as logfile:
         print(f'Request from {fromhost}:{fromport} to'
               f' {tohost}:{toport}', file=logfile)
         print(f'Headers:', file=logfile)
