@@ -59,6 +59,7 @@ Quickstart
 ----------
 
 .. code-block:: bash
+
     git clone https://github.com/jcomeauictx/mitmproxy
     make install
     make curltest
@@ -66,12 +67,13 @@ Quickstart
 
 To change PORT, LOGDIR, and CONFDIR, it is recommended that you create a
 second makefile, GNUmakefile, which GNU Make will use first by default. 
-This is so that, if you `git pull` to fetch the most recent sources, you
+This is so that, if you ``git pull`` to fetch the most recent sources, you
 don't get your custom configuration overwritten.
 
 Its contents could be, for example:
 
 .. code-block:: make
+
     PORT := 8088
     LOGDIR := $(HOME)/.mitmproxy/logs
     CONFDIR := $(HOME)/.mitmproxy/config
