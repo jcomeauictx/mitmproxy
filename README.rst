@@ -54,6 +54,32 @@ please consider contributing in the following areas:
 - **Maintenance:** We are *incredibly* thankful for individuals who are stepping up and helping with maintenance. This includes (but is not limited to) triaging issues, reviewing pull requests and picking up stale ones, helping out other users on StackOverflow_, creating minimal, complete and verifiable examples or test cases for existing bug reports, updating documentation, or fixing minor bugs that have recently been reported.
 - **Code Contributions:** We actively mark issues that we consider are `good first contributions`_. If you intend to work on a larger contribution to the project, please come talk to us first.
 
+
+Quickstart
+----------
+
+.. code-block:: bash
+    git clone https://github.com/jcomeauictx/mitmproxy
+    make install
+    make curltest
+    ls -l $LOGDIR
+
+To change PORT, LOGDIR, and CONFDIR, it is recommended that you create a
+second makefile, GNUmakefile, which GNU Make will use first by default. 
+This is so that, if you `git pull` to fetch the most recent sources, you
+don't get your custom configuration overwritten.
+
+Its contents could be, for example:
+
+.. code-block:: make
+    PORT := 8088
+    LOGDIR := $(HOME)/.mitmproxy/logs
+    CONFDIR := $(HOME)/.mitmproxy/config
+    export
+    # the following simply passes any Make targets to the original Makefile
+    %:
+        $(MAKE) -f Makefile $@
+
 Development Setup
 -----------------
 
