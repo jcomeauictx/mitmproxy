@@ -82,6 +82,30 @@ Its contents could be, for example:
     %:
         $(MAKE) -f Makefile $@
 
+The configuration files are used by filter.py to limit logging to only those
+clients and/or servers specified. The files are plain text, such as you would
+create with ``nano`` or ``vi``, not with a text processing program such
+as Libre Office or Microsoft Word. Sample contents of clientfilter.txt:
+
+.. code-block:: text
+
+    ::1
+    127.0.0.1
+    1.2.3.4
+
+And serverfilter.txt:
+
+.. code-block:: text
+
+    ifconfig.co
+    github.com
+    never.none
+
+Empty or nonexistent files for either filter amounts to leaving it open to any
+client or any server. But if the filter file exists and has anything in it,
+logging is restricted only to what hosts are in the file, and mitmdump will
+reset the connection before it completes.
+
 Development Setup
 -----------------
 
