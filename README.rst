@@ -57,6 +57,7 @@ please consider contributing in the following areas:
 
 Quickstart
 ----------
+As a normal user (**not** root):
 
 .. code-block:: bash
 
