@@ -90,7 +90,7 @@ Its contents could be, for example:
     export
     # the following simply passes any Make targets to the original Makefile
     %:
-        $(MAKE) -f Makefile $@
+    	$(MAKE) -f Makefile $@
 
 The configuration files are used by filter.py to limit logging to only those
 clients and/or servers specified. The files are plain text, such as you would
