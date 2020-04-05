@@ -57,10 +57,17 @@ please consider contributing in the following areas:
 
 Quickstart
 ----------
-As a normal user (**not** root):
+To get this working on the cheapest DigitalOcean droplet running Debian 10.3,
+after logging in as root:
 
 .. code-block:: bash
 
+    NEWUSER=newuser  # change this to your preferred username
+    apt update
+    apt install git make python3-venv curl
+    adduser $NEWUSER
+    usermod -a -G sudo $NEWUSER
+    su - $NEWUSER
     git clone https://github.com/jcomeauictx/mitmproxy
     make install
     make curltest
