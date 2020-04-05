@@ -69,8 +69,10 @@ after logging in as root:
     usermod -a -G sudo $NEWUSER
     su - $NEWUSER
     git clone https://github.com/jcomeauictx/mitmproxy
+    cd mitmproxy
     make install
     make curltest
+    make shell
     ls -l $LOGDIR
 
 To change PORT, LOGDIR, and CONFDIR, it is recommended that you create a
