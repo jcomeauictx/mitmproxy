@@ -13,7 +13,7 @@ ExecStartPre=bash -c "cd $LOGDIR && \
  rm -f *log.10"
 User=$USER
 WorkingDirectory=$PWD
-ExecStart=make start
+ExecStart=make launch
 Restart=always
 
 [Install]

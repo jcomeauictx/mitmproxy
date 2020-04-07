@@ -11,7 +11,7 @@ nonroot:
 shell: venv/bin/activate
 	$(MAKE) TARGET=$@ nonroot
 	bash --rcfile $< -i
-test: venv/bin/activate env
+launch: venv/bin/activate env
 	$(MAKE) TARGET=$@ nonroot
 	mitmdump \
 	 --listen-port=$(PORT) \
@@ -33,7 +33,7 @@ install: mitmproxy.service /etc/systemd/system venv/bin/activate
 	sudo systemctl daemon-reload
 	$(MAKE) enable
 	$(MAKE) start
-start restart enable disable stop:
+start restart status enable disable stop:
 	sudo systemctl $@ mitmproxy.service
 /tmp/localcert.txt:
 	echo quit | openssl s_client \
