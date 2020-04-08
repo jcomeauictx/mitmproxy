@@ -1,8 +1,14 @@
+SHELL := /bin/bash
 PWD ?= $(CURDIR)
 PATH := $(PWD)/venv/bin:$(PATH)
 PORT ?= 8080
 LOGDIR ?= /var/log/mitmproxy
 CONFDIR ?= $(HOME)/.mitmproxy
+TESTSERV := ifconfig.co
+ALLOWED := $(shell echo $$(<$(CONFDIR)/serverfilter.txt))
+EMPTY :=
+SPACE := $(EMPTY) $(EMPTY)
+FILTER := ^([^.]+[.])*$(subst $(SPACE),|,$(ALLOWED)):[0-9]+$
 export
 nonroot:
 	if [ "$(USER)" = "root" ]; then \
@@ -17,6 +23,8 @@ launch: venv/bin/activate env
 	 --listen-port=$(PORT) \
 	 --flow-detail 3 \
 	 --set block_global=false \
+	 --allow-hosts '$(FILTER)' \
+	 --block-not-ignore \
 	 --script filter.py \
 	 >>$(LOGDIR)/dumplog \
 	 2>>$(LOGDIR)/errorlog
@@ -42,6 +50,4 @@ start restart status enable disable stop:
 	 -connect localhost:$(PORT) >$@
 curltest: /tmp/localcert.txt
 	curl --proxy http://localhost:$(PORT) \
-	 --cacert $< https://ifconfig.co
-status:
-	systemctl status mitmproxy
+	 --cacert $< https://$(TESTSERV)

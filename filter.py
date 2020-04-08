@@ -1,6 +1,6 @@
 #!/usr/bin/python
 'https://stackoverflow.com/a/45044199/493161'
-import os
+import os, time
 
 LOGDIR = os.getenv('LOGDIR') or os.path.join('var', 'log', 'mitmproxy')
 HOME = os.path.expanduser('~')
@@ -31,7 +31,8 @@ def response(flow):
         print(f'***** KILLING CONNECTION TO {tohost} *****')
         flow.kill()
     toport = str(flow.request.port)
-    logname = '.'.join((fromhost, tohost)) + '.log'
+    unixtime = str(int(time.time()))
+    logname = '_'.join((fromhost, tohost, unixtime))
     logpath = os.path.join(LOGDIR, logname)
     with open(logpath, 'a') as logfile:
         print(f'Request from {fromhost}:{fromport} to'

@@ -60,7 +60,10 @@ class RootContext:
                     sni_str = client_hello.sni and client_hello.sni.decode("idna")
                     is_filtered = self.config.check_filter((sni_str, 443))
             if is_filtered:
-                return protocol.RawTCPLayer(top_layer, ignore=True)
+                if self.config.options.block_not_ignore:
+                    raise exceptions.Kill
+                else:
+                    return protocol.RawTCPLayer(top_layer, ignore=True)
 
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,

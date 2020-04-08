@@ -74,6 +74,10 @@ class Options(optmanager.OptManager):
             "Opposite of --ignore-hosts."
         )
         self.add_option(
+            "block_not_ignore", bool, False,
+            "--allow_hosts or --ignore_hosts blocks rather than ignores."
+        )
+        self.add_option(
             "listen_host", str, "",
             "Address to bind proxy to."
         )
