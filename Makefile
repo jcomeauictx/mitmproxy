@@ -5,8 +5,11 @@ PORT ?= 8080
 LOGDIR ?= /var/log/mitmproxy
 CONFDIR ?= $(HOME)/.mitmproxy
 TESTSERV := ifconfig.co
-ALLOWED := $(shell echo $$(<$(CONFDIR)/serverfilter.txt))
+ALLOWED := $(shell cat $(CONFDIR)/serverfilter.txt 2>/dev/null)
 EMPTY :=
+ifeq ($(ALLOWED),)
+	ALLOWED := [^.]+[.][^.]+
+endif
 SPACE := $(EMPTY) $(EMPTY)
 FILTER := ^([^.]+[.])*$(subst $(SPACE),|,$(ALLOWED)):[0-9]+$
 export
