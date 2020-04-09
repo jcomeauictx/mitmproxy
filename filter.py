@@ -10,25 +10,18 @@ def response(flow):
     '''
     Log response to a unique log for these host-port combinations
     '''
-    clientfilter, serverfilter = [], []
+    clientfilter = []
     filterfile = os.path.join(CONFDIR, 'clientfilter.txt')
     if os.path.exists(filterfile):
         with open(filterfile) as infile:
             clientfilter = [line.rstrip() for line in infile.readlines()]
-    filterfile = os.path.join(CONFDIR, 'serverfilter.txt')
-    if os.path.exists(filterfile):
-        with open(filterfile) as infile:
-            serverfilter = [line.rstrip() for line in infile.readlines()]
-    print(f'clientfilter: {clientfilter}, serverfilter: {serverfilter}')
+    print(f'clientfilter: {clientfilter}')
     fromaddr = flow.client_conn.address
     fromhost = fromaddr[0]
     fromport = str(fromaddr[1])
     tohost = flow.request.host
     if clientfilter and fromhost not in clientfilter:
         print(f'***** KILLING CONNECTION FROM {fromhost} *****')
-        flow.kill()
-    elif serverfilter and tohost not in serverfilter:
-        print(f'***** KILLING CONNECTION TO {tohost} *****')
         flow.kill()
     toport = str(flow.request.port)
     unixtime = str(int(time.time()))
