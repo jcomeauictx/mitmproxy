@@ -1,6 +1,7 @@
 import os
 import re
 import typing
+import logging
 
 from OpenSSL import crypto
 
@@ -20,10 +21,13 @@ class HostMatcher:
         if not address:
             return False
         host = "%s:%s" % address
+        matches = list(rex.search(host) for rex in self.regexes)
+        logging.warning('host %s match to regex %s: %s',
+                        host, self.regexes, matches)
         if self.handle in ["ignore", "tcp"]:
-            return any(rex.search(host) for rex in self.regexes)
+            return any(matches)
         else:  # self.handle == "allow"
-            return not any(rex.search(host) for rex in self.regexes)
+            return not any(matches)
 
     def __bool__(self):
         return bool(self.patterns)
