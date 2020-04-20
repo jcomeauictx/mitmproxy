@@ -10,6 +10,7 @@ from mitmproxy import exceptions
 from mitmproxy import options as moptions
 from mitmproxy.net import server_spec
 
+logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
 class HostMatcher:
     def __init__(self, handle, patterns=tuple()):
@@ -22,8 +23,7 @@ class HostMatcher:
             return False
         host = "%s:%s" % address
         matches = list(rex.search(host) for rex in self.regexes)
-        logging.warning('host %s match to regex %s: %s',
-                        host, self.regexes, matches)
+        logging.info('host %s match to regex %s: %s', host, self.regexes, matches)
         if self.handle in ["ignore", "tcp"]:
             return any(matches)
         else:  # self.handle == "allow"

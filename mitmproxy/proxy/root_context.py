@@ -1,10 +1,11 @@
+import logging
 from mitmproxy import log
 from mitmproxy import exceptions
 from mitmproxy.net import tls
 from mitmproxy.proxy import protocol
 from mitmproxy.proxy import modes
 from mitmproxy.proxy.protocol import http
-
+logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
 class RootContext:
 
@@ -42,6 +43,7 @@ class RootContext:
         return self.channel.ask("next_layer", layer)
 
     def _next_layer(self, top_layer):
+        logging.info('root_context._next_layer(%s)', top_layer)
         try:
             d = top_layer.client_conn.rfile.peek(3)
         except exceptions.TcpException as e:

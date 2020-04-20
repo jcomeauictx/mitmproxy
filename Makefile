@@ -4,7 +4,8 @@ PATH := $(PWD)/venv/bin:$(PATH)
 PORT ?= 8080
 LOGDIR ?= /var/log/mitmproxy
 CONFDIR ?= $(HOME)/.mitmproxy
-TESTSERV := ifconfig.co
+TESTSERV ?= ifconfig.co
+SCHEME ?= https
 ALLOWED := $(shell cat $(CONFDIR)/serverfilter.txt 2>/dev/null)
 EMPTY :=
 ifeq ($(ALLOWED),)
@@ -53,4 +54,4 @@ start restart status enable disable stop:
 	 -connect localhost:$(PORT) >$@
 curltest: /tmp/localcert.txt
 	curl --proxy http://localhost:$(PORT) \
-	 --cacert $< https://$(TESTSERV)
+	 --cacert $< $(SCHEME)://$(TESTSERV)
