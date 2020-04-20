@@ -1,5 +1,6 @@
 import sys
 import traceback
+import logging
 
 from mitmproxy import exceptions
 from mitmproxy import connections
@@ -14,6 +15,7 @@ from mitmproxy.net import tcp
 from mitmproxy.net.http import http1
 from mitmproxy.utils import human
 
+logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
 class DummyServer:
     bound = False
@@ -59,6 +61,7 @@ class ProxyServer(tcp.TCPServer):
         self.channel = channel
 
     def handle_client_connection(self, conn, client_address):
+        logging.info('handle_client_connection %s, %s', conn, client_address)
         h = ConnectionHandler(
             conn,
             client_address,
@@ -86,8 +89,10 @@ class ConnectionHandler:
             self.config,
             self.channel
         )
+        logging.info('root_ctx: %s', root_ctx)
 
         mode = self.config.options.mode
+        logging.info('mode: %s', mode)
         if mode.startswith("upstream:"):
             return modes.HttpUpstreamProxy(
                 root_ctx,

@@ -20,8 +20,10 @@ class HostMatcher:
 
     def __call__(self, address):
         if not address:
+            logging.info('HostMatcher: no address')
             return False
         host = "%s:%s" % address
+        logging.info('HostMatcher: address=%s', address)
         matches = list(rex.search(host) for rex in self.regexes)
         logging.info('host %s match to regex %s: %s', host, self.regexes, matches)
         if self.handle in ["ignore", "tcp"]:

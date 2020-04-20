@@ -47,12 +47,14 @@ class RootContext:
         try:
             d = top_layer.client_conn.rfile.peek(3)
         except exceptions.TcpException as e:
+            logging.info('ignoring protocol: %s', e)
             raise exceptions.ProtocolException(str(e))
         client_tls = tls.is_tls_record_magic(d)
 
         # 1. check for filter
         if self.config.check_filter:
             is_filtered = self.config.check_filter(top_layer.server_conn.address)
+            logging.info('%s is_filtered: %s', vars(top_layer.server_conn), is_filtered)
             if not is_filtered and client_tls:
                 try:
                     client_hello = tls.ClientHello.from_file(self.client_conn.rfile)
