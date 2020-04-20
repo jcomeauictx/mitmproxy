@@ -3,6 +3,7 @@ import textwrap
 import h2.exceptions
 import time
 import enum
+import logging
 
 from mitmproxy import connections  # noqa
 from mitmproxy import exceptions
@@ -12,6 +13,7 @@ from mitmproxy.proxy.protocol import base
 from mitmproxy.proxy.protocol.websocket import WebSocketLayer
 from mitmproxy.net import websockets
 
+logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
 class _HttpTransmissionLayer(base.Layer):
     def read_request_headers(self, flow):
@@ -166,6 +168,7 @@ class HttpLayer(base.Layer):
 
     def __init__(self, ctx, mode):
         super().__init__(ctx)
+        logging.info('HttpLayer.__init__: ctx=%s, mode=%s', ctx, mode)
         self.mode = mode
         self.__initial_server_address: tuple = None
         "Contains the original destination in transparent mode, which needs to be restored"
@@ -177,9 +180,13 @@ class HttpLayer(base.Layer):
         self.connect_request = False
 
     def __call__(self):
+        logging.info('http.py: server address %s', self.server_conn.address)
         if self.mode == HTTPMode.transparent:
             self.__initial_server_tls = self.server_tls
             self.__initial_server_address = self.server_conn.address
+            logging.info('http.py: set self.__inital_server_address')
+        else:
+            logging.info('http.py: not setting address for mode %s', self.mode)
         while True:
             flow = http.HTTPFlow(
                 self.client_conn,

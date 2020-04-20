@@ -1,8 +1,10 @@
+import logging
 from mitmproxy import http
 from mitmproxy.proxy.protocol import http as httpbase
 from mitmproxy.net.http import http1
 from mitmproxy.utils import human
 
+logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
 class Http1Layer(httpbase._HttpTransmissionLayer):
 
@@ -79,5 +81,6 @@ class Http1Layer(httpbase._HttpTransmissionLayer):
         return close_connection
 
     def __call__(self):
+        logging.info('http1: adding HttpLayer')
         layer = httpbase.HttpLayer(self, self.mode)
         layer()

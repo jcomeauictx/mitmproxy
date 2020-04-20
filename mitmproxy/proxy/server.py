@@ -89,7 +89,7 @@ class ConnectionHandler:
             self.config,
             self.channel
         )
-        logging.info('root_ctx: %s', root_ctx)
+        logging.info('root_ctx: %s', vars(root_ctx))
 
         mode = self.config.options.mode
         logging.info('mode: %s', mode)

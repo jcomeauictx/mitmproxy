@@ -1,6 +1,8 @@
 import threading
 import time
 import functools
+import logging
+
 from typing import Dict, Callable, Any, List, Optional  # noqa
 
 import h2.exceptions
@@ -19,6 +21,7 @@ from mitmproxy.coretypes import basethread
 from mitmproxy.net.http import http2, headers
 from mitmproxy.utils import human
 
+logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
 class SafeH2Connection(connection.H2Connection):
 
@@ -653,6 +656,7 @@ class Http2SingleStreamLayer(httpbase._HttpTransmissionLayer, basethread.BaseThr
         raise EnvironmentError('Http2SingleStreamLayer must be run as thread')
 
     def run(self):
+        logging.info('http2: adding HttpLayer')
         layer = httpbase.HttpLayer(self, self.mode)
 
         try:
