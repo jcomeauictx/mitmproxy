@@ -26,7 +26,9 @@ def response(flow):
     toport = str(flow.request.port)
     unixtime = str(int(time.time()))
     logname = '_'.join((fromhost, tohost, unixtime))
-    logpath = os.path.join(LOGDIR, logname)
+    logdir = os.path.join(LOGDIR, 'traffic', tohost)
+    os.makedirs(logdir, exist_ok=True)
+    logpath = os.path.join(logdir, logname)
     with open(logpath, 'a') as logfile:
         print(f'Request from {fromhost}:{fromport} to'
               f' {tohost}:{toport}', file=logfile)
