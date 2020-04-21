@@ -505,6 +505,24 @@ class HttpLayer(base.Layer):
     def establish_server_connection(self, host: str, port: int, scheme: str):
         tls = (scheme == "https")
         logging.info('HttpLayer.establish_server_connection: tls=%s', tls)
+        # following copied from proxy/root_context.py
+        logging.info('filter_http: %s, check_filter: %s',
+                     self.config.options.filter_http,
+                     self.config.check_filter)
+        if self.config.options.filter_http and self.config.check_filter:
+            is_filtered = self.config.check_filter(self.server_conn.address)
+            logging.info('establish_server_connection: %s is_filtered: %s', vars(self.server_conn), is_filtered)
+            if not is_filtered and tls:
+                try:
+                    client_hello = tls.ClientHello.from_file(self.client_conn.rfile)
+                except exceptions.TlsProtocolException as e:
+                    self.log("Cannot parse Client Hello: %s" % repr(e), "error")
+                else:
+                    sni_str = client_hello.sni and client_hello.sni.decode("idna")
+                    is_filtered = self.config.check_filter((sni_str, 443))
+            if is_filtered:
+                if self.config.options.block_not_ignore:
+                    raise exceptions.Kill
         if self.mode is HTTPMode.regular or self.mode is HTTPMode.transparent:
             # If there's an existing connection that doesn't match our expectations, kill it.
             address = (host, port)

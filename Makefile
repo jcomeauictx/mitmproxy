@@ -29,6 +29,7 @@ launch: venv/bin/activate env
 	 --set block_global=false \
 	 --allow-hosts '$(FILTER)' \
 	 --block-not-ignore \
+	 --filter-http \
 	 --script filter.py \
 	 >>$(LOGDIR)/dumplog \
 	 2>>$(LOGDIR)/errorlog

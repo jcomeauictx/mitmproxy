@@ -78,6 +78,10 @@ class Options(optmanager.OptManager):
             "--allow_hosts or --ignore_hosts blocks rather than ignores."
         )
         self.add_option(
+            "filter_http", bool, False,
+            "Filter traffic to 'http://' urls as well as 'https://'."
+        )
+        self.add_option(
             "listen_host", str, "",
             "Address to bind proxy to."
         )
