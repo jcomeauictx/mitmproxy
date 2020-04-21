@@ -12,7 +12,7 @@ ifeq ($(ALLOWED),)
 	ALLOWED := [^.]+[.][^.]+
 endif
 SPACE := $(EMPTY) $(EMPTY)
-FILTER := ^([^.]+[.])*$(subst $(SPACE),|,$(ALLOWED)):[0-9]+$
+FILTER := ^([^.]+[.])*($(subst $(SPACE),|,$(ALLOWED))):[0-9]+$
 export
 nonroot:
 	if [ "$(USER)" = "root" ]; then \
