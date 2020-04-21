@@ -187,7 +187,9 @@ class HttpLayer(base.Layer):
             logging.info('http.py: set self.__inital_server_address')
         else:
             logging.info('http.py: not setting address for mode %s', self.mode)
+        logging.info('HttpLayer.__call__ entering "while True" loop')
         while True:
+            logging.info('HttpLayer.__call__ in "while True" loop')
             flow = http.HTTPFlow(
                 self.client_conn,
                 self.server_conn,
@@ -195,9 +197,13 @@ class HttpLayer(base.Layer):
                 mode=self.mode.name
             )
             if not self._process_flow(flow):
+                logging.info('HttpLayer.__call__ done')
                 return
+            else:
+                logging.info('HttpLayer.__call__ succeeded')
 
     def handle_regular_connect(self, f):
+        logging.info('HttpLayer.handle_regular_connect, f=%s', f)
         self.connect_request = True
 
         try:
@@ -226,6 +232,7 @@ class HttpLayer(base.Layer):
         return False
 
     def handle_upstream_connect(self, f):
+        logging.info('HttpLayer.handle_upstream_connect, f=%s', f)
         # if the user specifies a response in the http_connect hook, we do not connect upstream here.
         # https://github.com/mitmproxy/mitmproxy/pull/2473
         if not f.response:
