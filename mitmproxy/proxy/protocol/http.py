@@ -253,6 +253,7 @@ class HttpLayer(base.Layer):
         return False
 
     def _process_flow(self, f):
+        logging.info('HttpLayer._process_flow')
         try:
             try:
                 request = self.read_request_headers(f)
@@ -263,7 +264,8 @@ class HttpLayer(base.Layer):
 
             f.request = request
 
-            if request.first_line_format == "authority":
+            if request.first_line_format in ("authority",):
+                logging.info('_process_flow found "authority" line')
                 # The standards are silent on what we should do with a CONNECT
                 # request body, so although it's not common, it's allowed.
                 f.request.data.content = b"".join(
@@ -280,6 +282,8 @@ class HttpLayer(base.Layer):
                     msg = "Unexpected CONNECT request."
                     self.send_error_response(400, msg)
                     return False
+            else:
+                logging.info('_process_flow: first line: %s', request.first_line_format)
 
             validate_request_form(self.mode, request)
             self.channel.ask("requestheaders", f)
