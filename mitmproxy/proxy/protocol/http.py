@@ -493,17 +493,20 @@ class HttpLayer(base.Layer):
 
     def establish_server_connection(self, host: str, port: int, scheme: str):
         tls = (scheme == "https")
-
+        logging.info('HttpLayer.establish_server_connection: tls=%s', tls)
         if self.mode is HTTPMode.regular or self.mode is HTTPMode.transparent:
             # If there's an existing connection that doesn't match our expectations, kill it.
             address = (host, port)
             if address != self.server_conn.address or tls != self.server_tls:
+                logging.info('HttpLayer setting server address to %s', address)
                 self.set_server(address)
                 self.set_server_tls(tls, address[0])
             # Establish connection is necessary.
             if not self.server_conn.connected():
+                logging.info('HttpLayer connecting to %s', address)
                 self.connect()
         else:
+            logging.info('HttpLayer: mode is %s', self.mode)
             if not self.server_conn.connected():
                 self.connect()
             if tls:
