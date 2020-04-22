@@ -111,6 +111,7 @@ And serverfilter.txt:
     github.com
     never.none
 
+The Makefile and scripts will not create CONFDIR; you must do so yourself.
 Empty or nonexistent files for either filter amounts to leaving it open to any
 client or any server. But if the filter file exists and has anything in it,
 logging is restricted only to what hosts are in the file, and mitmdump will
