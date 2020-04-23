@@ -2,7 +2,7 @@ SHELL := /bin/bash
 PWD ?= $(CURDIR)
 PATH := $(PWD)/venv/bin:$(PATH)
 PORT ?= 8080
-LOGDIR ?= /var/log/mitmproxy
+LOGDIR ?= $(HOME)/mitmproxy
 CONFDIR ?= $(HOME)/mitmproxy
 TESTSERV ?= ifconfig.co
 SCHEME ?= https
@@ -39,7 +39,7 @@ venv/bin/activate: dev.sh
 	$(MAKE) TARGET=$@ nonroot
 	./$< || (echo 'Must install python3-virtualenv (RedHat)' \
 	 ' or python3-venv (Debian)' >&2; false)
-install: mitmproxy.service /etc/systemd/system venv/bin/activate
+install: mitmproxy.service /etc/systemd/system venv/bin/activate $(LOGDIR)
 	$(MAKE) TARGET=$@ nonroot
 	envsubst '$$LOGDIR$$PWD$$USER' < $< \
 	 | sudo tee /etc/systemd/system/$<
@@ -56,3 +56,5 @@ start restart status enable disable stop:
 curltest: /tmp/localcert.txt
 	curl --proxy http://localhost:$(PORT) \
 	 --cacert $< $(SCHEME)://$(TESTSERV)
+$(LOGDIR):
+	mkdir -p $@
