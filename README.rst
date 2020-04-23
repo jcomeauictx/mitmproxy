@@ -85,12 +85,16 @@ Its contents could be, for example:
 .. code-block:: make
 
     PORT := 8088
-    LOGDIR := $(HOME)/.mitmproxy/logs
-    CONFDIR := $(HOME)/.mitmproxy/config
+    LOGDIR := $(HOME)/mitmproxy/logs
+    CONFDIR := $(HOME)/mitmproxy/config
     export
     # the following simply passes any Make targets to the original Makefile
     %:
     	$(MAKE) -f Makefile $@
+
+**Note: Do not use ``$HOME/.mitmproxy`` or any subdirectory thereof for your
+LOGDIR, and it's good to avoid using it for CONFDIR either. It's used
+internally by this software.**
 
 The configuration files are used by filter.py to limit logging to only those
 clients and/or servers specified. The files are plain text, such as you would
