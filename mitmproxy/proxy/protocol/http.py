@@ -522,7 +522,8 @@ class HttpLayer(base.Layer):
                 logging.info('establish_server_connection: %s is_filtered: %s', vars(self.server_conn), is_filtered)
                 if is_filtered:
                     if self.config.options.block_not_ignore:
-                        self.log('->{}:{} {} blocked'.format(host, port, datetime.now()), 'info')
+                        # client address automatically prepended by self.log
+                        self.log('-> {}:{} {} blocked'.format(host, port, datetime.now()), 'info')
                         raise exceptions.Kill('blocked http request to filtered host {}'.format(host))
             # Establish connection is necessary.
             if not self.server_conn.connected():
@@ -534,3 +535,4 @@ class HttpLayer(base.Layer):
                 self.connect()
             if tls:
                 raise exceptions.HttpProtocolException("Cannot change scheme in upstream proxy mode.")
+        self.log('-> {}:{} {} allowed'.format(host, port, datetime.now()), 'info')

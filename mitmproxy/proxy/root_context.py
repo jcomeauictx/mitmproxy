@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from mitmproxy import log
 from mitmproxy import exceptions
 from mitmproxy.net import tls
@@ -52,6 +53,7 @@ class RootContext:
         client_tls = tls.is_tls_record_magic(d)
 
         # 1. check for filter
+        logging.info('locals(): %s', locals())
         if self.config.check_filter:
             is_filtered = self.config.check_filter(top_layer.server_conn.address)
             logging.info('_next_layer: %s is_filtered: %s', vars(top_layer.server_conn), is_filtered)
@@ -65,10 +67,15 @@ class RootContext:
                     is_filtered = self.config.check_filter((sni_str, 443))
             if is_filtered:
                 if self.config.options.block_not_ignore:
-                    raise exceptions.Kill
+                    self.log('-> {}:{} {} blocked'.format(host, port, datetime.now()), 'info')
+                    raise exceptions.Kill('blocked https request to filtered host {}'.format(host))
                 else:
                     return protocol.RawTCPLayer(top_layer, ignore=True)
 
+        logging.info('server_conn: %s', vars(top_layer.server_conn))
+        logging.info('locals(): %s', locals())
+        host, port = top_layer.server_conn.address
+        self.log('-> {}:{} {} allowed'.format(host, port, datetime.now()), 'info')
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,
         # in which case we need some form of TLS layer.
