@@ -5,6 +5,7 @@ import time
 import enum
 import logging
 
+from datetime import datetime
 from mitmproxy import connections  # noqa
 from mitmproxy import exceptions
 from mitmproxy import http
@@ -521,7 +522,8 @@ class HttpLayer(base.Layer):
                 logging.info('establish_server_connection: %s is_filtered: %s', vars(self.server_conn), is_filtered)
                 if is_filtered:
                     if self.config.options.block_not_ignore:
-                        raise exceptions.Kill
+                        self.log('->{}:{} {} blocked'.format(host, port, datetime.now()), 'info')
+                        raise exceptions.Kill('blocked http request to filtered host {}'.format(host))
             # Establish connection is necessary.
             if not self.server_conn.connected():
                 logging.info('HttpLayer connecting to %s', address)
