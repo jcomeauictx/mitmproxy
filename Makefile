@@ -7,6 +7,7 @@ CONFDIR ?= $(HOME)/mitmproxy
 TESTSERV ?= ifconfig.co
 SCHEME ?= https
 ALLOWED := $(shell cat $(CONFDIR)/serverfilter.txt 2>/dev/null)
+#TESTDATA ?= -d "something=1&nothing=0"
 EMPTY :=
 ifeq ($(ALLOWED),)
 	ALLOWED := [^.]+[.][^.]+
@@ -55,6 +56,8 @@ start restart status enable disable stop:
 	 -connect localhost:$(PORT) >$@
 curltest: /tmp/localcert.txt
 	curl --proxy http://localhost:$(PORT) \
-	 --cacert $< $(SCHEME)://$(TESTSERV)
+	 $(TESTDATA) \
+	 --cacert $< \
+	 $(SCHEME)://$(TESTSERV)
 $(LOGDIR):
 	mkdir -p $@

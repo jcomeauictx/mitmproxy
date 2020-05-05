@@ -39,6 +39,9 @@ def response(flow):
             value=' '.join(v.split())
             print(f'{k}: {value}', file=logfile)
         print(file=logfile)
+        print('Request body:', file=logfile)
+        print(flow.request.content.decode(), file=logfile)
+        print(file=logfile)
         print(f'Response from {tohost}:{toport} to'
               f' {fromhost}:{fromport}', file=logfile)
         print(f'Headers:', file=logfile)
