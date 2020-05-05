@@ -12,6 +12,25 @@ from mitmproxy.net import server_spec
 
 logging.basicConfig(level=logging.INFO if __debug__ else logging.WARN)
 
+class HostMatch:
+    def __init__(self, handle, address, matches=tuple()):
+        self.handle = handle
+        self.host = '(unknown)'
+        self.port = '(unknown)'
+        if address is not None:
+            self.host, self.port = address
+        self.matches = list(matches)
+
+    def __bool__(self):
+        if self.handle in ['ignore', 'tcp']:
+            return any(self.matches)
+        else:  # self.handle == 'allow'
+            return not any(self.matches)
+
+    def __repr__(self):
+        return(f'<HostMatch handle:{self.handle}, host:{self.host}, port:{self.port}, matches:{self.matches}, value:{bool(self)}')
+    __str__ = __repr__
+
 class HostMatcher:
     def __init__(self, handle, patterns=tuple()):
         self.handle = handle
@@ -21,15 +40,12 @@ class HostMatcher:
     def __call__(self, address):
         if not address:
             logging.info('HostMatcher: no address')
-            return False
+            return HostMatch(self.handle, address)
         host = "%s:%s" % address
         logging.info('HostMatcher: address=%s', address)
         matches = list(rex.search(host) for rex in self.regexes)
         logging.info('host %s match to regex %s: %s', host, self.regexes, matches)
-        if self.handle in ["ignore", "tcp"]:
-            return any(matches)
-        else:  # self.handle == "allow"
-            return not any(matches)
+        return HostMatch(self.handle, address, matches)
 
     def __bool__(self):
         return bool(self.patterns)

@@ -65,15 +65,16 @@ class RootContext:
                 else:
                     sni_str = client_hello.sni and client_hello.sni.decode("idna")
                     is_filtered = self.config.check_filter((sni_str, 443))
+            logging.info('is_filtered: %s', is_filtered)
             if is_filtered:
                 if self.config.options.block_not_ignore:
+                    self.log('-> {}:{} {} blocked'.format(is_filtered.host, is_filtered.port, datetime.now()), 'info')
                     raise exceptions.Kill('blocked https request to filtered host {}'.format('unknown'))
                 else:
                     return protocol.RawTCPLayer(top_layer, ignore=True)
+            else:
+                self.log('-> {}:{} {} allowed'.format(is_filtered.host, is_filtered.port, datetime.now()), 'info')
 
-        logging.info('server_conn: %s', vars(top_layer.server_conn))
-        logging.info('locals(): %s', locals())
-        #self.log('-> {}:{} {} allowed'.format(host, port, datetime.now()), 'info')
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,
         # in which case we need some form of TLS layer.
