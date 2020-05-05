@@ -51,10 +51,12 @@ class RootContext:
             logging.info('ignoring protocol: %s', e)
             raise exceptions.ProtocolException(str(e))
         client_tls = tls.is_tls_record_magic(d)
+        host, port = '(unknown)', '(unknown)'
 
         # 1. check for filter
-        logging.info('locals(): %s', locals())
         if self.config.check_filter:
+            if top_layer.server_conn.address:
+                host, port = top_layer.server_conn.address
             is_filtered = self.config.check_filter(top_layer.server_conn.address)
             logging.info('_next_layer: %s is_filtered: %s', vars(top_layer.server_conn), is_filtered)
             if not is_filtered and client_tls:
@@ -64,16 +66,17 @@ class RootContext:
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
                     sni_str = client_hello.sni and client_hello.sni.decode("idna")
-                    is_filtered = self.config.check_filter((sni_str, 443))
+                    host, port = (sni_str, 443)
+                    is_filtered = self.config.check_filter((host, port))
             logging.info('is_filtered: %s', is_filtered)
             if is_filtered:
                 if self.config.options.block_not_ignore:
-                    self.log('-> {}:{} {} blocked'.format(is_filtered.host, is_filtered.port, datetime.now()), 'info')
-                    raise exceptions.Kill('blocked https request to filtered host {}'.format('unknown'))
+                    self.log('-> {}:{} {} blocked'.format(host, port, datetime.now()), 'info')
+                    raise exceptions.Kill(f'blocked https request to filtered host {host}')
                 else:
                     return protocol.RawTCPLayer(top_layer, ignore=True)
             else:
-                self.log('-> {}:{} {} allowed'.format(is_filtered.host, is_filtered.port, datetime.now()), 'info')
+                self.log('-> {}:{} {} allowed'.format(host, port, datetime.now()), 'info')
 
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,
