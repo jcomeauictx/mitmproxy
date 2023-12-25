@@ -777,7 +777,7 @@ class Response(HTTPMsg):
             pairs = [pair.partition("=") for pair in header.split(';')]
             cookie_name = pairs[0][0] # the key of the first key/value pairs
             cookie_value = pairs[0][2] # the value of the first key/value pairs
-            cookie_parameters = {key.strip().lower():value.strip() for key,sep,value in pairs[1:]}
+            cookie_parameters = dict([[key.strip().lower(), value.strip()] for key, sep, value in pairs[1:]])
             cookies.append((cookie_name, (cookie_value, cookie_parameters)))
         return dict(cookies)
 
