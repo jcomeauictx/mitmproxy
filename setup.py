@@ -119,7 +119,7 @@ if 'install_requires' not in setup_keywords:
         logging.debug('parts: %s', parts)
         if len(parts) > 1:
             name = parts[0] + ' (' + ''.join(parts[1:]) + ')'
-        setup_args['requires'][index] = name
+            setup_args['requires'][index] = name
     logging.debug('after: requires: %s', setup_args['requires'])
 setup(**setup_args)
 # vim: tabstop=8 shiftwidth=4 softtabstop=4 expandtabs
