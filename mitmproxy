@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sys, argparse, os
 from libmproxy import proxy, console, cmdline, version
 from libmproxy.console import palettes
@@ -34,13 +35,13 @@ if __name__ == '__main__':
     else:
         try:
             server = proxy.ProxyServer(config, options.port, options.addr)
-        except proxy.ProxyServerError, v:
-            print >> sys.stderr, "mitmproxy:", v.args[0]
+        except proxy.ProxyServerError as v:
+            print("mitmproxy:", v.args[0], file=sys.stderr)
             sys.exit(1)
 
     try:
         opts = console.Options(**cmdline.get_common_options(options))
-    except cmdline.OptionException, v:
+    except cmdline.OptionException as v:
         parser.error(v.message)
     opts.intercept = options.intercept
     opts.debug = options.debug
