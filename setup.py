@@ -1,6 +1,14 @@
+# this version is for alpine 3.14.3/iSH (shell app for iPhone with emulator)
+# it comes with python3.9.16
+# python2.7.18 is available for installation
 from distutils.core import setup
-import fnmatch, os.path
+import fnmatch, os
 from libmproxy import version
+# python3 compatibility shims
+try:
+    file(os.devnull)
+except NameError:
+    file = open
 
 def _fnmatch(name, patternList):
     for i in patternList:
