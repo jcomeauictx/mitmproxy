@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys, os
 import netlib.utils
 import flow, filt, utils
@@ -140,7 +141,7 @@ class DumpMaster(flow.FlowMaster):
 
     def add_event(self, e, level="info"):
         if self.eventlog:
-            print >> self.outfile, e
+            print(self.outfile, e, file=sys.stderr)
             self.outfile.flush()
 
     def indent(self, n, t):
@@ -172,24 +173,24 @@ class DumpMaster(flow.FlowMaster):
             result = " << %s"%f.error.msg
 
         if self.o.verbosity == 1:
-            print >> self.outfile, str_request(f.request, self.showhost)
-            print >> self.outfile, result
+            print(str_request(f.request, self.showhost), file=self.outfile)
+            print(result, file=self.outfile)
         elif self.o.verbosity == 2:
-            print >> self.outfile, str_request(f.request, self.showhost)
-            print >> self.outfile, self.indent(4, f.request.headers)
-            print >> self.outfile
-            print >> self.outfile, result
-            print >> self.outfile, "\n"
+            print(str_request(f.request, self.showhost), file=self.outfile)
+            print(self.indent(4, f.request.headers), file=self.outfile)
+            print(file=self.outfile)
+            print(result, file=self.outfile)
+            print("\n", file=self.outfile)
         elif self.o.verbosity >= 3:
-            print >> self.outfile, str_request(f.request, self.showhost)
-            print >> self.outfile, self.indent(4, f.request.headers)
+            print(str_request(f.request, self.showhost), file=self.outfile)
+            print(self.indent(4, f.request.headers), file=self.outfile)
             if utils.isBin(f.request.content):
-                print >> self.outfile, self.indent(4, netlib.utils.hexdump(f.request.content))
+                print(self.indent(4, netlib.utils.hexdump(f.request.content)), file=self.outfile)
             elif f.request.content:
-                print >> self.outfile, self.indent(4, f.request.content)
-            print >> self.outfile
-            print >> self.outfile, result
-            print >> self.outfile, "\n"
+                print(self.indent(4, f.request.content), file=self.outfile)
+            print(file=self.outfile)
+            print(result, file=self.outfile)
+            print("\n", file=self.outfile)
         if self.o.verbosity:
             self.outfile.flush()
 

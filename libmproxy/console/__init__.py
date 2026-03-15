@@ -1,3 +1,4 @@
+from __future__ import print_function
 import mailcap, mimetypes, tempfile, os, subprocess, glob, time, shlex, stat
 import os.path, sys, weakref
 import urwid
@@ -378,17 +379,17 @@ class ConsoleMaster(flow.FlowMaster):
 
         r = self.set_intercept(options.intercept)
         if r:
-            print >> sys.stderr, "Intercept error:", r
+            print("Intercept error:", r, file=sys.stderr)
             sys.exit(1)
 
         r = self.set_stickycookie(options.stickycookie)
         if r:
-            print >> sys.stderr, "Sticky cookies error:", r
+            print("Sticky cookies error:", r, file=sys.stderr)
             sys.exit(1)
 
         r = self.set_stickyauth(options.stickyauth)
         if r:
-            print >> sys.stderr, "Sticky auth error:", r
+            print("Sticky auth error:", r, file=sys.stderr)
             sys.exit(1)
 
         self.refresh_server_playback = options.refresh_server_playback
@@ -413,13 +414,13 @@ class ConsoleMaster(flow.FlowMaster):
         if options.script:
             err = self.load_script(options.script)
             if err:
-                print >> sys.stderr, "Script load error:", err
+                print("Script load error:", err, file=sys.stderr)
                 sys.exit(1)
 
         if options.wfile:
             err = self.start_stream(options.wfile)
             if err:
-                print >> sys.stderr, "Script load error:", err
+                print("Script load error:", err, file=sys.stderr)
                 sys.exit(1)
 
         if options.app:
@@ -587,12 +588,12 @@ class ConsoleMaster(flow.FlowMaster):
                 self.add_event("File truncated or corrupted. Loaded as many flows as possible.")
             elif not self.state.flow_count():
                 self.shutdown()
-                print >> sys.stderr, "Could not load file:", ret
+                print("Could not load file:", ret, file=sys.stderr)
                 sys.exit(1)
 
         self.ui.run_wrapper(self.loop)
         # If True, quit just pops out to flow list view.
-        print >> sys.stderr, "Shutting down..."
+        print("Shutting down...", file=sys.stderr)
         sys.stderr.flush()
         self.shutdown()
 

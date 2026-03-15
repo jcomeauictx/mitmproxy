@@ -164,9 +164,9 @@ class HTTPProxTest(ProxTestBase):
     def app(self, page):
         if self.ssl:
             p = libpathod.pathoc.Pathoc("127.0.0.1", self.proxy.port, True)
-            print "PRE"
+            print("PRE")
             p.connect((APP_IP, 80))
-            print "POST"
+            print("POST")
             return p.request("get:'/%s'"%page)
         else:
             p = self.pathoc()

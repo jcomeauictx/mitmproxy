@@ -29,20 +29,20 @@ class InjectingMaster(controller.Master):
         if msg.content:
             c = msg.replace('<body>', '<body><iframe src="%s" frameborder="0" height="0" width="0"></iframe>' % self._iframe_url)
             if c > 0:
-                print 'Iframe injected!'
+                print('Iframe injected!')
         msg.reply()
 
 
 def main(argv):
     if len(argv) != 2:
-        print "Usage: %s IFRAME_URL" % argv[0]
+        print("Usage: %s IFRAME_URL" % argv[0])
         sys.exit(1)
     iframe_url = argv[1]
     config = proxy.ProxyConfig(
         cacert = os.path.expanduser("~/.mitmproxy/mitmproxy-ca.pem")
     )
     server = proxy.ProxyServer(config, 8080)
-    print 'Starting proxy...'
+    print('Starting proxy...')
     m = InjectingMaster(server, iframe_url)
     m.run()
 

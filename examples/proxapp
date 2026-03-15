@@ -4,6 +4,7 @@ This example shows how to graft a WSGI app onto mitmproxy. In this
 instance, we're using the Bottle framework (http://bottlepy.org/) to expose
 a single simplest-possible page.
 """
+from __future__ import print_function
 import bottle
 import os
 from libmproxy import proxy, flow
@@ -30,7 +31,7 @@ class MyMaster(flow.FlowMaster):
         f = flow.FlowMaster.handle_response(self, r)
         if f:
             r.reply()
-        print f
+        print(f)
         return f
 
 
