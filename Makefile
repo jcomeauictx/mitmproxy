@@ -11,14 +11,14 @@ $(HOME)/.abuild: | /etc/alpine-release
 	 sudo apk add $(@F); \
 	fi
 	touch $@
-.installed/py3-openssl: .installed
+.installed/py3-%: .installed
 	sudo apk add $(@F)
-	touch $@
-.installed/pylint: .installed
-	sudo apk add py3-pylint
 	touch $@
 .installed:
 	mkdir $@
-%.pylint: %.py .installed/pylint
+%.pylint: %.py .installed/py3-pylint
 	pylint $<
 pylint: $(LINT)
+pip_install: .installed/py3-pip
+	pip --verbose install --force-reinstall \
+	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish	
