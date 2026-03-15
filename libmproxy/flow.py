@@ -1392,7 +1392,7 @@ class FlowMaster(controller.Master):
         s = script.Script(path, ScriptContext(self))
         try:
             s.load()
-        except script.ScriptError, v:
+        except script.ScriptError as v:
             return (v.args[0], None)
         ret = s.run("start")
         if not ret[0] and ret[1]:
@@ -1663,7 +1663,7 @@ class FlowReader:
                     raise FlowReadError("Incompatible serialized data version: %s"%v)
                 off = self.fo.tell()
                 yield Flow._from_state(data)
-        except ValueError, v:
+        except ValueError as v:
             # Error is due to EOF
             if self.fo.tell() == off and self.fo.read() == '':
                 return

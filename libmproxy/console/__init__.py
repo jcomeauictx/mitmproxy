@@ -430,7 +430,7 @@ class ConsoleMaster(flow.FlowMaster):
         try:
             f = file(path, "wb")
             flow.FlowMaster.start_stream(self, f, None)
-        except IOError, v:
+        except IOError as v:
             return str(v)
         self.stream_path = path
 
@@ -480,7 +480,7 @@ class ConsoleMaster(flow.FlowMaster):
         try:
             f = file(path, "rb")
             flows = list(flow.FlowReader(f).stream())
-        except (IOError, flow.FlowReadError), v:
+        except (IOError, flow.FlowReadError) as v:
             return True, v.strerror
         return False, flows
 
@@ -663,7 +663,7 @@ class ConsoleMaster(flow.FlowMaster):
             for i in flows:
                 fw.add(i)
             f.close()
-        except IOError, v:
+        except IOError as v:
             self.statusbar.message(v.strerror)
 
     def save_one_flow(self, path, flow):
@@ -684,12 +684,12 @@ class ConsoleMaster(flow.FlowMaster):
         try:
             f = file(path, "rb")
             fr = flow.FlowReader(f)
-        except IOError, v:
+        except IOError as v:
             return v.strerror
         reterr = None
         try:
             flow.FlowMaster.load_flows(self, fr)
-        except flow.FlowReadError, v:
+        except flow.FlowReadError as v:
             reterr = v.strerror
         f.close()
         if self.flow_list_walker:

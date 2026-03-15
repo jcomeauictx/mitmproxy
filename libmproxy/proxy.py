@@ -56,7 +56,7 @@ class ServerConnection(tcp.TCPClient):
             try:
                 self.convert_to_ssl(cert=clientcert, sni=self.sni)
                 self.ssl_setup_timestamp = time.time()
-            except tcp.NetLibError, v:
+            except tcp.NetLibError as v:
                 raise ProxyError(400, str(v))
 
     def send(self, request):
@@ -97,7 +97,7 @@ class RequestReplayThread(threading.Thread):
                 server.rfile.first_byte_timestamp
             )
             self.channel.ask(response)
-        except (ProxyError, http.HttpError, tcp.NetLibError), v:
+        except (ProxyError, http.HttpError, tcp.NetLibError) as v:
             err = flow.Error(self.flow.request, str(v))
             self.channel.ask(err)
 
@@ -119,7 +119,7 @@ class HandleSNI:
                 self.handler.sni = sn.decode("utf8").encode("idna")
         # An unhandled exception in this method will core dump PyOpenSSL, so
         # make dang sure it doesn't happen.
-        except Exception, e: # pragma: no cover
+        except Exception as e: # pragma: no cover
             pass
 
 
@@ -159,7 +159,7 @@ class ProxyHandler(tcp.BaseHandler):
             try:
                 self.server_conn = ServerConnection(self.config, scheme, host, port, sni)
                 self.server_conn.connect()
-            except tcp.NetLibError, v:
+            except tcp.NetLibError as v:
                 raise ProxyError(502, v)
         return self.server_conn
 
@@ -232,13 +232,13 @@ class ProxyHandler(tcp.BaseHandler):
                                 request.method,
                                 self.config.body_size_limit
                             )
-                        except http.HttpErrorConnClosed, v:
+                        except http.HttpErrorConnClosed as v:
                             self.del_server_connection()
                             if sc.requestcount > 1:
                                 continue
                             else:
                                 raise
-                        except http.HttpError, v:
+                        except http.HttpError as v:
                             raise ProxyError(502, "Invalid server response.")
                         else:
                             break
@@ -266,7 +266,7 @@ class ProxyHandler(tcp.BaseHandler):
                     # disconnect.
                     if http.response_connection_close(response.httpversion, response.headers):
                         return
-        except (IOError, ProxyError, http.HttpError, tcp.NetLibError), e:
+        except (IOError, ProxyError, http.HttpError, tcp.NetLibError) as e:
             if hasattr(e, "code"):
                 cc.error = "%s: %s"%(e.code, e.msg)
             else:
@@ -336,7 +336,7 @@ class ProxyHandler(tcp.BaseHandler):
                 )
                 try:
                     self.convert_to_ssl(dummycert, self.config.certfile or self.config.cacert, handle_sni=sni)
-                except tcp.NetLibError, v:
+                except tcp.NetLibError as v:
                     raise ProxyError(400, str(v))
         else:
             scheme = "http"
@@ -379,7 +379,7 @@ class ProxyHandler(tcp.BaseHandler):
                 )
                 try:
                     self.convert_to_ssl(dummycert, self.config.certfile or self.config.cacert, handle_sni=sni)
-                except tcp.NetLibError, v:
+                except tcp.NetLibError as v:
                     raise ProxyError(400, str(v))
                 self.proxy_connect_state = (host, port, httpversion)
                 line = self.rfile.readline(line)
@@ -494,7 +494,7 @@ class ProxyServer(tcp.TCPServer):
         self.server_version = server_version
         try:
             tcp.TCPServer.__init__(self, (address, port))
-        except socket.error, v:
+        except socket.error as v:
             raise ProxyServerError('Error starting proxy server: ' + v.strerror)
         self.channel = None
         self.apps = AppRegistry()
@@ -610,7 +610,7 @@ def process_proxy_options(parser, options):
         elif options.auth_htpasswd:
             try:
                 password_manager = http_auth.PassManHtpasswd(options.auth_htpasswd)
-            except ValueError, v:
+            except ValueError as v:
                 return parser.error(v.message)
         authenticator = http_auth.BasicProxyAuth(password_manager, "mitmproxy")
     else:

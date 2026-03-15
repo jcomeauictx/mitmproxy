@@ -282,7 +282,7 @@ class GridEditor(common.WWrap):
                 d = file(p, "rb").read()
                 self.walker.set_current_value(d, unescaped)
                 self.walker._modified()
-            except IOError, v:
+            except IOError as v:
                 return str(v)
 
     def keypress(self, size, key):

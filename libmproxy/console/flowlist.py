@@ -134,7 +134,7 @@ class ConnectionItem(common.WWrap):
                 self.master.server_playback_path
             )
 
-    def keypress(self, (maxcol,), key):
+    def keypress(self, maxcol, key):
         key = common.shortcuts(key)
         if key == "a":
             self.flow.accept_intercept()

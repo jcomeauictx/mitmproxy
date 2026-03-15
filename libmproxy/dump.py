@@ -84,7 +84,7 @@ class DumpMaster(flow.FlowMaster):
             try:
                 f = file(path, "wb")
                 self.start_stream(f, self.filt)
-            except IOError, v:
+            except IOError as v:
                 raise DumpError(v.strerror)
 
         if options.replacements:
@@ -119,11 +119,11 @@ class DumpMaster(flow.FlowMaster):
             try:
                 f = file(path, "rb")
                 freader = flow.FlowReader(f)
-            except IOError, v:
+            except IOError as v:
                 raise DumpError(v.strerror)
             try:
                 self.load_flows(freader)
-            except flow.FlowReadError, v:
+            except flow.FlowReadError as v:
                 self.add_event("Flow file corrupted. Stopped loading.")
 
         if self.o.app:
@@ -134,7 +134,7 @@ class DumpMaster(flow.FlowMaster):
         try:
             f = file(path, "rb")
             flows = list(flow.FlowReader(f).stream())
-        except (IOError, flow.FlowReadError), v:
+        except (IOError, flow.FlowReadError) as v:
             raise DumpError(v.strerror)
         return flows
 

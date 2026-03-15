@@ -275,7 +275,7 @@ class FlowView(common.WWrap):
             f = file(path, "wb")
             f.write(str(c.content))
             f.close()
-        except IOError, v:
+        except IOError as v:
             self.master.statusbar.message(v.strerror)
 
     def set_url(self, url):

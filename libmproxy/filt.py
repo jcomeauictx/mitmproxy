@@ -77,7 +77,7 @@ class _Rex(_Action):
         try:
             self.re = re.compile(self.expr)
         except:
-            raise ValueError, "Cannot compile expression."
+            raise ValueError("Cannot compile expression.")
 
 
 def _check_content_type(expr, o):
@@ -334,7 +334,7 @@ bnf = _make()
 def parse(s):
     try:
         return bnf.parseString(s, parseAll=True)[0]
-    except pp.ParseException, v:
+    except pp.ParseException as v:
         return None
     except ValueError:
         return None

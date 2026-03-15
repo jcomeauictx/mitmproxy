@@ -31,7 +31,7 @@ class Script:
         ns = {}
         try:
             execfile(path, ns, ns)
-        except Exception, v:
+        except Exception as v:
             raise ScriptError(traceback.format_exc(v))
         self.ns = ns
 
@@ -49,7 +49,7 @@ class Script:
         if f:
             try:
                 return (True, f(self.ctx, *args, **kwargs))
-            except Exception, v:
+            except Exception as v:
                 return (False, (v, traceback.format_exc(v)))
         else:
             return (False, None)
