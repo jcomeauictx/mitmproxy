@@ -19,6 +19,6 @@ $(HOME)/.abuild: | /etc/alpine-release
 %.pylint: %.py .installed/py3-pylint
 	pylint $<
 pylint: $(LINT)
-pip_install: .installed/py3-pip
+pip-install: .installed/py3-pip
 	pip --verbose install --force-reinstall \
 	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish	
