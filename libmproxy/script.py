@@ -1,14 +1,15 @@
-import os, traceback
+import sys, os, traceback
 import logging
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 try:
     execfile
 except NameError:
     def execfile(filepath, _globals=None, _locals=None):
-        # https://stackoverflow.com/a/41658338/493161
+        # https://stackoverflow.com/a/2849077/493161
         logging.debug('loading script %s', filepath)
-        _globals = _globals or {}
-        _globals.update({'__file__': filepath, '__name__': '__main__'})
+        _globals = _globals or sys._getframe(1).f_globals
+        _locals = sys._getframe(1).f_locals
+        logging.debug('globals: %s, locals: %s', _globals, _locals)
         with open(filepath, 'rb') as infile:
             exec(compile(infile.read(), filepath, 'exec'),
                _globals, _locals)
