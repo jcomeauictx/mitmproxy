@@ -6,7 +6,10 @@ except ImportError:
 import flask
 import libpathod.test, libpathod.pathoc
 from libmproxy import proxy, flow, controller
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 APP_DOMAIN = "mitm"
 APP_IP = "1.1.1.1"

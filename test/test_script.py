@@ -1,5 +1,8 @@
 from libmproxy import script, flow
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 class TestScript:
     def test_simple(self):

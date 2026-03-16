@@ -1,7 +1,10 @@
 import sys
 import libmproxy.console.contentview as cv
 from libmproxy import utils, flow, encoding
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 try:
     import pyamf

@@ -1,7 +1,9 @@
 import libmproxy.console.common as common
 from libmproxy import utils, flow, encoding
-import tutils
-
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 def test_format_flow():
     f = tutils.tflow_full()

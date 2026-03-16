@@ -1,6 +1,9 @@
 import argparse
 from libmproxy import proxy, flow, cmdline
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 from libpathod import test
 from netlib import http, tcp
 import mock

@@ -1,7 +1,13 @@
 import os
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 from libmproxy import dump, flow, proxy
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 import mock
 
 def test_strfuncs():

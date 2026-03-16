@@ -1,4 +1,8 @@
-import Image, cStringIO
+try:
+    import Image, cStringIO
+except ImportError:
+    from PIL import Image
+    import io as cStringIO
 def response(context, flow):
     if flow.response.headers["content-type"] == ["image/png"]:
         s = cStringIO.StringIO(flow.response.content)

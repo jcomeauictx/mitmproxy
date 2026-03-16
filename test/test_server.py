@@ -2,7 +2,10 @@ import socket, time
 import mock
 from netlib import tcp, http_auth, http
 from libpathod import pathoc, pathod
-import tutils, tservers
+try:
+    import tutils, tservers
+except ImportError:
+    from . import tutils, tservers
 from libmproxy import flow, proxy
 
 """

@@ -1,7 +1,10 @@
 import os
 from libmproxy import console
 from libmproxy.console import common
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 class TestConsoleState:
     def test_flow(self):

@@ -1,7 +1,9 @@
 import argparse
 from libmproxy import cmdline
-import tutils
-
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 def test_parse_replace_hook():
     x = cmdline.parse_replace_hook("/foo/bar/voing")

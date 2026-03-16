@@ -2,7 +2,7 @@ import re, traceback, json
 try:
     import cStringIO
 except ImportError:
-    from io import BytesIO as cStringIO
+    import io as cStringIO
 import urwid
 
 try: from PIL import Image

@@ -4,7 +4,7 @@
 try:
     import cStringIO
 except ImportError:
-    from io import BytesIO as cStringIO  # python3
+    import io as cStringIO  # python3
 import gzip, zlib
 
 __ALL__ = ["ENCODINGS"]

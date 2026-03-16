@@ -1,4 +1,7 @@
-import tutils
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 from libmproxy.platform import pf
 
 
