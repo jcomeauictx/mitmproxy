@@ -1,6 +1,9 @@
 import copy, re, os
 import urwid
-import common
+try:
+    import common
+except ImportError:
+    from . import common
 from .. import utils, filt
 from netlib import http_uastrings
 

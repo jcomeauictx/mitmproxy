@@ -1,6 +1,9 @@
 import os, sys
 import urwid
-import common, grideditor, contentview
+try:
+    import common, grideditor, contentview
+except ImportError:
+    from . import common, grideditor, contentview
 from .. import utils, flow, controller
 
 def _mkhelp():

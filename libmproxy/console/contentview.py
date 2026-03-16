@@ -1,4 +1,8 @@
-import re, cStringIO, traceback, json
+import re, traceback, json
+try:
+    import cStringIO
+except ImportError:
+    from io import BytesIO as cStringIO
 import urwid
 
 try: from PIL import Image
@@ -9,7 +13,10 @@ except ImportError: from ExifTags import TAGS
 
 import lxml.html, lxml.etree
 import netlib.utils
-import common
+try:
+    import common
+except ImportError:
+    from . import common
 from .. import utils, encoding, flow
 from ..contrib import jsbeautifier, html2text
 import subprocess

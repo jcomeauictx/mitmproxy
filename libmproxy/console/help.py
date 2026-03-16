@@ -1,5 +1,8 @@
 import urwid
-import common
+try:
+    import common
+except ImportError:
+    from . import common
 from .. import filt, version
 
 footer = [

@@ -1,5 +1,8 @@
 import urwid
-import common
+try:
+    import common
+except ImportError:
+    from . import common
 
 footer = [
     ('heading_key', "q"), ":back ",

@@ -1,6 +1,8 @@
-import proxy
-import re, filt
-import argparse
+import re, argparse
+try:
+    import proxy, filt
+except ImportError:
+    from . import proxy, filt
 
 APP_DOMAIN = "mitm"
 APP_IP = "1.1.1.1"
