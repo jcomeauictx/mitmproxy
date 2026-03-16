@@ -3,12 +3,13 @@ WHICH := type -p
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 default: pip-install
-install: setup.py clean | \
+install: setup.py build \
  .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
- .installed/py3-pillow
+ .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
+ .installed/build-base
 	sudo python3 $< $@
-build: setup.py .FORCE | .installed/python3
+build: setup.py clean .FORCE | .installed/python3
 	python3 $< $@
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
@@ -28,7 +29,7 @@ pylint: $(LINT)
 pip-install: .installed/py3-pip
 	pip --verbose install --force-reinstall \
 	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish	
-.installed/%-dev: .installed
+.installed/%-dev .installed/%-base: .installed
 	sudo apk add $(@F)
 	touch $@
 clean:
