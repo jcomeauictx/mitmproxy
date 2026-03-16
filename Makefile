@@ -28,7 +28,7 @@ $(HOME)/.abuild: | /etc/alpine-release
 pylint: $(LINT)
 pip-install: .installed/py3-pip
 	pip --verbose install --force-reinstall \
-	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish	
+	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish
 .installed/%-dev .installed/%-base: .installed
 	sudo apk add $(@F)
 	touch $@
