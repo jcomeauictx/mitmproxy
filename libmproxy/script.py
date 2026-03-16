@@ -1,4 +1,13 @@
 import os, traceback
+import logging
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
+try:
+    execfile
+except NameError:
+    def execfile(filepath, *envs):  # `envs` are globals and locals
+        logging.info('loading script %s', filepath)
+        with open(filepath) as infile:
+            exec(compile(infile.read(), filepath, 'exec'), *envs)
 
 class ScriptError(Exception):
     pass
@@ -32,7 +41,7 @@ class Script:
         try:
             execfile(path, ns, ns)
         except Exception as v:
-            raise ScriptError(traceback.format_exc(v))
+            raise ScriptError(traceback.format_exc())
         self.ns = ns
 
     def run(self, name, *args, **kwargs):
