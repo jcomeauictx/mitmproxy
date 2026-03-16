@@ -5,6 +5,10 @@ try:
     import flow, filt, utils
 except ImportError:
     from . import flow, filt, utils
+try:
+    file(os.devnull)
+except NameError:
+    file = open
 
 class DumpError(Exception): pass
 
