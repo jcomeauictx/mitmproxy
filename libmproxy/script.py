@@ -5,16 +5,8 @@ try:
     execfile
 except NameError:
     def execfile(filepath, _globals=None, _locals=None):
-        # https://stackoverflow.com/a/2849077/493161
-        logging.debug('loading script %s', filepath)
-        level = 0
-        while sys._getframe(level).f_globals['__name__'] != '__main__':
-            level += 1
-        frame = sys._getframe(level)
-        logging.debug('globals: %s', frame.f_globals)
         with open(filepath, 'rb') as infile:
-            exec(compile(infile.read(), filepath, 'exec'),
-               frame.f_globals, _locals)
+            exec(compile(infile.read(), filepath, 'exec'), _globals, _locals)
 
 class ScriptError(Exception):
     pass
