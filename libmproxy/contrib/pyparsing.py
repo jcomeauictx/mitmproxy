@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 #from __future__ import generators
-
+from __future__ import print_function
 __doc__ = \
 """
 pyparsing module - Classes and methods to define and execute parsing grammars
@@ -61,7 +61,6 @@ The pyparsing module handles some of the problems that are typically vexing when
 __version__ = "1.5.2"
 __versionTime__ = "17 February 2009 19:45"
 __author__ = "Paul McGuire <ptmcg@users.sourceforge.net>"
-from __future__ import print_function
 import string
 from weakref import ref as wkref
 import copy
