@@ -1,4 +1,8 @@
-import threading, Queue
+import threading
+try:
+    import Queue
+except ImportError:
+    import queue as Queue  # python3
 import flask
 import libpathod.test, libpathod.pathoc
 from libmproxy import proxy, flow, controller

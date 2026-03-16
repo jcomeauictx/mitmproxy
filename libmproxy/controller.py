@@ -2,7 +2,7 @@ import threading
 try:
     import Queue
 except ImportError:
-    from queue import Queue
+    import queue as Queue
 
 should_exit = False
 

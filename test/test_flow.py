@@ -1,9 +1,17 @@
-import Queue, time, os.path
-from cStringIO import StringIO
+import time, os
+try:
+    import Queue
+    from cStringIO import StringIO
+except ImportError:
+    import queue as Queue
+    from io import StringIO
+try:
 import email.utils
 from libmproxy import filt, flow, controller, utils, tnetstring
-import tutils
-
+try:
+    import tutils
+except ImportError:
+    from . import tutils
 
 class TestStickyCookieState:
     def _response(self, cookie, host):
