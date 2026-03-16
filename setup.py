@@ -2,7 +2,7 @@
 # it comes with python3.9.16
 # python2.7.18 is available for installation
 import fnmatch, os, re, logging
-from distutils.core import setup, setup_keywords
+from setuptools import setup
 from libmproxy import version
 # python3 compatibility shims
 try:
@@ -109,17 +109,5 @@ setup_args = dict(
             "flask"
         ],
 )
-# shim for older versions of distutils like iSH's
-if 'install_requires' not in setup_keywords:
-    setup_args['requires'] = setup_args.pop('install_requires')
-    logging.debug('before: requires: %s', setup_args['requires'])
-    for index in range(len(setup_args['requires'])):
-        requirement = setup_args['requires'][index]
-        parts = re.split('([<>!=])', requirement, maxsplit=1)
-        logging.debug('parts: %s', parts)
-        if len(parts) > 1:
-            name = parts[0] + ' (' + ''.join(parts[1:]) + ')'
-            setup_args['requires'][index] = name
-    logging.debug('after: requires: %s', setup_args['requires'])
 setup(**setup_args)
 # vim: tabstop=8 shiftwidth=4 softtabstop=4 expandtabs
