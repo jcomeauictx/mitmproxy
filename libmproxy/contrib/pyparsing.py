@@ -2346,7 +2346,7 @@ class And(ParseExpression):
                     raise
                 except ParseBaseException as pe:
                     raise ParseSyntaxException(pe)
-                except IndexError, ie:
+                except IndexError as ie:
                     raise ParseSyntaxException( ParseException(instring, len(instring), self.errmsg, self) )
             else:
                 loc, exprtokens = e._parse( instring, loc, doActions )
