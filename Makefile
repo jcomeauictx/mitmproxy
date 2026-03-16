@@ -3,7 +3,7 @@ WHICH := type -p
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 default: pip-install
-install: setup.py
+install: setup.py clean
 	sudo python3 $< $@
 build: setup.py .FORCE | .installed/python3
 	python3 $< $@
@@ -25,4 +25,9 @@ pylint: $(LINT)
 pip-install: .installed/py3-pip
 	pip --verbose install --force-reinstall \
 	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish	
+clean:
+	sudo rm -rf build dist *.egg_info
+	find . -type d -name __pycache__ -exec sudo rm -rf {} +
+	find . -name '*.py[co]'
+	find . -name '*.py[co]' -delete
 .FORCE:
