@@ -104,7 +104,7 @@ setup_args = dict(
             "urwid>=1.1",
             "pyasn1>0.1.2",
             "pyopenssl>=0.13",
-            "PIL",
+            "Pillow",
             "lxml",
             "flask"
         ],
