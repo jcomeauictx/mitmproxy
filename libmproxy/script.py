@@ -5,17 +5,13 @@ try:
     execfile
 except NameError:
     def execfile(filepath, _globals=None, _locals=None):
-        logging.info('loading script %s', filepath)
-        _globals = _globals or globals()
-        _locals = _locals or locals()
-        oldpwd = os.getcwd()
-        os.chdir(os.path.dirname(os.path.abspath(filepath)))
-        try:
-            with open(filepath) as infile:
-                exec(compile(infile.read(), filepath, 'exec'),
-                    _globals, _locals)
-        finally:
-            os.chdir(oldpwd)
+        # https://stackoverflow.com/a/41658338/493161
+        logging.debug('loading script %s', filepath)
+        _globals = _globals or {}
+        _globals.update({'__file__': filepath, '__name__': '__main__'})
+        with open(filepath, 'rb') as infile:
+            exec(compile(infile.read(), filepath, 'exec'),
+               _globals, _locals)
 
 class ScriptError(Exception):
     pass
