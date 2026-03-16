@@ -2,13 +2,24 @@
     This module provides more sophisticated flow tracking. These match requests
     with their responses, and provide filtering and interception facilities.
 """
-import hashlib, Cookie, cookielib, copy, re, urlparse, os
+import hashlib, copy, re, os
+try:
+    import Cookie, cookielib, urlparse
+except ImportError:
+    import http.cookiejar as cookielib
+    from http.cookiejar import Cookie
+    from urllib import parse as urlparse
 import time, urllib
-import tnetstring, filt, script, utils, encoding, proxy
+try:
+    import tnetstring, filt, script, utils, encoding, proxy
+except ImportError:
+    from . import tnetstring, filt, script, utils, encoding, proxy
 from email.utils import parsedate_tz, formatdate, mktime_tz
 from netlib import odict, http, certutils
-import controller, version
-import app
+try:
+    import controller, version, app
+except ImportError:
+    from . import controller, version, app
 
 HDR_FORM_URLENCODED = "application/x-www-form-urlencoded"
 CONTENT_MISSING = 0

@@ -1,5 +1,6 @@
 SHELL := /bin/ash
 WHICH := type -p
+PACKAGE := $(notdir $(PWD))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 default: pip-install
@@ -11,6 +12,7 @@ install: setup.py build \
 	sudo python3 $< $@
 build: setup.py clean .FORCE | .installed/python3
 	python3 $< $@
+# this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
 .installed/python3 .installed/gcc: .installed .FORCE
@@ -28,7 +30,7 @@ $(HOME)/.abuild: | /etc/alpine-release
 pylint: $(LINT)
 pip-install: .installed/py3-pip
 	pip --verbose install --force-reinstall \
-	 git+https://github.com/jcomeauictx/mitmproxy@alpine-ish
+	 git+https://github.com/jcomeauictx/netlib@$(PACKAGE)-ish
 .installed/%-dev .installed/%-base: .installed
 	sudo apk add $(@F)
 	touch $@

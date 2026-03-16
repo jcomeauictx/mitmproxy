@@ -1,7 +1,10 @@
 from __future__ import print_function
 import sys, os
 import netlib.utils
-import flow, filt, utils
+try:
+    import flow, filt, utils
+except ImportError:
+    from . import flow, filt, utils
 
 class DumpError(Exception): pass
 

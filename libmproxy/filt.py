@@ -33,7 +33,10 @@
 """
 from __future__ import print_function
 import re, sys
-import contrib.pyparsing as pp
+try:
+    import contrib.pyparsing as pp
+except ImportError:
+    from .contrib import pyparsing as pp  # python3
 
 
 class _Token:

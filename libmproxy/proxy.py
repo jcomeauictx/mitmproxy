@@ -3,7 +3,10 @@ import shutil, tempfile, threading
 import socketserver
 from OpenSSL import SSL
 from netlib import odict, tcp, http, wsgi, certutils, http_status, http_auth
-import utils, flow, version, platform, controller
+try:
+    import utils, flow, version, platform, controller
+except (ImportError, ModuleNotFoundError):
+    from . import utils, flow, version, platform, controller
 
 
 KILL = 0

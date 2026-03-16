@@ -1,4 +1,8 @@
-import Queue, threading
+import threading
+try:
+    import Queue
+except ImportError:
+    from queue import Queue
 
 should_exit = False
 

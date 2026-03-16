@@ -1,4 +1,8 @@
-import os, datetime, urlparse, string, urllib, re
+import os, datetime, string, urllib, re
+try:
+    import urlparse
+except ImportError:
+    from urllib import parse as urlparse  # python3
 import time, functools, cgi
 import json
 from netlib import http
