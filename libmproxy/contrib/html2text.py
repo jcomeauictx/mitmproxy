@@ -86,13 +86,6 @@ for k in unifiable.keys():
 
 ### End Entity Nonsense ###
 
-def onlywhite(line):
-    """Return true if the line does only consist of whitespace characters."""
-    for c in line:
-        if c is not ' ' and c is not '  ':
-            return c is ' '
-    return line
-
 def hn(tag):
     if tag[0] == 'h' and len(tag) == 2:
         try:
@@ -706,7 +699,7 @@ class HTML2Text(HTMLParser.HTMLParser):
                     result += "\n"
                     newlines = 2
                 else:
-                    if not onlywhite(para):
+                    if para.strip():
                         result += para + "\n"
                         newlines = 1
             else:
