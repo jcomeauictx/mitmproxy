@@ -3,6 +3,9 @@ from libmproxy import utils
 try:
     import tutils
 except ImportError:
+    import sys
+    if sys.path[-1] != os.curdir:
+        sys.path.append(os.curdir)
     from . import tutils
 
 utils.CERT_SLEEP_TIME = 0
