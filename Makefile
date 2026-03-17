@@ -1,6 +1,6 @@
 # prefer ash on alpine/iSH
 SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
-WHICH := type -p
+WHICH := command -v
 PACKAGE := $(notdir $(CURDIR))
 $(warning PACKAGE is $(PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
