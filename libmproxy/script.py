@@ -5,13 +5,6 @@ try:
     execfile
 except NameError:
     def execfile(filepath, _globals=None, _locals=None):
-        if not '__file__' in _globals:
-            _globals['__file__'] = os.path.abspath(filepath)
-            logging.warning('set __file__ to %s', _globals['__file__'])
-        if not '__name__' in _globals:
-            _globals['__name__'] = '__main__'
-            logging.warning('set __name__ to %s', _globals['__name__'])
-        logging.warning('running script %s in %s', filepath, os.getcwd())
         with open(filepath, 'rb') as infile:
             exec(compile(infile.read(), filepath, 'exec'), _globals, _locals)
 
