@@ -9,6 +9,9 @@ SIBLINGS := netlib mitmproxy
 NOSETESTS := $(word 1, $(shell $(WHICH) nosetests nosetests3))
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
+ifneq ($(SHOWENV),)
+export
+endif
 default: install
 	mitmdump --version
 install: setup.py build \
@@ -55,5 +58,11 @@ clean:
 tests: | .installed/py3-nose
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
 	$(NOSETESTS) .
+env:
+ifeq ($(SHOWENV),1)
+	$@
+else
+	$(MAKE) SHOWENV=1 $@
+endif
 .FORCE:
 .PHONY: tests
