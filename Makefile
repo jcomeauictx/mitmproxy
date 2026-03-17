@@ -6,8 +6,8 @@ $(warning PACKAGE is $(PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 SIBLINGS := netlib mitmproxy
+NOSETESTS := $(word 1, $(shell $(WHICH) nosetests nosetests3))
 # WARNING: deferred evaluations follow
-NOSETESTS = $(word 1, $(shell $(WHICH) nosetests nosetests3))
 # NOTE: end of deferred evaluations
 default: install
 	mitmdump --version
@@ -53,6 +53,7 @@ clean:
 	find . -type d -name __pycache__ -exec sudo rm -rf {} +
 	find . -name '*.py[co]' -delete
 tests: | .installed/py3-nose
-	$(NOSETESTS) .
+	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
+	$(NOSETESTS) blah blah blah
 .FORCE:
 .PHONY: tests
