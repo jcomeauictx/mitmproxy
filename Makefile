@@ -54,6 +54,6 @@ clean:
 	find . -name '*.py[co]' -delete
 tests: | .installed/py3-nose
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
-	$(NOSETESTS) blah blah blah
+	$(NOSETESTS) .
 .FORCE:
 .PHONY: tests
