@@ -1,10 +1,14 @@
-SHELL := /bin/ash
+# prefer ash on alpine/iSH
+SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
 WHICH := type -p
 PACKAGE := $(notdir $(CURDIR))
 $(warning PACKAGE is $(PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 SIBLINGS := netlib mitmproxy
+# WARNING: deferred evaluations follow
+NOSETESTS = $(word 1, $(shell $(WHICH) nosetests nosetests3))
+# NOTE: end of deferred evaluations
 default: install
 	mitmdump --version
 install: setup.py build \
@@ -48,4 +52,7 @@ clean:
 	sudo rm -rf build dist *.egg_info
 	find . -type d -name __pycache__ -exec sudo rm -rf {} +
 	find . -name '*.py[co]' -delete
+tests: | .installed/py3-nose
+	$(NOSETESTS) .
 .FORCE:
+.PHONY: tests
