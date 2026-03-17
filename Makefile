@@ -58,6 +58,8 @@ clean:
 tests: | .installed/py3-nose
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
 	$(NOSETESTS) .
+push pull status diff:
+	git $@
 env:
 ifeq ($(SHOWENV),1)
 	$@
@@ -65,4 +67,4 @@ else
 	$(MAKE) SHOWENV=1 $@
 endif
 .FORCE:
-.PHONY: tests
+.PHONY: tests push pull status
