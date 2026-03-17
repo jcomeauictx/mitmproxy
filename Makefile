@@ -60,6 +60,8 @@ tests: | .installed/py3-nose
 	$(NOSETESTS) .
 push pull status diff:
 	git $@
+commit:
+	git $@ -a
 env:
 ifeq ($(SHOWENV),1)
 	$@
@@ -67,4 +69,4 @@ else
 	$(MAKE) SHOWENV=1 $@
 endif
 .FORCE:
-.PHONY: tests push pull status
+.PHONY: tests push pull status commit
