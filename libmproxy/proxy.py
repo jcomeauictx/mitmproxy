@@ -1,6 +1,9 @@
 import sys, os, string, socket, time
 import shutil, tempfile, threading
-import socketserver
+try:
+    import SocketServer
+except ImportError:
+    import socketserver as SocketServer
 from OpenSSL import SSL
 from netlib import odict, tcp, http, wsgi, certutils, http_status, http_auth
 try:

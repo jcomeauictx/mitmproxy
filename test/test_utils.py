@@ -5,7 +5,7 @@ try:
 except ImportError:
     if sys.path[-1] != os.curdir:
         sys.path.append(os.curdir)
-    from . import tutils
+    import tutils
 
 utils.CERT_SLEEP_TIME = 0
 
