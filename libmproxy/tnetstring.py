@@ -165,7 +165,7 @@ def _rdumpq(q,size,value,encoding=None):
         write(b':')
         write(span)
         return size + 2 + len(span) + ldata
-    if isinstance(value,str):
+    if isinstance(value,bytes):
         lvalue = len(value)
         span = str(lvalue)
         write(b',')
@@ -194,7 +194,9 @@ def _rdumpq(q,size,value,encoding=None):
         return size + 1 + len(span)
     if isinstance(value,unicode):
         if encoding is None:
-            raise ValueError('must specify encoding to dump unicode strings')
+            raise ValueError(
+                'must specify encoding to dump unicode strings: %r' % value
+            )
         value = value.encode(encoding)
         lvalue = len(value)
         span = str(lvalue)
@@ -203,7 +205,7 @@ def _rdumpq(q,size,value,encoding=None):
         write(b':')
         write(span)
         return size + 2 + len(span) + lvalue
-    raise ValueError('unserializable object')
+    raise ValueError('unserializable object %r' % value)
 
 
 def _gdumps(value,encoding):

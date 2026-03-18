@@ -9,6 +9,10 @@ try:
 except ImportError:
     from . import flowlist, flowview, help, common, grideditor, \
     palettes, contentview, flowdetailview
+try:
+    basestring
+except NameError:
+    basestring = str
 
 EVENTLOG_SIZE = 500
 
