@@ -14,6 +14,10 @@ try:
     import tnetstring, filt, script, utils, encoding, proxy
 except ImportError:
     from . import tnetstring, filt, script, utils, encoding, proxy
+try:
+    basestring
+except NameError:
+    basestring = str
 from email.utils import parsedate_tz, formatdate, mktime_tz
 from netlib import odict, http, certutils
 try:

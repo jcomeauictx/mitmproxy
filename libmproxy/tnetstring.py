@@ -74,14 +74,19 @@ __ver_patch__ = 0
 __ver_sub__ = ""
 __version__ = "%d.%d.%d%s" % (__ver_major__,__ver_minor__,__ver_patch__,__ver_sub__)
 
-
+import logging
 from collections import deque
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 # python 2/3 compatibility
 try:
     long
 except NameError:
     long = int
+try:
+    unicode
+except NameError:
+    unicode = str
 
 def dumps(value,encoding=None):
     '''
@@ -97,6 +102,7 @@ def dumps(value,encoding=None):
     #  generator that's simpler to understand but much less efficient.
     q = deque()
     _rdumpq(q,0,value,encoding)
+    logging.debug('q before joining: %s', q)
     return b''.join(q)
 
 
@@ -179,7 +185,7 @@ def _rdumpq(q,size,value,encoding=None):
     if isinstance(value,dict):
         write(b'}')
         init_size = size = size + 1
-        for (k,v) in value.iteritems():
+        for (k,v) in value.items():
             size = _rdumpq(q,size,v,encoding)
             size = _rdumpq(q,size,k,encoding)
         span = str(size - init_size)
@@ -244,7 +250,7 @@ def _gdumps(value,encoding):
         yield b']'
     elif isinstance(value,(dict,)):
         sub = []
-        for (k,v) in value.iteritems():
+        for (k,v) in value.items():
             sub.extend(_gdumps(k))
             sub.extend(_gdumps(v))
         sub = b''.join(sub)
