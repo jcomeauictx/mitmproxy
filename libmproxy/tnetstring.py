@@ -77,6 +77,11 @@ __version__ = "%d.%d.%d%s" % (__ver_major__,__ver_minor__,__ver_patch__,__ver_su
 
 from collections import deque
 
+# python 2/3 compatibility
+try:
+    long
+except NameError:
+    long = int
 
 def dumps(value,encoding=None):
     """dumps(object,encoding=None) -> string
