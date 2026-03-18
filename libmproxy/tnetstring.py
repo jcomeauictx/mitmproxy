@@ -84,10 +84,11 @@ except NameError:
     long = int
 
 def dumps(value,encoding=None):
-    """dumps(object,encoding=None) -> string
+    '''
+    dumps(object,encoding=None) -> string
 
     This function dumps a python object as a tnetstring.
-    """
+    '''
     #  This uses a deque to collect output fragments in reverse order,
     #  then joins them together at the end.  It's measurably faster
     #  than creating all the intermediate strings.
@@ -96,21 +97,23 @@ def dumps(value,encoding=None):
     #  generator that's simpler to understand but much less efficient.
     q = deque()
     _rdumpq(q,0,value,encoding)
-    return "".join(q)
+    return b''.join(q)
 
 
 def dump(value,file,encoding=None):
-    """dump(object,file,encoding=None)
+    '''
+    dump(object,file,encoding=None)
 
     This function dumps a python object as a tnetstring and writes it to
     the given file.
-    """
+    '''
     file.write(dumps(value,encoding))
     file.flush()
 
 
 def _rdumpq(q,size,value,encoding=None):
-    """Dump value as a tnetstring, to a deque instance, last chunks first.
+    '''
+    Dump value as a tnetstring, to a deque instance, last chunks first.
 
     This function generates the tnetstring representation of the given value,
     pushing chunks of the output onto the given deque instance.  It pushes
@@ -123,24 +126,24 @@ def _rdumpq(q,size,value,encoding=None):
     for recursive structures without having to build their representation as
     a string.  This is measurably faster than generating the intermediate
     strings, especially on deeply nested structures.
-    """
+    '''
     write = q.appendleft
     if value is None:
-        write("0:~")
+        write(b'0:~')
         return size + 3
     if value is True:
-        write("4:true!")
+        write(b'4:true!')
         return size + 7
     if value is False:
-        write("5:false!")
+        write(b'5:false!')
         return size + 8
     if isinstance(value,(int,long)):
         data = str(value)
         ldata = len(data)
         span = str(ldata)
-        write("#")
+        write(b'#')
         write(data)
-        write(":")
+        write(b':')
         write(span)
         return size + 2 + len(span) + ldata
     if isinstance(value,(float,)):
@@ -151,120 +154,122 @@ def _rdumpq(q,size,value,encoding=None):
         data = repr(value)
         ldata = len(data)
         span = str(ldata)
-        write("^")
+        write(b'^')
         write(data)
-        write(":")
+        write(b':')
         write(span)
         return size + 2 + len(span) + ldata
     if isinstance(value,str):
         lvalue = len(value)
         span = str(lvalue)
-        write(",")
+        write(b',')
         write(value)
-        write(":")
+        write(b':')
         write(span)
         return size + 2 + len(span) + lvalue
     if isinstance(value,(list,tuple,)):
-        write("]")
+        write(b']')
         init_size = size = size + 1
         for item in reversed(value):
             size = _rdumpq(q,size,item,encoding)
         span = str(size - init_size)
-        write(":")
+        write(b':')
         write(span)
         return size + 1 + len(span)
     if isinstance(value,dict):
-        write("}")
+        write(b'}')
         init_size = size = size + 1
         for (k,v) in value.iteritems():
             size = _rdumpq(q,size,v,encoding)
             size = _rdumpq(q,size,k,encoding)
         span = str(size - init_size)
-        write(":")
+        write(b':')
         write(span)
         return size + 1 + len(span)
     if isinstance(value,unicode):
         if encoding is None:
-            raise ValueError("must specify encoding to dump unicode strings")
+            raise ValueError('must specify encoding to dump unicode strings')
         value = value.encode(encoding)
         lvalue = len(value)
         span = str(lvalue)
-        write(",")
+        write(b',')
         write(value)
-        write(":")
+        write(b':')
         write(span)
         return size + 2 + len(span) + lvalue
-    raise ValueError("unserializable object")
+    raise ValueError('unserializable object')
 
 
 def _gdumps(value,encoding):
-    """Generate fragments of value dumped as a tnetstring.
+    '''
+    Generate fragments of value dumped as a tnetstring.
 
     This is the naive dumping algorithm, implemented as a generator so that
-    it's easy to pass to "".join() without building a new list.
+    it's easy to pass to b''.join() without building a new list.
 
     This is mainly here for comparison purposes; the _rdumpq version is
     measurably faster as it doesn't have to build intermediate strins.
-    """
+    '''
     if value is None:
-        yield "0:~"
+        yield b'0:~'
     elif value is True:
-        yield "4:true!"
+        yield b'4:true!'
     elif value is False:
-        yield "5:false!"
+        yield b'5:false!'
     elif isinstance(value,(int,long)):
         data = str(value)
         yield str(len(data))
-        yield ":"
+        yield b':'
         yield data
-        yield "#"
+        yield b'#'
     elif isinstance(value,(float,)):
         data = repr(value)
         yield str(len(data))
-        yield ":"
+        yield b':'
         yield data
-        yield "^"
+        yield b'^'
     elif isinstance(value,(str,)):
         yield str(len(value))
-        yield ":"
+        yield b':'
         yield value
-        yield ","
+        yield b','
     elif isinstance(value,(list,tuple,)):
         sub = []
         for item in value:
             sub.extend(_gdumps(item))
-        sub = "".join(sub)
+        sub = b''.join(sub)
         yield str(len(sub))
-        yield ":"
+        yield b':'
         yield sub
-        yield "]"
+        yield b']'
     elif isinstance(value,(dict,)):
         sub = []
         for (k,v) in value.iteritems():
             sub.extend(_gdumps(k))
             sub.extend(_gdumps(v))
-        sub = "".join(sub)
+        sub = b''.join(sub)
         yield str(len(sub))
-        yield ":"
+        yield b':'
         yield sub
-        yield "}"
+        yield b'}'
     elif isinstance(value,(unicode,)):
         if encoding is None:
-            raise ValueError("must specify encoding to dump unicode strings")
+            raise ValueError('must specify encoding to dump unicode strings')
         value = value.encode(encoding)
         yield str(len(value))
-        yield ":"
+        yield b':'
         yield value
-        yield ","
+        yield b','
     else:
-        raise ValueError("unserializable object")
+        raise ValueError('unserializable object')
 
 
 def loads(string,encoding=None):
-    """loads(string,encoding=None) -> object
+    '''
+    loads(bytestring,encoding=None) -> object
 
     This function parses a tnetstring into a python object.
-    """
+    '''
     #  No point duplicating effort here.  In the C-extension version,
     #  loads() is measurably faster then pop() since it can avoid
     #  the overhead of building a second string.
@@ -272,133 +277,135 @@ def loads(string,encoding=None):
 
 
 def load(file,encoding=None):
-    """load(file,encoding=None) -> object
+    '''
+    load(file,encoding=None) -> object
 
     This function reads a tnetstring from a file and parses it into a
     python object.  The file must support the read() method, and this
     function promises not to read more data than necessary.
-    """
+    '''
     #  Read the length prefix one char at a time.
     #  Note that the netstring spec explicitly forbids padding zeros.
     c = file.read(1)
     if not c.isdigit():
-        raise ValueError("not a tnetstring: missing or invalid length prefix")
-    datalen = ord(c) - ord("0")
+        raise ValueError('not a tnetstring: missing or invalid length prefix')
+    datalen = ord(c) - ord(b'0')
     c = file.read(1)
     if datalen != 0:
         while c.isdigit():
-            datalen = (10 * datalen) + (ord(c) - ord("0"))
+            datalen = (10 * datalen) + (ord(c) - ord(b'0'))
             if datalen > 999999999:
-                errmsg = "not a tnetstring: absurdly large length prefix"
+                errmsg = 'not a tnetstring: absurdly large length prefix'
                 raise ValueError(errmsg)
             c = file.read(1)
-    if c != ":":
-        raise ValueError("not a tnetstring: missing or invalid length prefix")
+    if c != b':':
+        raise ValueError('not a tnetstring: missing or invalid length prefix')
     #  Now we can read and parse the payload.
     #  This repeats the dispatch logic of pop() so we can avoid
     #  re-constructing the outermost tnetstring.
     data = file.read(datalen)
     if len(data) != datalen:
-        raise ValueError("not a tnetstring: length prefix too big")
+        raise ValueError('not a tnetstring: length prefix too big')
     type = file.read(1)
-    if type == ",":
+    if type == b',':
         if encoding is not None:
             return data.decode(encoding)
         return data
-    if type == "#":
+    if type == b'#':
         try:
             return int(data)
         except ValueError:
-            raise ValueError("not a tnetstring: invalid integer literal")
-    if type == "^":
+            raise ValueError('not a tnetstring: invalid integer literal')
+    if type == b'^':
         try:
             return float(data)
         except ValueError:
-            raise ValueError("not a tnetstring: invalid float literal")
-    if type == "!":
-        if data == "true":
+            raise ValueError('not a tnetstring: invalid float literal')
+    if type == b'!':
+        if data == b'true':
             return True
-        elif data == "false":
+        elif data == b'false':
             return False
         else:
-            raise ValueError("not a tnetstring: invalid boolean literal")
-    if type == "~":
+            raise ValueError('not a tnetstring: invalid boolean literal')
+    if type == b'~':
         if data:
-            raise ValueError("not a tnetstring: invalid null literal")
+            raise ValueError('not a tnetstring: invalid null literal')
         return None
-    if type == "]":
+    if type == b']':
         l = []
         while data:
             (item,data) = pop(data,encoding)
             l.append(item)
         return l
-    if type == "}":
+    if type == b'}':
         d = {}
         while data:
             (key,data) = pop(data,encoding)
             (val,data) = pop(data,encoding)
             d[key] = val
         return d
-    raise ValueError("unknown type tag")
+    raise ValueError('unknown type tag')
 
 
 
 def pop(string,encoding=None):
-    """pop(string,encoding=None) -> (object, remain)
+    '''
+    pop(string,encoding=None) -> (object, remain)
 
     This function parses a tnetstring into a python object.
     It returns a tuple giving the parsed object and a string
     containing any unparsed data from the end of the string.
-    """
+    '''
     #  Parse out data length, type and remaining string.
     try:
-        (dlen,rest) = string.split(":",1)
+        (dlen,rest) = string.split(b':',1)
         dlen = int(dlen)
     except ValueError:
-        raise ValueError("not a tnetstring: missing or invalid length prefix")
+        raise ValueError('not a tnetstring: missing or invalid length prefix')
     try:
         (data,type,remain) = (rest[:dlen],rest[dlen],rest[dlen+1:])
     except IndexError:
         #  This fires if len(rest) < dlen, meaning we don't need
         #  to further validate that data is the right length.
-        raise ValueError("not a tnetstring: invalid length prefix")
+        raise ValueError('not a tnetstring: invalid length prefix')
     #  Parse the data based on the type tag.
-    if type == ",":
+    if type == b',':
         if encoding is not None:
             return (data.decode(encoding),remain)
         return (data,remain)
-    if type == "#":
+    if type == b'#':
         try:
             return (int(data),remain)
         except ValueError:
-            raise ValueError("not a tnetstring: invalid integer literal")
-    if type == "^":
+            raise ValueError('not a tnetstring: invalid integer literal')
+    if type == b'^':
         try:
             return (float(data),remain)
         except ValueError:
-            raise ValueError("not a tnetstring: invalid float literal")
-    if type == "!":
-        if data == "true":
+            raise ValueError('not a tnetstring: invalid float literal')
+    if type == b'!':
+        if data == b'true':
             return (True,remain)
-        elif data == "false":
+        elif data == b'false':
             return (False,remain)
         else:
-            raise ValueError("not a tnetstring: invalid boolean literal")
-    if type == "~":
+            raise ValueError('not a tnetstring: invalid boolean literal')
+    if type == b'~':
         if data:
-            raise ValueError("not a tnetstring: invalid null literal")
+            raise ValueError('not a tnetstring: invalid null literal')
         return (None,remain)
-    if type == "]":
+    if type == b']':
         l = []
         while data:
             (item,data) = pop(data,encoding)
             l.append(item)
         return (l,remain)
-    if type == "}":
+    if type == b'}':
         d = {}
         while data:
             (key,data) = pop(data,encoding)
             (val,data) = pop(data,encoding)
             d[key] = val
         return (d,remain)
-    raise ValueError("unknown type tag")
+    raise ValueError('unknown type tag')
