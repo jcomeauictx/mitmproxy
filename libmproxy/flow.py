@@ -2,7 +2,7 @@
     This module provides more sophisticated flow tracking. These match requests
     with their responses, and provide filtering and interception facilities.
 """
-import hashlib, copy, re, os
+import hashlib, copy, re, os, logging
 try:
     import Cookie, cookielib, urlparse
 except ImportError:
@@ -24,6 +24,7 @@ try:
     import controller, version, app
 except ImportError:
     from . import controller, version, app
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 HDR_FORM_URLENCODED = "application/x-www-form-urlencoded"
 CONTENT_MISSING = 0
@@ -528,7 +529,7 @@ class Request(HTTPMsg):
                 self.httpversion[1],
                 str(self.headers)
             )
-        return len(assembled_header)
+        return len(assembled_header.encode())
 
     def _assemble_head(self, proxy=False):
         FMT = '%s %s HTTP/%s.%s\r\n%s\r\n'
@@ -571,7 +572,7 @@ class Request(HTTPMsg):
                 self.httpversion[0],
                 self.httpversion[1],
                 str(headers)
-            )
+            ).encode()
 
     def _assemble(self, _proxy = False):
         """
@@ -746,6 +747,7 @@ class Response(HTTPMsg):
             headers["Content-Length"] = [str(len(self.content))]
         proto = "HTTP/%s.%s %s %s"%(self.httpversion[0], self.httpversion[1], self.code, str(self.msg))
         data = (proto, str(headers))
+        logging.debug(u'_assemble_head: data=%r', data)
         return FMT%data
 
     def _assemble(self):
@@ -758,6 +760,7 @@ class Response(HTTPMsg):
         if self.content == CONTENT_MISSING:
             return None
         head = self._assemble_head()
+        logging.debug(u'_assemble: head=%s', head)
         if self.content:
             return head + self.content
         else:
