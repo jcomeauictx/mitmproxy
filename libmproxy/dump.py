@@ -1,6 +1,7 @@
 from __future__ import print_function
-import sys, os
+import sys, os, logging
 import netlib.utils
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 try:
     import flow, filt, utils
 except ImportError:
@@ -207,6 +208,7 @@ class DumpMaster(flow.FlowMaster):
 
     def handle_request(self, r):
         f = flow.FlowMaster.handle_request(self, r)
+        logging.debug('dump: handle_request: flow=%r', f)
         if f:
             r.reply()
         return f

@@ -207,16 +207,18 @@ class ProxyHandler(tcp.BaseHandler):
             request = self.read_request(cc)
             if request is None:
                 return
-            logging.debug('handle_request: request=%r', request)
+            logging.debug('proxy: handle_request: request=%r', request)
             cc.requestcount += 1
 
             app = self.server.apps.get(request)
             if app:
+                logging.debug('proxy: passing on request to app %s', app)
                 err = app.serve(request, self.wfile)
                 if err:
                     self.log(cc, "Error in wsgi app.", err.split("\n"))
                     return
             else:
+                logging.debug('proxy: passing on request')
                 request_reply = self.channel.ask(request)
                 if request_reply is None or request_reply == KILL:
                     return
@@ -259,7 +261,9 @@ class ProxyHandler(tcp.BaseHandler):
                             raise ProxyError(502, "Invalid server response.")
                         else:
                             break
-
+                    logging.debug(
+                        'proxy: building response for request %r', request
+                    )
                     response = flow.Response(
                         request, httpversion, code, msg, headers, content, sc.cert,
                         sc.rfile.first_byte_timestamp
