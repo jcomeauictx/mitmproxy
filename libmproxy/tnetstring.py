@@ -71,8 +71,10 @@ like so::
 __ver_major__ = 0
 __ver_minor__ = 2
 __ver_patch__ = 0
-__ver_sub__ = ""
-__version__ = "%d.%d.%d%s" % (__ver_major__,__ver_minor__,__ver_patch__,__ver_sub__)
+__ver_sub__ = ''
+__version__ = '%d.%d.%d%s' % (
+    __ver_major__,__ver_minor__,__ver_patch__,__ver_sub__
+)
 
 import logging
 from collections import deque
@@ -92,7 +94,7 @@ def dumps(value,encoding=None):
     '''
     dumps(object,encoding=None) -> string
 
-    This function dumps a python object as a tnetstring.
+    This function dumps a python object as a tnetstring (bytes).
     '''
     #  This uses a deque to collect output fragments in reverse order,
     #  then joins them together at the end.  It's measurably faster
@@ -144,9 +146,9 @@ def _rdumpq(q,size,value,encoding=None):
         write(b'5:false!')
         return size + 8
     if isinstance(value,(int,long)):
-        data = str(value)
+        data = str(value).encode(encoding or u'utf-8')
         ldata = len(data)
-        span = str(ldata)
+        span = str(ldata).encode(encoding or u'utf-8')
         write(b'#')
         write(data)
         write(b':')
@@ -157,9 +159,9 @@ def _rdumpq(q,size,value,encoding=None):
         #  It round-trips more accurately.
         #  Probably unnecessary in later python versions that
         #  use David Gay's ftoa routines.
-        data = repr(value)
+        data = repr(value).encode(encoding or u'utf-8')
         ldata = len(data)
-        span = str(ldata)
+        span = str(ldata).encode(encoding or u'utf-8')
         write(b'^')
         write(data)
         write(b':')
@@ -167,7 +169,7 @@ def _rdumpq(q,size,value,encoding=None):
         return size + 2 + len(span) + ldata
     if isinstance(value,bytes):
         lvalue = len(value)
-        span = str(lvalue)
+        span = str(lvalue).encode(encoding or 'utf-8')
         write(b',')
         write(value)
         write(b':')
@@ -178,7 +180,7 @@ def _rdumpq(q,size,value,encoding=None):
         init_size = size = size + 1
         for item in reversed(value):
             size = _rdumpq(q,size,item,encoding)
-        span = str(size - init_size)
+        span = str(size - init_size).encode(encoding or u'utf-8')
         write(b':')
         write(span)
         return size + 1 + len(span)
@@ -188,18 +190,18 @@ def _rdumpq(q,size,value,encoding=None):
         for (k,v) in value.items():
             size = _rdumpq(q,size,v,encoding)
             size = _rdumpq(q,size,k,encoding)
-        span = str(size - init_size)
+        span = str(size - init_size).encode(encoding or u'utf-8')
         write(b':')
         write(span)
         return size + 1 + len(span)
     if isinstance(value,unicode):
         if encoding is None:
             raise ValueError(
-                'must specify encoding to dump unicode strings: %r' % value
+                u'must specify encoding to dump unicode strings: %r' % value
             )
         value = value.encode(encoding)
         lvalue = len(value)
-        span = str(lvalue)
+        span = str(lvalue).encode(encoding or u'utf-8')
         write(b',')
         write(value)
         write(b':')
@@ -225,19 +227,19 @@ def _gdumps(value,encoding):
     elif value is False:
         yield b'5:false!'
     elif isinstance(value,(int,long)):
-        data = str(value)
-        yield str(len(data))
+        data = str(value).encode(encoding or u'utf-8')
+        yield str(len(data)).encode(encoding or u'utf-8')
         yield b':'
         yield data
         yield b'#'
     elif isinstance(value,(float,)):
-        data = repr(value)
-        yield str(len(data))
+        data = repr(value).encode(encoding or u'utf-8')
+        yield str(len(data)).encode(encoding or u'utf-8')
         yield b':'
         yield data
         yield b'^'
     elif isinstance(value,(str,)):
-        yield str(len(value))
+        yield str(len(value)).encode(encoding or u'utf-8')
         yield b':'
         yield value
         yield b','
@@ -246,7 +248,7 @@ def _gdumps(value,encoding):
         for item in value:
             sub.extend(_gdumps(item))
         sub = b''.join(sub)
-        yield str(len(sub))
+        yield str(len(sub)).encode(encoding or u'utf-8')
         yield b':'
         yield sub
         yield b']'
@@ -256,7 +258,7 @@ def _gdumps(value,encoding):
             sub.extend(_gdumps(k))
             sub.extend(_gdumps(v))
         sub = b''.join(sub)
-        yield str(len(sub))
+        yield str(len(sub)).encode(encoding or 'utf-8')
         yield b':'
         yield sub
         yield b'}'
@@ -264,7 +266,7 @@ def _gdumps(value,encoding):
         if encoding is None:
             raise ValueError('must specify encoding to dump unicode strings')
         value = value.encode(encoding)
-        yield str(len(value))
+        yield str(len(value)).encode(encoding or 'utf-8')
         yield b':'
         yield value
         yield b','

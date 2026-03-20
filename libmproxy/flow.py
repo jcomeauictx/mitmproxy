@@ -1656,7 +1656,7 @@ class FlowWriter:
 
     def add(self, flow):
         d = flow._get_state()
-        tnetstring.dump(d, self.fo)
+        tnetstring.dump(d, self.fo, encoding='utf-8')
 
 
 class FlowReadError(Exception):
@@ -1698,5 +1698,5 @@ class FilteredFlowWriter:
         if self.filt and not f.match(self.filt):
             return
         d = f._get_state()
-        tnetstring.dump(d, self.fo)
+        tnetstring.dump(d, self.fo, encoding='utf-8')
 
