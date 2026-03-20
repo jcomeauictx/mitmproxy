@@ -34,12 +34,12 @@ build: setup.py clean .FORCE | .installed/python3
 # this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
-.installed/python3 .installed/gcc: .installed .FORCE
+.installed/python3 .installed/gcc: .FORCE | .installed 
 	if [ "! $(WHICH) $(@F)"	]; then \
 	 sudo apk add $(@F); \
 	fi
 	touch $@
-.installed/py3-%: .installed
+.installed/py3-%: | .installed
 	sudo apk add $(@F)
 	touch $@
 .installed:
@@ -50,10 +50,10 @@ pylint: $(LINT)
 pip3-install: .installed/py3-pip
 	pip3 --verbose install --force-reinstall \
 	 git+https://github.com/jcomeauictx/$(PACKAGE)@alpine-ish
-.installed/%-dev .installed/%-base: .installed
+.installed/%-dev .installed/%-base: | .installed
 	sudo apk add $(@F)
 	touch $@
-.installed/%.pip3: .installed
+.installed/%.pip3: | .installed
 	pip3 install $*
 	touch $@
 clean:
