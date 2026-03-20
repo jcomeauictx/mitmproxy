@@ -401,9 +401,9 @@ class ProxyHandler(tcp.BaseHandler):
         logging.debug(u'read_request_proxy: line=%r', line)
         if not self.proxy_connect_state:
             connparts = http.parse_init_connect(line)
+            logging.debug('read_request_proxy: connparts=%r', connparts)
             if connparts:
                 host, port, httpversion = connparts
-                logging.debug('read_request_proxy: connparts=%r', connparts)
                 headers = self.read_headers(authenticate=True)
                 self.wfile.write(b'\r\n'.join(
                     b'HTTP/1.1 200 Connection established',
@@ -427,6 +427,7 @@ class ProxyHandler(tcp.BaseHandler):
             r = http.parse_init_http(line)
             if not r:
                 raise ProxyError(400, u'Bad HTTP request line: %r' % line)
+            logging.debug('read_request_proxy: r=%r', r)
             method, path, httpversion = r
             headers = self.read_headers(authenticate=False)
 
@@ -443,6 +444,7 @@ class ProxyHandler(tcp.BaseHandler):
             r = http.parse_init_proxy(line)
             if not r:
                 raise ProxyError(400, u'Bad HTTP request line: %r' % line)
+            logging.debug('else: read_request_proxy: r=%r', r)
             method, scheme, host, port, path, httpversion = r
             headers = self.read_headers(authenticate=True)
             content = http.read_http_body_request(
@@ -463,6 +465,7 @@ class ProxyHandler(tcp.BaseHandler):
         r = http.parse_init_http(line)
         if not r:
             raise ProxyError(400, u'Bad HTTP request line: %r' % line)
+        logging.debug('read_request_reverse: r=%r', r)
         method, path, httpversion = r
         headers = self.read_headers(authenticate=False)
         content = http.read_http_body_request(
