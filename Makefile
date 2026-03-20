@@ -36,6 +36,7 @@ $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
 .installed/python3 .installed/gcc: .FORCE | .installed 
 	if [ "! $(WHICH) $(@F)"	]; then \
+	 echo cannot find $(@F), installing... >&2; \
 	 sudo apk add $(@F); \
 	fi
 	touch $@
