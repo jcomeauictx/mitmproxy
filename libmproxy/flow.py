@@ -1608,6 +1608,7 @@ class FlowMaster(controller.Master):
         return f
 
     def handle_request(self, r):
+        logging.debug('FlowRequest.handle_request %r', vars(r))
         f = self.state.add_request(r)
         self.replacehooks.run(f)
         self.setheaders.run(f)

@@ -1041,7 +1041,7 @@ class ConsoleMaster(flow.FlowMaster):
         return f
 
     def handle_request(self, r):
-        logging.debug('ConsoleMaster.handle_request(%r)', r)
+        logging.debug('ConsoleMaster.handle_request(%r)', vars(r))
         f = flow.FlowMaster.handle_request(self, r)
         if f:
             self.process_flow(f, r)

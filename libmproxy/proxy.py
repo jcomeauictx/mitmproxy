@@ -207,12 +207,14 @@ class ProxyHandler(tcp.BaseHandler):
             request = self.read_request(cc)
             if request is None:
                 return
-            logging.debug('proxy: handle_request: request=%r', request)
+            logging.debug(
+                'ProxyHandler: handle_request: request=%r', vars(request)
+            )
             cc.requestcount += 1
 
             app = self.server.apps.get(request)
             if app:
-                logging.debug('proxy: passing on request to app %s', app)
+                logging.debug('proxy: passing on request to app %s', vars(app))
                 err = app.serve(request, self.wfile)
                 if err:
                     self.log(cc, "Error in wsgi app.", err.split("\n"))
@@ -262,11 +264,12 @@ class ProxyHandler(tcp.BaseHandler):
                         else:
                             break
                     logging.debug(
-                        'proxy: building response for request %r', request
+                        'proxy: building response for request %r',
+                        vars(request)
                     )
                     response = flow.Response(
-                        request, httpversion, code, msg, headers, content, sc.cert,
-                        sc.rfile.first_byte_timestamp
+                        request, httpversion, code, msg, headers, content,
+                        sc.cert, sc.rfile.first_byte_timestamp
                     )
                     response_reply = self.channel.ask(response)
                     # Not replying to the server invalidates the server
@@ -373,11 +376,16 @@ class ProxyHandler(tcp.BaseHandler):
         r = http.parse_init_http(line)
         if not r:
             raise ProxyError(400, u'Bad HTTP request line: %r'%line)
+        logging.debug(
+            'ProxyHandler.read_request_transparent: '
+            'method, path, httpversion: %r', r
+        )
         method, path, httpversion = r
         headers = self.read_headers(authenticate=False)
         content = http.read_http_body_request(
-                    self.rfile, self.wfile, headers, httpversion, self.config.body_size_limit
-                )
+            self.rfile, self.wfile, headers, httpversion,
+            self.config.body_size_limit
+        )
         return flow.Request(
                     client_conn,httpversion, host, port, scheme, method, path, headers, content,
                     self.rfile.first_byte_timestamp, utils.timestamp()

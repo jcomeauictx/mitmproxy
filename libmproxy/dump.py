@@ -209,7 +209,7 @@ class DumpMaster(flow.FlowMaster):
 
     def handle_request(self, r):
         f = flow.FlowMaster.handle_request(self, r)
-        logging.debug('dump: handle_request: flow=%r', f)
+        logging.debug('DumpMaster: handle_request: flow=%r', vars(f))
         if f:
             r.reply()
         return f
