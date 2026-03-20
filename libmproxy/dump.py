@@ -61,6 +61,7 @@ def str_request(req, showhost):
     else:
         c = "[replay]"
     r = "%s %s %s"%(c, req.method, req.get_url(showhost))
+    logging.debug('str_request assembled request %r', r)
     if req.stickycookie:
         r = "[stickycookie] " + r
     return r

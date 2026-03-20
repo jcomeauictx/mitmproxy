@@ -74,7 +74,7 @@ class ServerConnection(tcp.TCPClient):
 
         sends bytes and returns None
         '''
-        logging.debug(u'sending request %r', request)
+        logging.debug(u'sending request %r', vars(request))
         self.requestcount += 1
         d = request._assemble()
         if not d:
