@@ -22,7 +22,7 @@ install: setup.py build \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
  .installed/build-base .installed/py3-flask .installed/py3-urwid
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
-	sudo python3 $< $@ --force
+	python3 $< $@ --user --force
 build: setup.py clean .FORCE | .installed/python3
 	# build companion projects before mitmproxy
 	if [ "$(PACKAGE)" = "mitmproxy" ]; then \
@@ -58,8 +58,8 @@ pip3-install: .installed/py3-pip
 	pip3 install $*
 	touch $@
 clean:
-	sudo rm -rf build dist *.egg_info
-	find . -type d -name __pycache__ -exec sudo rm -rf {} +
+	rm -rf build dist *.egg_info
+	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -name '*.py[co]' -delete
 tests: | .installed/py3-nose .installed/py3-mock #.installed/pathod.pip3
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
