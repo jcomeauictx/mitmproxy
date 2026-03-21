@@ -483,18 +483,27 @@ class Request(HTTPMsg):
         self.set_url(urlparse.urlunparse([scheme, netloc, path, params, query, fragment]))
 
     def get_url(self, hostheader=False):
-        """
-            Returns a URL string, constructed from the Request's URL compnents.
+        '''
+        returns a URL string, constructed from the Request's URL compnents.
 
-            If hostheader is True, we use the value specified in the request
-            Host header to construct the URL.
-        """
+        if hostheader is True, we use the value specified in the request
+        host header to construct the URL.
+
+        the stock version encoded host as IDNA, and the entire URL as ASCII,
+        so using python3 the URL looked like b"http://b\'mitm.it\'/"'
+        we will now encode host as a check --
+        will throw UnicodeEncodeError or similar on failure --
+        but decode again before packing and encoding the finished URL
+        '''
         if hostheader:
             host = self.headers.get_first("host") or self.host
         else:
             host = self.host
-        host = host.encode("idna")
-        return utils.unparse_url(self.scheme, host, self.port, self.path).encode('ascii')
+        host = host.encode("idna").decode()
+        url = utils.unparse_url(
+            self.scheme, host, self.port, self.path
+        ).encode('ascii')
+        return url
 
     def set_url(self, url):
         """

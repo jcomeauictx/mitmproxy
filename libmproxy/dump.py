@@ -56,6 +56,7 @@ def str_response(resp):
 
 
 def str_request(req, showhost):
+    logging.debug('str_request: req=%s, showhost=%r', vars(req), showhost)
     if req.client_conn:
         c = req.client_conn.address[0]
     else:
