@@ -58,11 +58,13 @@ pip3-install: .installed/py3-pip
 .installed/%.pip3: | .installed
 	pip3 install $*
 	touch $@
+.installed/pathod: | .installed
+	cd ../$(@F) && $(MAKE) install
 clean:
 	rm -rf build dist *.egg_info
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -name '*.py[co]' -delete
-tests: | .installed/py3-nose .installed/py3-mock #.installed/pathod.pip3
+tests: | .installed/py3-nose .installed/py3-mock .installed/pathod
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
 	$(NOSETESTS) .
 push pull status diff:
