@@ -2,11 +2,12 @@
 SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
 PYTHON ?= python3
 WHICH := command -v
+BRANCH := $(shell git branch --show-current)
 PACKAGE := $(notdir $(CURDIR))
 $(warning PACKAGE is $(PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
-SIBLINGS := netlib mitmproxy
+SIBLINGS := netlib mitmproxy pathod
 # use python3 nosetests by default, override on command line
 # by using `make NOSETESTS=nosetests-2.7 tests`
 NOSETESTS := $(word 1, $(shell $(WHICH) nosetests-3.9 nosetests3 nosetests))
@@ -28,6 +29,7 @@ build: setup.py clean .FORCE | .installed/python3
 	# build companion projects before mitmproxy
 	if [ "$(PACKAGE)" = "mitmproxy" ]; then \
 	 for sibling in $(filter-out $(PACKAGE),$(SIBLINGS)); do \
+	  (cd ../$$sibling && git checkout $(BRANCH)); \
 	  $(MAKE) -C ../$$sibling $@; \
 	 done; \
 	fi
