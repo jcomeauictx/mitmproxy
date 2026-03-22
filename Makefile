@@ -1,5 +1,6 @@
 # prefer ash on alpine/iSH
 SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
+PYTHON ?= python3
 WHICH := command -v
 PACKAGE := $(notdir $(CURDIR))
 $(warning PACKAGE is $(PACKAGE))
@@ -22,7 +23,7 @@ install: setup.py build \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
  .installed/build-base .installed/py3-flask .installed/py3-urwid
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
-	python3 $< $@ --user --force
+	$(PYTHON) $< $@ --user --force
 build: setup.py clean .FORCE | .installed/python3
 	# build companion projects before mitmproxy
 	if [ "$(PACKAGE)" = "mitmproxy" ]; then \
@@ -30,7 +31,7 @@ build: setup.py clean .FORCE | .installed/python3
 	  $(MAKE) -C ../$$sibling $@; \
 	 done; \
 	fi
-	python3 $< $@
+	$(PYTHON) $< $@
 # this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
