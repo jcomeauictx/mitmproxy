@@ -2,6 +2,7 @@
     This module provides more sophisticated flow tracking. These match requests
     with their responses, and provide filtering and interception facilities.
 """
+from __future__ import unicode_literals
 import hashlib, copy, re, os, logging
 try:
     import Cookie, cookielib, urlparse
@@ -756,7 +757,7 @@ class Response(HTTPMsg):
             headers["Content-Length"] = [str(len(self.content))]
         proto = "HTTP/%s.%s %s %s"%(self.httpversion[0], self.httpversion[1], self.code, str(self.msg))
         data = (proto, str(headers))
-        logging.debug(u'_assemble_head: data=%r', data)
+        logging.debug('_assemble_head: data=%r', data)
         return FMT%data
 
     def _assemble(self):
@@ -769,7 +770,7 @@ class Response(HTTPMsg):
         if self.content == CONTENT_MISSING:
             return None
         head = self._assemble_head()
-        logging.debug(u'_assemble: head=%s', head)
+        logging.debug('_assemble: head=%s', head)
         if self.content:
             return head + self.content
         else:

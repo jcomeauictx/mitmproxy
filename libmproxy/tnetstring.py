@@ -67,6 +67,7 @@ like so::
     u'\u03b1'
 
 """
+from __future__ import unicode_literals
 
 __ver_major__ = 0
 __ver_minor__ = 2
@@ -146,9 +147,9 @@ def _rdumpq(q,size,value,encoding=None):
         write(b'5:false!')
         return size + 8
     if isinstance(value,(int,long)):
-        data = str(value).encode(encoding or u'utf-8')
+        data = str(value).encode(encoding or 'utf-8')
         ldata = len(data)
-        span = str(ldata).encode(encoding or u'utf-8')
+        span = str(ldata).encode(encoding or 'utf-8')
         write(b'#')
         write(data)
         write(b':')
@@ -159,9 +160,9 @@ def _rdumpq(q,size,value,encoding=None):
         #  It round-trips more accurately.
         #  Probably unnecessary in later python versions that
         #  use David Gay's ftoa routines.
-        data = repr(value).encode(encoding or u'utf-8')
+        data = repr(value).encode(encoding or 'utf-8')
         ldata = len(data)
-        span = str(ldata).encode(encoding or u'utf-8')
+        span = str(ldata).encode(encoding or 'utf-8')
         write(b'^')
         write(data)
         write(b':')
@@ -180,7 +181,7 @@ def _rdumpq(q,size,value,encoding=None):
         init_size = size = size + 1
         for item in reversed(value):
             size = _rdumpq(q,size,item,encoding)
-        span = str(size - init_size).encode(encoding or u'utf-8')
+        span = str(size - init_size).encode(encoding or 'utf-8')
         write(b':')
         write(span)
         return size + 1 + len(span)
@@ -190,18 +191,18 @@ def _rdumpq(q,size,value,encoding=None):
         for (k,v) in value.items():
             size = _rdumpq(q,size,v,encoding)
             size = _rdumpq(q,size,k,encoding)
-        span = str(size - init_size).encode(encoding or u'utf-8')
+        span = str(size - init_size).encode(encoding or 'utf-8')
         write(b':')
         write(span)
         return size + 1 + len(span)
     if isinstance(value,unicode):
         if encoding is None:
             raise ValueError(
-                u'must specify encoding to dump unicode strings: %r' % value
+                'must specify encoding to dump unicode strings: %r' % value
             )
         value = value.encode(encoding)
         lvalue = len(value)
-        span = str(lvalue).encode(encoding or u'utf-8')
+        span = str(lvalue).encode(encoding or 'utf-8')
         write(b',')
         write(value)
         write(b':')
@@ -227,19 +228,19 @@ def _gdumps(value,encoding):
     elif value is False:
         yield b'5:false!'
     elif isinstance(value,(int,long)):
-        data = str(value).encode(encoding or u'utf-8')
-        yield str(len(data)).encode(encoding or u'utf-8')
+        data = str(value).encode(encoding or 'utf-8')
+        yield str(len(data)).encode(encoding or 'utf-8')
         yield b':'
         yield data
         yield b'#'
     elif isinstance(value,(float,)):
-        data = repr(value).encode(encoding or u'utf-8')
-        yield str(len(data)).encode(encoding or u'utf-8')
+        data = repr(value).encode(encoding or 'utf-8')
+        yield str(len(data)).encode(encoding or 'utf-8')
         yield b':'
         yield data
         yield b'^'
     elif isinstance(value,(str,)):
-        yield str(len(value)).encode(encoding or u'utf-8')
+        yield str(len(value)).encode(encoding or 'utf-8')
         yield b':'
         yield value
         yield b','
@@ -248,7 +249,7 @@ def _gdumps(value,encoding):
         for item in value:
             sub.extend(_gdumps(item))
         sub = b''.join(sub)
-        yield str(len(sub)).encode(encoding or u'utf-8')
+        yield str(len(sub)).encode(encoding or 'utf-8')
         yield b':'
         yield sub
         yield b']'

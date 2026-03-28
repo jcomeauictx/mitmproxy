@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """html2text: Turn HTML into equivalent Markdown-structured text."""
+from __future__ import unicode_literals
 __version__ = "3.200.3"
 __author__ = "Aaron Swartz (me@aaronsw.com)"
 __copyright__ = "(C) 2004-2008 Aaron Swartz. GNU GPL 3."
@@ -251,8 +252,8 @@ class HTML2Text(HTMLParser.HTMLParser):
         if self.unicode_snob:
             nbsp = unichr(name2cp('nbsp'))
         else:
-            nbsp = u' '
-        self.outtext = self.outtext.replace(u'&nbsp_place_holder;', nbsp)
+            nbsp = ' '
+        self.outtext = self.outtext.replace('&nbsp_place_holder;', nbsp)
 
         return self.outtext
 
