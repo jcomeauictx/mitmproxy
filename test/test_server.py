@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import socket, time
 import mock
 from netlib import tcp, http_auth, http
@@ -51,7 +52,7 @@ class CommonMixin:
     def test_invalid_http(self):
         t = tcp.TCPClient("127.0.0.1", self.proxy.port)
         t.connect()
-        t.wfile.write("invalid\r\n\r\n")
+        t.wfile.write(b'invalid\r\n\r\n')
         t.wfile.flush()
         assert "Bad Request" in t.rfile.readline()
 
