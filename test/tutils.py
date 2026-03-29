@@ -10,8 +10,12 @@ except NameError:
 try:
     apply
 except NameError:
-    def apply(obj, *args, **kwargs):
+    def apply(obj, args, kwargs):
         obj(*args, **kwargs)
+try:
+    file
+except NameError:
+    file = open
 
 def treq(conn=None):
     if not conn:
