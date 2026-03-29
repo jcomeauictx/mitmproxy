@@ -7,6 +7,11 @@ try:
     basestring
 except NameError:
     basestring = str
+try:
+    apply
+except NameError:
+    def apply(obj, *args, **kwargs):
+        obj(*args, **kwargs)
 
 def treq(conn=None):
     if not conn:
