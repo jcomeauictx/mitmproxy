@@ -5,7 +5,10 @@ try:
     import SocketServer
 except ImportError:
     import socketserver as SocketServer
-from OpenSSL import SSL
+try:
+    from OpenSSL import SSL
+except ImportError:  # can't get it to install on Alpine/iSH
+    import ssl as SSL
 from netlib import odict, tcp, http, wsgi, certutils, http_status, http_auth
 try:
     import utils, flow, version, platform, controller
