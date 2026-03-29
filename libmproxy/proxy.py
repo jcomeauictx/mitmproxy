@@ -1,7 +1,10 @@
 import sys, os, string, socket, time
 import shutil, tempfile, threading
 import socketserver
-from OpenSSL import SSL
+try:
+    from OpenSSL import SSL
+except ImportError:
+    from netlib.openssl_compat import SSL
 from netlib import odict, tcp, http, wsgi, certutils, http_status, http_auth
 try:
     import utils, flow, version, platform, controller
