@@ -105,7 +105,7 @@ def dumps(value,encoding=None):
     #  generator that's simpler to understand but much less efficient.
     q = deque()
     _rdumpq(q,0,value,encoding)
-    logging.debug('q before joining: %s', q)
+    #logging.debug('q before joining: %s', q)
     return b''.join(q)
 
 
