@@ -58,6 +58,6 @@ class Script:
             try:
                 return (True, f(self.ctx, *args, **kwargs))
             except Exception as v:
-                return (False, (v, traceback.format_exc(v)))
+                return (False, (v, traceback.format_exc()))
         else:
             return (False, None)

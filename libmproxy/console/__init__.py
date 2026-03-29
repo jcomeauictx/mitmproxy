@@ -1,6 +1,6 @@
 from __future__ import print_function
 import mailcap, mimetypes, tempfile, os, subprocess, glob, time, shlex, stat
-import os.path, sys, weakref
+import os.path, sys, weakref, logging
 import urwid
 from .. import controller, utils, flow
 try:
@@ -9,6 +9,11 @@ try:
 except ImportError:
     from . import flowlist, flowview, help, common, grideditor, \
     palettes, contentview, flowdetailview
+try:
+    basestring
+except NameError:
+    basestring = str
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 EVENTLOG_SIZE = 500
 
@@ -1036,6 +1041,7 @@ class ConsoleMaster(flow.FlowMaster):
         return f
 
     def handle_request(self, r):
+        logging.debug('ConsoleMaster.handle_request(%r)', vars(r))
         f = flow.FlowMaster.handle_request(self, r)
         if f:
             self.process_flow(f, r)

@@ -1,6 +1,7 @@
 from __future__ import print_function
-import sys, os
+import sys, os, logging
 import netlib.utils
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 try:
     import flow, filt, utils
 except ImportError:
@@ -55,11 +56,13 @@ def str_response(resp):
 
 
 def str_request(req, showhost):
+    logging.debug('str_request: req=%s, showhost=%r', vars(req), showhost)
     if req.client_conn:
         c = req.client_conn.address[0]
     else:
         c = "[replay]"
     r = "%s %s %s"%(c, req.method, req.get_url(showhost))
+    logging.debug('str_request assembled request %r', r)
     if req.stickycookie:
         r = "[stickycookie] " + r
     return r
@@ -207,6 +210,7 @@ class DumpMaster(flow.FlowMaster):
 
     def handle_request(self, r):
         f = flow.FlowMaster.handle_request(self, r)
+        logging.debug('DumpMaster: handle_request: flow=%r', vars(f))
         if f:
             r.reply()
         return f

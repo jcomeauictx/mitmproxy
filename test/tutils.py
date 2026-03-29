@@ -3,6 +3,19 @@ from contextlib import contextmanager
 from libmproxy import flow, utils, controller
 from netlib import certutils
 import mock
+try:
+    basestring
+except NameError:
+    basestring = str
+try:
+    apply
+except NameError:
+    def apply(obj, args, kwargs):
+        obj(*args, **kwargs)
+try:
+    file
+except NameError:
+    file = open
 
 def treq(conn=None):
     if not conn:

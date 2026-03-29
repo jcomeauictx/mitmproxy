@@ -2,7 +2,8 @@
     This module provides more sophisticated flow tracking. These match requests
     with their responses, and provide filtering and interception facilities.
 """
-import hashlib, copy, re, os
+from __future__ import unicode_literals
+import hashlib, copy, re, os, logging
 try:
     import Cookie, cookielib, urlparse
 except ImportError:
@@ -14,12 +15,17 @@ try:
     import tnetstring, filt, script, utils, encoding, proxy
 except ImportError:
     from . import tnetstring, filt, script, utils, encoding, proxy
+try:
+    basestring
+except NameError:
+    basestring = str
 from email.utils import parsedate_tz, formatdate, mktime_tz
 from netlib import odict, http, certutils
 try:
     import controller, version, app
 except ImportError:
     from . import controller, version, app
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 HDR_FORM_URLENCODED = "application/x-www-form-urlencoded"
 CONTENT_MISSING = 0
@@ -478,18 +484,27 @@ class Request(HTTPMsg):
         self.set_url(urlparse.urlunparse([scheme, netloc, path, params, query, fragment]))
 
     def get_url(self, hostheader=False):
-        """
-            Returns a URL string, constructed from the Request's URL compnents.
+        '''
+        returns a URL string, constructed from the Request's URL compnents.
 
-            If hostheader is True, we use the value specified in the request
-            Host header to construct the URL.
-        """
+        if hostheader is True, we use the value specified in the request
+        host header to construct the URL.
+
+        the stock version encoded host as IDNA, and the entire URL as ASCII,
+        so using python3 the URL looked like b"http://b\'mitm.it\'/"'
+        we will now encode both as a check --
+        will throw UnicodeEncodeError or similar on failure --
+        but decode again before packing and returning the finished URL
+        '''
         if hostheader:
             host = self.headers.get_first("host") or self.host
         else:
             host = self.host
-        host = host.encode("idna")
-        return utils.unparse_url(self.scheme, host, self.port, self.path).encode('ascii')
+        host = host.encode("idna").decode()
+        url = utils.unparse_url(
+            self.scheme, host, self.port, self.path
+        ).encode('ascii')
+        return url.decode()
 
     def set_url(self, url):
         """
@@ -524,7 +539,7 @@ class Request(HTTPMsg):
                 self.httpversion[1],
                 str(self.headers)
             )
-        return len(assembled_header)
+        return len(assembled_header.encode())
 
     def _assemble_head(self, proxy=False):
         FMT = '%s %s HTTP/%s.%s\r\n%s\r\n'
@@ -567,7 +582,7 @@ class Request(HTTPMsg):
                 self.httpversion[0],
                 self.httpversion[1],
                 str(headers)
-            )
+            ).encode()
 
     def _assemble(self, _proxy = False):
         """
@@ -742,6 +757,7 @@ class Response(HTTPMsg):
             headers["Content-Length"] = [str(len(self.content))]
         proto = "HTTP/%s.%s %s %s"%(self.httpversion[0], self.httpversion[1], self.code, str(self.msg))
         data = (proto, str(headers))
+        logging.debug('_assemble_head: data=%r', data)
         return FMT%data
 
     def _assemble(self):
@@ -754,6 +770,7 @@ class Response(HTTPMsg):
         if self.content == CONTENT_MISSING:
             return None
         head = self._assemble_head()
+        logging.debug('_assemble: head=%s', head)
         if self.content:
             return head + self.content
         else:
@@ -1601,6 +1618,7 @@ class FlowMaster(controller.Master):
         return f
 
     def handle_request(self, r):
+        logging.debug('FlowRequest.handle_request %r', vars(r))
         f = self.state.add_request(r)
         self.replacehooks.run(f)
         self.setheaders.run(f)
@@ -1648,7 +1666,7 @@ class FlowWriter:
 
     def add(self, flow):
         d = flow._get_state()
-        tnetstring.dump(d, self.fo)
+        tnetstring.dump(d, self.fo, encoding='utf-8')
 
 
 class FlowReadError(Exception):
@@ -1690,5 +1708,5 @@ class FilteredFlowWriter:
         if self.filt and not f.match(self.filt):
             return
         d = f._get_state()
-        tnetstring.dump(d, self.fo)
+        tnetstring.dump(d, self.fo, encoding='utf-8')
 
