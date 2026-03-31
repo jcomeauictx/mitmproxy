@@ -7,7 +7,10 @@
 
 import pkgutil
 import re
-from jsbeautifier.unpackers import evalbased
+try:
+    from jsbeautifier.unpackers import evalbased
+except ImportError:
+    from . import evalbased
 
 # NOTE: AT THE MOMENT, IT IS DEACTIVATED FOR YOUR SECURITY: it runs js!
 BLACKLIST = ['jsbeautifier.unpackers.evalbased']
