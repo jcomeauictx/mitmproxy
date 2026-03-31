@@ -314,7 +314,7 @@ class Request(HTTPMsg):
         self.timestamp_start = timestamp_start or utils.timestamp()
         try:
             self.timestamp_end = max(timestamp_end or utils.timestamp(),
-                                     timestamp_start)
+                                     self.timestamp_start)
         except TypeError:
             logging.error(
                 'timestamps: start=%s, end=%s, generated=%s',
