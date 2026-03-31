@@ -5,7 +5,6 @@ try:
 except ImportError:
     import queue as Queue
     from io import StringIO
-try:
 import email.utils
 from libmproxy import filt, flow, controller, utils, tnetstring
 try:

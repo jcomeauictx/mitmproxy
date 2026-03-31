@@ -185,7 +185,7 @@ class TestHTTPS(tservers.HTTPProxTest, CommonMixin):
         assert self.server.last_log()["request"]["clientcert"]["keyinfo"]
 
     def test_sni(self):
-        f = self.pathod("304", sni="testserver.com")
+        f = self.pathod("304", sni=b'testserver.com')
         assert f.status_code == 304
         l = self.server.last_log()
         assert self.server.last_log()["request"]["sni"] == "testserver.com"
@@ -223,7 +223,7 @@ class TestTransparent(tservers.TransparentProxTest, CommonMixin):
 class TestTransparentSSL(tservers.TransparentProxTest, CommonMixin):
     ssl = True
     def test_sni(self):
-        f = self.pathod("304", sni="testserver.com")
+        f = self.pathod("304", sni=b'testserver.com')
         assert f.status_code == 304
         l = self.server.last_log()
         assert self.server.last_log()["request"]["sni"] == "testserver.com"

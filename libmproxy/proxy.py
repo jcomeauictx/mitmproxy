@@ -15,6 +15,10 @@ try:
     import utils, flow, version, platform, controller
 except (ImportError, ModuleNotFoundError):
     from . import utils, flow, version, platform, controller
+try:
+    file
+except NameError:
+    file = open
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 KILL = 0
