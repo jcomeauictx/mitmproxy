@@ -312,6 +312,8 @@ class Request(HTTPMsg):
         self.host, self.port, self.scheme = host, port, scheme
         self.method, self.path, self.headers, self.content = method, path, headers, content
         self.timestamp_start = timestamp_start or utils.timestamp()
+        logging.debug('timestamps: start=%s, end=%s, generated=%s',
+                      self.timestamp_start, timestamp_end, utils.timestamp())
         self.timestamp_end = max(timestamp_end or utils.timestamp(), timestamp_start)
         self.close = False
         self.tcp_setup_timestamp = tcp_setup_timestamp
