@@ -10,6 +10,11 @@ try:
     import tutils
 except ImportError:
     from . import tutils
+try:
+    u''.encode('string_escape')
+    STRING_ESCAPE = 'string_escape'
+except LookupError:
+    STRING_ESCAPE = 'unicode_escape'
 
 APP_DOMAIN = "mitm"
 APP_IP = "1.1.1.1"
@@ -161,7 +166,7 @@ class HTTPProxTest(ProxTestBase):
             Constructs a pathod GET request, with the appropriate base and proxy.
         """
         p = self.pathoc(sni=sni)
-        spec = spec.encode("string_escape")
+        spec = spec.encode(STRING_ESCAPE)
         if self.ssl:
             q = "get:'/p/%s'"%spec
         else:
