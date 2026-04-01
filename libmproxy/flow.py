@@ -774,20 +774,21 @@ class Response(HTTPMsg):
         return FMT%data
 
     def _assemble(self):
-        """
-            Assembles the response for transmission to the client. We make some
-            modifications to make sure interception works properly.
+        '''
+        Assembles the response for transmission to the client. We make some
+        modifications to make sure interception works properly.
 
-            Returns None if the request cannot be assembled.
-        """
+        Returns None if the request cannot be assembled.
+        '''
         if self.content == CONTENT_MISSING:
             return None
         head = self._assemble_head()
         logging.debug('_assemble: head=%s', head)
+        # should this be bytes or strings?!
         if self.content:
-            return head + self.content
+            return head.encode() + self.content
         else:
-            return head
+            return head.encode()
 
     def replace(self, pattern, repl, *args, **kwargs):
         """
