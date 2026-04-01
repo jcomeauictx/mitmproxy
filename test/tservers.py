@@ -155,6 +155,7 @@ class HTTPProxTest(ProxTestBase):
             Returns a connected Pathoc instance.
         """
         p = libpathod.pathoc.Pathoc("localhost", self.proxy.port, ssl=self.ssl, sni=sni)
+        p.settimeout(10)  # should be long enough for tests
         if self.ssl:
             p.connect(("127.0.0.1", self.server.port))
         else:
@@ -215,9 +216,11 @@ class TransparentProxTest(ProxTestBase):
         """
         if self.ssl:
             p = self.pathoc(sni=sni)
+            p.settimeout(10)  # should be long enough for tests
             q = "get:'/p/%s'"%spec
         else:
             p = self.pathoc()
+            p.settimeout(10)  # should be long enough for tests
             q = "get:'/p/%s'"%spec
         return p.request(q)
 
@@ -248,6 +251,7 @@ class ReverseProxTest(ProxTestBase):
         """
         p = libpathod.pathoc.Pathoc("localhost", self.proxy.port, ssl=self.ssl, sni=sni)
         p.connect()
+        p.settimeout(10)  # should be long enough for tests
         return p
 
     def pathod(self, spec, sni=None):
