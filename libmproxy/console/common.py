@@ -2,6 +2,10 @@ import urwid
 import urwid.util
 from .. import utils, flow
 
+try:
+    unicode
+except NameError:
+    unicode = str
 
 VIEW_LIST = 0
 VIEW_FLOW = 1

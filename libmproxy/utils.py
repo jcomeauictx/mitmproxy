@@ -133,7 +133,7 @@ class LRUCache:
                 setattr(self, cacheListName, [])
             cache = getattr(self, cacheName)
             cacheList = getattr(self, cacheListName)
-            if cache.has_key(args):
+            if args in cache:
                 cacheList.remove(args)
                 cacheList.insert(0, args)
                 return cache[args]
