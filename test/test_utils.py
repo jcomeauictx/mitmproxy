@@ -30,7 +30,7 @@ def test_isXml():
 def test_del_all():
     d = dict(a=1, b=2, c=3)
     utils.del_all(d, ["a", "x", "b"])
-    assert d.keys() == ["c"]
+    assert list(d.keys()) == ["c"]
 
 
 def test_clean_hanging_newline():
