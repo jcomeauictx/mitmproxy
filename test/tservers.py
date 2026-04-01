@@ -151,15 +151,16 @@ class HTTPProxTest(ProxTestBase):
         return libpathod.pathoc.Pathoc("127.0.0.1", self.proxy.port)
 
     def pathoc(self, sni=None):
-        """
-            Returns a connected Pathoc instance.
-        """
+        '''
+        Returns a connected Pathoc instance.
+        '''
         p = libpathod.pathoc.Pathoc("localhost", self.proxy.port, ssl=self.ssl, sni=sni)
-        p.settimeout(10)  # should be long enough for tests
         if self.ssl:
             p.connect(("127.0.0.1", self.server.port))
+            p.settimeout(5)  # should be long enough for tests
         else:
             p.connect()
+            p.settimeout(5)  # should be long enough for tests
         return p
 
     def pathod(self, spec, sni=None):

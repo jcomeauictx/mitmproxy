@@ -340,7 +340,7 @@ class ViewImage:
     ]
     def __call__(self, hdrs, content, limit):
         try:
-            img = Image.open(cStringIO.StringIO(content))
+            img = Image.open(cStringIO.BytesIO(content))
         except IOError:
             return None
         parts = [
