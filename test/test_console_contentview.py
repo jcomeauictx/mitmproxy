@@ -10,7 +10,10 @@ try:
     import pyamf
 except ImportError:
     pyamf = None
-
+try:
+    file
+except NameError:
+    file = open
 
 class TestContentView:
     def test_trailer(self):

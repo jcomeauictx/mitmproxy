@@ -11,6 +11,10 @@ try:
     import tutils
 except ImportError:
     from . import tutils
+try:
+    file
+except NameError:
+    file = open
 
 class TestStickyCookieState:
     def _response(self, cookie, host):
