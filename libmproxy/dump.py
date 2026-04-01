@@ -162,10 +162,10 @@ class DumpMaster(flow.FlowMaster):
         self.state.delete_flow(f)
         if self.filt and not f.match(self.filt):
             return
-
+        self.o.verbosity = self.o.verbosity or 0  # None to 0 for comparisons
         if f.response:
             sz = utils.pretty_size(len(f.response.content))
-            if self.o.verbosity > 0:
+            if self.o.verbosity:
                 result = " << %s %s"%(str_response(f.response), sz)
             if self.o.verbosity > 1:
                 result = result + "\n\n" + self.indent(4, f.response.headers)
