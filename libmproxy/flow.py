@@ -10,7 +10,11 @@ except ImportError:
     import http.cookiejar as cookielib
     from http.cookiejar import Cookie
     from urllib import parse as urlparse
-import time, urllib
+try:
+    from urllib import quote, unquote
+except ImportError:
+    from urllib.parse import quote, unquote
+import time
 try:
     import tnetstring, filt, script, utils, encoding, proxy
 except ImportError:
@@ -461,7 +465,7 @@ class Request(HTTPMsg):
             Components are unquoted.
         """
         _, _, path, _, _, _ = urlparse.urlparse(self.get_url())
-        return [urllib.unquote(i) for i in path.split("/") if i]
+        return [unquote(i) for i in path.split("/") if i]
 
     def set_path_components(self, lst):
         """
@@ -469,7 +473,7 @@ class Request(HTTPMsg):
 
             Components are quoted.
         """
-        lst = [urllib.quote(i, safe="") for i in lst]
+        lst = [quote(i, safe="") for i in lst]
         path = "/" + "/".join(lst)
         scheme, netloc, _, params, query, fragment = urlparse.urlparse(self.get_url())
         self.set_url(urlparse.urlunparse([scheme, netloc, path, params, query, fragment]))

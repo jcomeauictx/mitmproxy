@@ -2,6 +2,10 @@ import sys
 import libmproxy.console.contentview as cv
 from libmproxy import utils, flow, encoding
 try:
+    sys.maxint
+except AttributeError:
+    sys.maxint = sys.maxsize
+try:
     import tutils
 except ImportError:
     from . import tutils

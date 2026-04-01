@@ -1,6 +1,10 @@
 import os, sys
 import urwid
 try:
+    sys.maxint
+except AttributeError:
+    sys.maxint = sys.maxsize
+try:
     import common, grideditor, contentview
 except ImportError:
     from . import common, grideditor, contentview
