@@ -5,10 +5,11 @@
 from __future__ import unicode_literals
 import hashlib, copy, re, os, logging
 try:
-    import Cookie, cookielib, urlparse
+    import cookielib, urlparse
+    from Cookie import SimpleCookie
 except ImportError:
     import http.cookiejar as cookielib
-    from http.cookiejar import Cookie
+    from http.cookies import SimpleCookie  # server-side cookies
     from urllib import parse as urlparse
 try:
     from urllib import quote, unquote
@@ -664,7 +665,7 @@ class Response(HTTPMsg):
             Takes a cookie string c and a time delta in seconds, and returns
             a refreshed cookie string.
         """
-        c = Cookie.SimpleCookie(str(c))
+        c = SimpleCookie(str(c))
         for i in c.values():
             if "expires" in i:
                 d = parsedate_tz(i["expires"])
@@ -1059,7 +1060,7 @@ class StickyCookieState:
         for i in f.response.headers["set-cookie"]:
             # FIXME: We now know that Cookie.py screws up some cookies with
             # valid RFC 822/1123 datetime specifications for expiry. Sigh.
-            c = Cookie.SimpleCookie(str(i))
+            c = SimpleCookie(str(i))
             m = c.values()[0]
             k = self.ckey(m, f)
             if self.domain_match(f.request.host, k[0]):
