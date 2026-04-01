@@ -19,6 +19,7 @@ try:
     file
 except NameError:
     file = open
+
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 KILL = 0
@@ -145,6 +146,7 @@ class HandleSNI:
         # An unhandled exception in this method will core dump PyOpenSSL, so
         # make dang sure it doesn't happen.
         except Exception as e: # pragma: no cover
+            logging.error('HandleSNI: failed: %s', e)
             pass
 
 
@@ -167,7 +169,7 @@ class ProxyHandler(tcp.BaseHandler):
         '''
         sc = self.server_conn
         if not sni:
-            sni = host
+            sni = host.encode("idna")  # OpenSSL requires bytes for sni
         if sc and (scheme, host, port, sni) != (sc.scheme, sc.host, sc.port, sc.sni):
             sc.terminate()
             self.server_conn = None

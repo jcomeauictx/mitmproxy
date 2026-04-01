@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import socket, time
+import socket, time, logging
 import mock
 from netlib import tcp, http_auth, http
 from libpathod import pathoc, pathod
@@ -8,6 +8,8 @@ try:
 except ImportError:
     from . import tutils, tservers
 from libmproxy import flow, proxy
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 """
     Note that the choice of response code in these tests matters more than you
@@ -226,6 +228,8 @@ class TestTransparentSSL(tservers.TransparentProxTest, CommonMixin):
         f = self.pathod("304", sni=b'testserver.com')
         assert f.status_code == 304
         l = self.server.last_log()
+        logging.debug('TestTransparentSSL.test_sni: last_log: %r',
+                      self.server.last_log()['request']['sni'])
         assert self.server.last_log()["request"]["sni"] == "testserver.com"
 
     def test_sslerr(self):
