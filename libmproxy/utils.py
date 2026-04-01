@@ -1,9 +1,17 @@
-import os, datetime, string, urllib, re
+import os, datetime, string, re
 try:
     import urlparse
 except ImportError:
     from urllib import parse as urlparse  # python3
-import time, functools, cgi
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
+try:
+    from cgi import parse_qsl
+except ImportError:
+    from urllib.parse import parse_qsl
+import time, functools
 import json
 from netlib import http
 
@@ -57,15 +65,7 @@ def urldecode(s):
     """
         Takes a urlencoded string and returns a list of (key, value) tuples.
     """
-    return cgi.parse_qsl(s, keep_blank_values=True)
-
-
-def urlencode(s):
-    """
-        Takes a list of (key, value) tuples and returns a urlencoded string.
-    """
-    s = [tuple(i) for i in s]
-    return urllib.urlencode(s, False)
+    return parse_qsl(s, keep_blank_values=True)
 
 
 def del_all(dict, keys):
