@@ -42,7 +42,9 @@ class TestServerConnection:
         self.d.shutdown()
 
     def test_simple(self):
-        sc = proxy.ServerConnection(proxy.ProxyConfig(), "http", self.d.IFACE, self.d.port, "host.com")
+        sc = proxy.ServerConnection(
+            proxy.ProxyConfig(), "http", self.d.IFACE, self.d.port, b'host.com'
+        )
         sc.connect()
         r = tutils.treq()
         r.path = "/p/200:da"
@@ -56,7 +58,9 @@ class TestServerConnection:
         sc.terminate()
 
     def test_terminate_error(self):
-        sc = proxy.ServerConnection(proxy.ProxyConfig(), "http", self.d.IFACE, self.d.port, "host.com")
+        sc = proxy.ServerConnection(
+            proxy.ProxyConfig(), "http", self.d.IFACE, self.d.port, b'host.com'
+        )
         sc.connect()
         sc.connection = mock.Mock()
         sc.connection.flush = mock.Mock(side_effect=tcp.NetLibDisconnect)

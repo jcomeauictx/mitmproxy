@@ -111,7 +111,9 @@ class RequestReplayThread(threading.Thread):
     def run(self):
         try:
             r = self.flow.request
-            server = ServerConnection(self.config, r.scheme, r.host, r.port, r.host)
+            server = ServerConnection(
+                self.config, r.scheme, r.host, r.port, r.host.encode('idna')
+            )
             server.connect()
             server.send(r)
             tsstart = utils.timestamp()
@@ -184,7 +186,9 @@ class ProxyHandler(tcp.BaseHandler):
             )
         if not self.server_conn:
             try:
-                self.server_conn = ServerConnection(self.config, scheme, host, port, sni)
+                self.server_conn = ServerConnection(
+                    self.config, scheme, host, port, sni
+                )
                 self.server_conn.connect()
             except tcp.NetLibError as v:
                 raise ProxyError(502, v)
