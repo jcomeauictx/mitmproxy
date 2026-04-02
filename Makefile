@@ -70,7 +70,9 @@ clean:
 tests: | .installed/py3-nose .installed/py3-mock .installed/pathod
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
 	$(NOSETESTS) --verbose --nocapture --nologcapture .
-push pull status diff:
+diff:
+	git $@ || true
+push pull status:
 	git $@
 commit:
 	git $@ -a
