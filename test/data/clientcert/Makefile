@@ -1,9 +1,10 @@
 SHELL := /bin/bash
+SUBJECT ?= /C=AU/ST=Some-State/O=Internet Widgits Pty Ltd
 default: display
 client.key: Makefile
 	openssl genrsa -out $@ 2048
 client.req: client.key
-	openssl req -key $< -new -out $@
+	openssl req -subj "$(SUBJECT)" -key $< -new -out $@
 client.crt: client.req | $(HOME)/.mitmproxy/mitmproxy.ca.pem
 	openssl x509 -req -days 1000 -in $< \
 	 -CA $| \
