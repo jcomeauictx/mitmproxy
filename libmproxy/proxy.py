@@ -410,7 +410,7 @@ class ProxyHandler(tcp.BaseHandler):
 
     def read_request_proxy(self, client_conn):
         '''
-        reads and writes bytes
+        reads and writes bytes  # FIXME: sure about that? the code doesn't
         '''
         line = self.get_line(self.rfile)
         if not line:
@@ -422,10 +422,10 @@ class ProxyHandler(tcp.BaseHandler):
             if connparts:
                 host, port, httpversion = connparts
                 headers = self.read_headers(authenticate=True)
-                self.wfile.write(b'\r\n'.join([
-                    b'HTTP/1.1 200 Connection established',
-                    b'Proxy-agent: %s' % self.server_version.encode(),
-                    b''
+                self.wfile.write('\r\n'.join([
+                    'HTTP/1.1 200 Connection established',
+                    'Proxy-agent: %s' % self.server_version,
+                    ''
                 ]))
                 self.wfile.flush()
                 dummycert = self.find_cert(client_conn, host, port, host)
