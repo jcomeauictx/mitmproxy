@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 import sys, os, string, socket, time, logging
 import shutil, tempfile, threading
-import socketserver
 try:
     from OpenSSL import SSL
 except ImportError:
@@ -13,7 +12,7 @@ except ImportError:
 from netlib import odict, tcp, http, wsgi, certutils, http_status, http_auth
 try:
     import utils, flow, version, platform, controller
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     from . import utils, flow, version, platform, controller
 try:
     file

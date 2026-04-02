@@ -1,7 +1,7 @@
 # prefer ash on alpine/iSH
 SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
-PYTHON ?= python3
 WHICH := command -v
+PYTHON ?= $(word 1, $(shell $(WHICH) python3 python python2))
 BRANCH := $(shell git branch --show-current)
 PACKAGE := $(notdir $(CURDIR))
 $(warning PACKAGE is $(PACKAGE))
@@ -10,7 +10,7 @@ LINT := $(SCRIPTS:.py=.pylint)
 SIBLINGS := netlib mitmproxy pathod
 # use python3 nosetests by default, override on command line
 # by using `make NOSETESTS=nosetests-2.7 tests`
-NOSETESTS := $(word 1, $(shell $(WHICH) nosetests-3.9 nosetests3 nosetests))
+NOSETESTS := $(PYTHON) -m nose
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
 ifneq ($(SHOWENV),)

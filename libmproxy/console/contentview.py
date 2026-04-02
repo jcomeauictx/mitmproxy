@@ -34,7 +34,7 @@ def _view_text(content, total, limit):
         Generates a body for a chunk of text.
     """
     txt = []
-    for i in netlib.utils.cleanBin(content).splitlines():
+    for i in netlib.utils.cleanBin(content.encode()).splitlines():
         txt.append(
             urwid.Text(("text", i), wrap="any")
         )

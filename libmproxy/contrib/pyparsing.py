@@ -670,37 +670,19 @@ def nullDebugAction(*args):
     pass
 
 'decorator to trim function calls to match the arity of the target'
-if not _PY3K:
-    def _trim_arity(func, maxargs=2):
-        limit = [0]
-        def wrapper(*args):
-            while 1:
-                try:
-                    return func(*args[limit[0]:])
-                except TypeError:
-                    if limit[0] <= maxargs:
-                        limit[0] += 1
-                        continue
-                    raise
-        return wrapper
-else:
-    def _trim_arity(func, maxargs=2):
-        limit = maxargs
-        def wrapper(*args):
+def _trim_arity(func, maxargs=2):
+    limit = [0]
+    def wrapper(*args):
+        while 1:
             try:
-                nonlocal limit
-            except NameError:
-                logging.debug('python2 does not support `nonlocal`')
-            while 1:
-                try:
-                    return func(*args[limit:])
-                except TypeError:
-                    if limit:
-                        limit -= 1
-                        continue
-                    raise
-        return wrapper
-    
+                return func(*args[limit[0]:])
+            except TypeError:
+                if limit[0] <= maxargs:
+                    limit[0] += 1
+                    continue
+                raise
+    return wrapper
+
 class ParserElement(object):
     """Abstract base level parser element class."""
     DEFAULT_WHITE_CHARS = " \n\t\r"
