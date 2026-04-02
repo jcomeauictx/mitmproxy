@@ -46,7 +46,7 @@ def decode_gzip(content):
         return None
 
 def encode_gzip(content):
-    s = cStringIO.StringIO()
+    s = cStringIO.BytesIO()
     gf = gzip.GzipFile(fileobj=s, mode='wb')
     gf.write(content)
     gf.close()
