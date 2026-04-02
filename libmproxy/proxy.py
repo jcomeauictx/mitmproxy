@@ -373,7 +373,9 @@ class ProxyHandler(tcp.BaseHandler):
         if port in self.config.transparent_proxy['sslports']:
             scheme = 'https'
             if not self.ssl_established:
-                dummycert = self.find_cert(client_conn, host, port, host)
+                dummycert = self.find_cert(
+                    client_conn, host, port, host.encode()
+                )
                 sni = HandleSNI(
                     self, client_conn, host, port,
                     dummycert, self.config.certfile or self.config.cacert

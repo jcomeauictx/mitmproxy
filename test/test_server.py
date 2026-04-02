@@ -56,7 +56,7 @@ class CommonMixin:
         t.connect()
         t.wfile.write(b'invalid\r\n\r\n')
         t.wfile.flush()
-        assert "Bad Request" in t.rfile.readline()
+        assert b"Bad Request" in t.rfile.readline()
 
 
 
