@@ -1014,7 +1014,7 @@ class ServerPlaybackState:
                 v = [str(x) for x in v]
                 hdrs.append((i, v))
             key.append(repr(hdrs))
-        return hashlib.sha256(repr(key)).digest()
+        return hashlib.sha256(repr(key).encode()).digest()
 
     def next_flow(self, request):
         """
