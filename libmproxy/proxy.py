@@ -676,7 +676,7 @@ def process_proxy_options(parser, options):
             try:
                 password_manager = http_auth.PassManHtpasswd(options.auth_htpasswd)
             except ValueError as v:
-                return parser.error(v.message)
+                return parser.error(str(v))
         authenticator = http_auth.BasicProxyAuth(password_manager, "mitmproxy")
     else:
         authenticator = http_auth.NullProxyAuth(None)

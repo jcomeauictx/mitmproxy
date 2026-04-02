@@ -1,4 +1,4 @@
-import argparse
+import argparse, logging
 from libmproxy import proxy, flow, cmdline
 try:
     import tutils
@@ -8,6 +8,7 @@ from libpathod import test
 from netlib import http, tcp
 import mock
 
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 def test_proxy_error():
     p = proxy.ProxyError(111, "msg")
@@ -48,6 +49,7 @@ class TestServerConnection:
         sc.connect()
         r = tutils.treq()
         r.path = "/p/200:da"
+        logging.debug('TestServerConnection.test_simple sending %r', r)
         sc.send(r)
         assert http.read_response(sc.rfile, r.method, 1000)
         assert self.d.last_log()
