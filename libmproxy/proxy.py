@@ -428,7 +428,9 @@ class ProxyHandler(tcp.BaseHandler):
                     ''
                 ]))
                 self.wfile.flush()
-                dummycert = self.find_cert(client_conn, host, port, host)
+                dummycert = self.find_cert(
+                    client_conn, host, port, host.encode('idna')
+                )
                 sni = HandleSNI(
                     self, client_conn, host, port,
                     dummycert, self.config.certfile or self.config.cacert
