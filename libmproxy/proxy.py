@@ -68,8 +68,8 @@ class ServerConnection(tcp.TCPClient):
             if self.config.clientcerts:
                 path = os.path.join(
                     self.config.clientcerts,
-                    self.host.encode('idna')
-                ) + b'.pem'
+                    self.host
+                ) + '.pem'
                 if os.path.exists(path):
                     clientcert = path
             try:
