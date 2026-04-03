@@ -104,7 +104,7 @@ class TestHTTP(tservers.HTTPProxTest, CommonMixin, AppMixin):
         tutils.raises("disconnect", p.request, "get:'%s'"%response)
 
     def test_reconnect(self):
-        req = "get:'%s/p/200:b@1:da'"%self.server.urlbase
+        req = "get:'%s/p/200:b@1:da'" % self.server.urlbase
         p = self.pathoc()
         assert p.request(req)
         # Server has disconnected. Mitmproxy should detect this, and reconnect.
@@ -112,7 +112,7 @@ class TestHTTP(tservers.HTTPProxTest, CommonMixin, AppMixin):
         assert p.request(req)
 
         # However, if the server disconnects on our first try, it's an error.
-        req = "get:'%s/p/200:b@1:d0'"%self.server.urlbase
+        req = "get:'%s/p/200:b@1:d0'" % self.server.urlbase
         p = self.pathoc()
         tutils.raises("server disconnect", p.request, req)
 
