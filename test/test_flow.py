@@ -1103,6 +1103,7 @@ class TestResponse:
         assert r.content != "falafel"
         r.decode()
         assert not r.headers["content-encoding"]
+        logging.debug('r.content expected to be "falafel": %r', r.content)
         assert r.content == "falafel"
 
     def test_get_header_size(self):

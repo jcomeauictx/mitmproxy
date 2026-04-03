@@ -178,14 +178,13 @@ class ScriptContext:
 
 class decoded(object):
     """
+    A context manager that decodes a request, response or error, and then
+    re-encodes it with the same encoding after execution of the block.
 
-        A context manager that decodes a request, response or error, and then
-        re-encodes it with the same encoding after execution of the block.
+    Example:
 
-        Example:
-
-        with decoded(request):
-            request.content = request.content.replace("foo", "bar")
+    with decoded(request):
+        request.content = request.content.replace("foo", "bar")
     """
     def __init__(self, o):
         self.o = o
@@ -214,23 +213,23 @@ class StateObject:
 
 class HTTPMsg(StateObject):
     def get_decoded_content(self):
-        """
-            Returns the decoded content based on the current Content-Encoding header.
-            Doesn't change the message iteself or its headers.
-        """
+        '''
+        Returns the decoded content based on the current Content-Encoding
+        header. Doesn't change the message iteself or its headers.
+        '''
         ce = self.headers.get_first("content-encoding")
         if not self.content or ce not in encoding.ENCODINGS:
             return self.content
         return encoding.decode(ce, self.content)
 
     def decode(self):
-        """
-            Decodes content based on the current Content-Encoding header, then
-            removes the header. If there is no Content-Encoding header, no
-            action is taken.
+        '''
+        Decodes content based on the current Content-Encoding header, then
+        removes the header. If there is no Content-Encoding header, no
+        action is taken.
 
-            Returns True if decoding succeeded, False otherwise.
-        """
+        Returns True if decoding succeeded, False otherwise.
+        '''
         ce = self.headers.get_first("content-encoding")
         if not self.content or ce not in encoding.ENCODINGS:
             return False
