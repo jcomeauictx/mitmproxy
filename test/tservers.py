@@ -1,4 +1,4 @@
-import threading
+import threading, logging
 try:
     import Queue
 except ImportError:
@@ -15,6 +15,8 @@ try:
     STRING_ESCAPE = 'string_escape'
 except LookupError:
     STRING_ESCAPE = 'unicode_escape'
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 APP_DOMAIN = "mitm"
 APP_IP = "1.1.1.1"
@@ -148,12 +150,14 @@ class ProxTestBase:
 
 class HTTPProxTest(ProxTestBase):
     def pathoc_raw(self):
+        logging.debug('HTTProxTest.pathoc_raw: returning raw instance')
         return libpathod.pathoc.Pathoc("127.0.0.1", self.proxy.port)
 
     def pathoc(self, sni=None):
         '''
         Returns a connected Pathoc instance.
         '''
+        logging.debug('HTTProxTest.pathoc: connecting')
         p = libpathod.pathoc.Pathoc("localhost", self.proxy.port, ssl=self.ssl, sni=sni)
         if self.ssl:
             p.connect(("127.0.0.1", self.server.port))
@@ -167,6 +171,7 @@ class HTTPProxTest(ProxTestBase):
         """
             Constructs a pathod GET request, with the appropriate base and proxy.
         """
+        logging.debug('HTTProxTest.pathod: making pathod GET request')
         p = self.pathoc(sni=sni)
         spec = spec.encode(STRING_ESCAPE)
         if self.ssl:
