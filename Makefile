@@ -72,6 +72,8 @@ tests: | .installed/py3-nose .installed/py3-mock .installed/pathod
 	$(NOSETESTS) --verbose --nocapture --nologcapture .
 diff:
 	git $@ || true
+%.diff:
+	git diff $* || true
 push pull status:
 	git $@
 commit:
