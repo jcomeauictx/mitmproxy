@@ -1083,28 +1083,28 @@ class TestResponse:
     def test_decodeencode(self):
         r = tutils.tresp()
         r.headers["content-encoding"] = ["identity"]
-        r.content = "falafel"
+        r.content = b'falafel'
         r.decode()
         assert not r.headers["content-encoding"]
-        assert r.content == "falafel"
+        assert r.content == b'falafel'
 
         r = tutils.tresp()
         r.headers["content-encoding"] = ["identity"]
-        r.content = "falafel"
+        r.content = b'falafel'
         r.encode("identity")
         assert r.headers["content-encoding"] == ["identity"]
-        assert r.content == "falafel"
+        assert r.content == b'falafel'
 
         r = tutils.tresp()
         r.headers["content-encoding"] = ["identity"]
-        r.content = "falafel"
+        r.content = b'falafel'
         r.encode("gzip")
         assert r.headers["content-encoding"] == ["gzip"]
-        assert r.content != "falafel"
+        assert r.content != b'falafel'
         r.decode()
         assert not r.headers["content-encoding"]
-        logging.debug('r.content expected to be "falafel": %r', r.content)
-        assert r.content == "falafel"
+        logging.debug('r.content expected to be b"falafel": %r', r.content)
+        assert r.content == b'falafel'
 
     def test_get_header_size(self):
         r = tutils.tresp()
