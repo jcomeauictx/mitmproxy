@@ -308,20 +308,20 @@ class TestFlow:
 
     def test_replace_encoded(self):
         f = tutils.tflow_full()
-        f.request.content = "afoob"
-        f.request.encode("gzip")
-        f.response.content = "afoob"
-        f.response.encode("gzip")
+        f.request.content = b'afoob'
+        f.request.encode('gzip')
+        f.response.content = b'afoob'
+        f.response.encode('gzip')
 
-        f.replace("foo", "bar")
+        f.replace(b'foo', b'bar')
 
-        assert f.request.content != "abarb"
+        assert f.request.content != b'abarb'
         f.request.decode()
-        assert f.request.content == "abarb"
+        assert f.request.content == b'abarb'
 
-        assert f.response.content != "abarb"
+        assert f.response.content != b'abarb'
         f.response.decode()
-        assert f.response.content == "abarb"
+        assert f.response.content == b'abarb'
 
 
 

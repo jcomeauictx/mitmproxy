@@ -1,6 +1,9 @@
-"""
-    Utility functions for decoding response bodies.
-"""
+'''
+Utility functions for decoding response bodies.
+
+NOTE: these functions still return content as *bytes*!
+      it is not decoded in the Python string/bytes sense!
+'''
 try:
     import cStringIO
 except ImportError:
@@ -48,7 +51,7 @@ def decode_gzip(content):
 def encode_gzip(content):
     s = cStringIO.BytesIO()
     gf = gzip.GzipFile(fileobj=s, mode='wb')
-    gf.write(content.encode())
+    gf.write(content)
     gf.close()
     return s.getvalue()
 

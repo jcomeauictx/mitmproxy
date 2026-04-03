@@ -1,7 +1,7 @@
-"""
-    This module provides more sophisticated flow tracking. These match requests
-    with their responses, and provide filtering and interception facilities.
-"""
+'''
+This module provides more sophisticated flow tracking. These match requests
+with their responses, and provide filtering and interception facilities.
+'''
 from __future__ import unicode_literals
 import hashlib, copy, re, os, logging
 try:
@@ -177,15 +177,18 @@ class ScriptContext:
 
 
 class decoded(object):
-    """
+    '''
     A context manager that decodes a request, response or error, and then
     re-encodes it with the same encoding after execution of the block.
+
+    NOTE: it does not bytes.decode() the content! It only deals with gzip,
+    deflate, and identity "encoding". all content is returned *as bytes*
 
     Example:
 
     with decoded(request):
-        request.content = request.content.replace("foo", "bar")
-    """
+        request.content = request.content.replace(b"foo", b"bar")
+    '''
     def __init__(self, o):
         self.o = o
         ce = o.headers.get_first("content-encoding")
@@ -229,6 +232,8 @@ class HTTPMsg(StateObject):
         action is taken.
 
         Returns True if decoding succeeded, False otherwise.
+        NOTE: it does not bytes.decode() the content! It only deals with gzip,
+        deflate, and identity "encoding". all content is returned *as bytes*
         '''
         ce = self.headers.get_first("content-encoding")
         if not self.content or ce not in encoding.ENCODINGS:
@@ -245,8 +250,8 @@ class HTTPMsg(StateObject):
 
     def encode(self, e):
         """
-            Encodes content with the encoding e, where e is "gzip", "deflate"
-            or "identity".
+        Encodes content with the encoding e, where e is "gzip", "deflate"
+        or "identity".
         """
         # FIXME: Error if there's an existing encoding header?
         self.content = encoding.encode(e, self.content)
@@ -254,8 +259,8 @@ class HTTPMsg(StateObject):
 
     def size(self, **kwargs):
         """
-            Size in bytes of a fully rendered message, including headers and
-            HTTP lead-in.
+        Size in bytes of a fully rendered message, including headers and
+        HTTP lead-in.
         """
         hl = len(self._assemble_head(**kwargs))
         if self.content:
