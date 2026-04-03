@@ -39,7 +39,7 @@ def identity(content):
     return content
 
 def decode_gzip(content):
-    gfile = gzip.GzipFile(fileobj=cStringIO.StringIO(content))
+    gfile = gzip.GzipFile(fileobj=cStringIO.BytesIO(content))
     try:
         return gfile.read()
     except (IOError, EOFError):
@@ -48,7 +48,7 @@ def decode_gzip(content):
 def encode_gzip(content):
     s = cStringIO.BytesIO()
     gf = gzip.GzipFile(fileobj=s, mode='wb')
-    gf.write(content)
+    gf.write(content.encode())
     gf.close()
     return s.getvalue()
 
