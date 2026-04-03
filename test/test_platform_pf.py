@@ -2,7 +2,7 @@ try:
     import tutils
 except ImportError:
     from . import tutils
-from libmproxy.platform import pf
+from libmproxy._platform import pf
 
 
 class TestLookup:

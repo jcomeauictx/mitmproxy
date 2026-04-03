@@ -108,11 +108,11 @@ class TestProcessProxyOptions:
         with tutils.tmpdir() as confdir:
             self.assert_noerr("--confdir", confdir)
 
-    @mock.patch("libmproxy.platform.resolver", None)
+    @mock.patch("libmproxy._platform.resolver", None)
     def test_no_transparent(self):
         self.assert_err("transparent mode not supported", "-T")
 
-    @mock.patch("libmproxy.platform.resolver")
+    @mock.patch("libmproxy._platform.resolver")
     def test_transparent_reverse(self, o):
         self.assert_err("can't set both", "-P", "reverse", "-T")
         self.assert_noerr("-T")

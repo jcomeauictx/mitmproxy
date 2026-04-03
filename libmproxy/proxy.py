@@ -11,9 +11,9 @@ except ImportError:
     import socketserver as SocketServer
 from netlib import odict, tcp, http, wsgi, certutils, http_status, http_auth
 try:
-    import utils, flow, version, platform, controller
+    import utils, flow, version, _platform, controller
 except ImportError:
-    from . import utils, flow, version, platform, controller
+    from . import utils, flow, version, _platform, controller
 try:
     file
 except NameError:
@@ -644,10 +644,10 @@ def process_proxy_options(parser, options):
         return parser.error("Can't set both reverse proxy and transparent proxy.")
 
     if options.transparent_proxy:
-        if not platform.resolver:
+        if not _platform.resolver:
             return parser.error("Transparent mode not supported on this platform.")
         trans = dict(
-            resolver = platform.resolver(),
+            resolver = _platform.resolver(),
             sslports = TRANSPARENT_SSL_PORTS
         )
     else:
