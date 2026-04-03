@@ -119,7 +119,7 @@ class TestContentView:
 
     def test_view_hex(self):
         v = cv.ViewHex()
-        assert v([], "foo", 1000)
+        assert v([], b'foo', 1000)
 
     def test_view_image(self):
         v = cv.ViewImage()

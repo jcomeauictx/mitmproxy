@@ -1,4 +1,4 @@
-import re, traceback, json
+import re, traceback, json, logging
 try:
     import cStringIO
 except ImportError:
@@ -25,6 +25,8 @@ try:
     from pyamf import remoting, flex
 except ImportError: # pragma nocover
     pyamf = None
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 VIEW_CUTOFF = 1024*50
 
@@ -78,6 +80,8 @@ class ViewRaw:
     prompt = ("raw", "r")
     content_types = []
     def __call__(self, hdrs, content, limit):
+        logging.debug('ViewRaw calling _view_text with content %r',
+                      content[:16] if content else content)
         txt = _view_text(content[:limit], len(content), limit)
         return "Raw", txt
 

@@ -1,4 +1,4 @@
-import time, os
+import time, os, logging
 try:
     import Queue
     from cStringIO import StringIO
@@ -15,6 +15,8 @@ try:
     file
 except NameError:
     file = open
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 class TestStickyCookieState:
     def _response(self, cookie, host):
@@ -1106,6 +1108,7 @@ class TestResponse:
     def test_get_header_size(self):
         r = tutils.tresp()
         result = r.get_header_size()
+        logging.debug('test_get_header_size: result: %s', result)
         assert result==49
 
     def test_get_cookies_none(self):
