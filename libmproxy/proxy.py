@@ -637,6 +637,7 @@ def process_proxy_options(parser, options):
     cacert = os.path.join(options.confdir, "mitmproxy-ca.pem")
     cacert = os.path.expanduser(cacert)
     if not os.path.exists(cacert):
+        logging.info('creating new mitmproxy cert %s', cacert)
         certutils.dummy_ca(cacert)
     body_size_limit = utils.parse_size(options.body_size_limit)
     if options.reverse_proxy and options.transparent_proxy:
