@@ -69,7 +69,7 @@ clean:
 	find . -name '*.py[co]' -delete
 tests: | .installed/py3-nose .installed/py3-mock .installed/pathod
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
-	$(NOSETESTS) --verbose --nocapture --nologcapture .
+	$(NOSETESTS) --verbose --detailed-errors --nocapture --nologcapture .
 diff:
 	git $@ || true
 %.diff:
