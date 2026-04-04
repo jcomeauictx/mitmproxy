@@ -427,6 +427,7 @@ class ProxyHandler(tcp.BaseHandler):
                     ''
                 ]))
                 self.wfile.flush()
+                logging.debug('ProxyHandler.read_request_proxy: host=%r', host)
                 dummycert = self.find_cert(
                     client_conn, host, port, host.encode('idna')
                 )
