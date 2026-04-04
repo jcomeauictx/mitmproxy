@@ -924,20 +924,20 @@ class TestRequest:
 
         r = tutils.treq()
         r.headers["content-encoding"] = ["identity"]
-        r.content = "falafel"
+        r.content = b'falafel'
         r.encode("identity")
         assert r.headers["content-encoding"] == ["identity"]
-        assert r.content == "falafel"
+        assert r.content == b'falafel'
 
         r = tutils.treq()
         r.headers["content-encoding"] = ["identity"]
-        r.content = "falafel"
+        r.content = b'falafel'
         r.encode("gzip")
         assert r.headers["content-encoding"] == ["gzip"]
-        assert r.content != "falafel"
+        assert r.content != b'falafel'
         r.decode()
         assert not r.headers["content-encoding"]
-        assert r.content == "falafel"
+        assert r.content == b'falafel'
 
     def test_get_decoded_content(self):
         r = tutils.treq()
