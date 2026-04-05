@@ -142,7 +142,7 @@ class ViewXML:
             )
 
         txt = []
-        for i in s[:limit].strip().split("\n"):
+        for i in s[:limit].strip().split(b'\n'):
             txt.append(
                 urwid.Text(("text", i)),
             )
@@ -230,14 +230,14 @@ class ViewMultipart:
             keys = []
             vals = []
 
-            for i in content.split("--" + boundary):
+            for i in content.split(b'--' + boundary):
                 parts = i.splitlines()
-                if len(parts) > 1 and parts[0][0:2] != "--":
+                if len(parts) > 1 and parts[0][0:2] != b'--':
                     match = rx.search(parts[1])
                     if match:
-                        keys.append(match.group(1) + ":")
+                        keys.append(match.group(1) + b':')
                         vals.append(netlib.utils.cleanBin(
-                            "\n".join(parts[3+parts[2:].index(""):])
+                            b'\n'.join(parts[3+parts[2:].index(b''):])
                         ))
             r = [
                 urwid.Text(("highlight", "Form data:\n")),
