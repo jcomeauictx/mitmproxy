@@ -313,7 +313,7 @@ class TestFlow:
         f.response.content = b'afoob'
         f.response.encode('gzip')
 
-        f.replace(b'foo', b'bar')
+        f.replace('foo', 'bar')
 
         assert f.request.content != b'abarb'
         f.request.decode()

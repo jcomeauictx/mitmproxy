@@ -11,6 +11,10 @@ try:
     from cgi import parse_qsl
 except ImportError:
     from urllib.parse import parse_qsl
+try:
+    unicode
+except NameError:
+    unicode = str
 import time, functools
 import json
 from netlib import http
@@ -241,9 +245,22 @@ def parse_size(s):
 
 
 def safe_subn(pattern, repl, target, *args, **kwargs):
-    """
-        There are Unicode conversion problems with re.subn. We try to smooth
-        that over by casting the pattern and replacement to strings. We really
-        need a better solution that is aware of the actual content ecoding.
-    """
-    return re.subn(str(pattern), str(repl), target, *args, **kwargs)
+    '''
+    the 0.9.2 code casted pattern and repl as str, but that causes problems
+    when dealing with bytes.
+
+    and this is called on both headers (unicode) and contents (bytes), so
+    it has to make sure they all agree
+
+    HOWEVER, we will assume that `pattern` matches `repl` and code accordingly
+    '''
+    if type(pattern) == type(repl) == type(target):
+        return re.subn(pattern, repl, target, *args, **kwargs)
+    if isinstance(target, bytes):
+        return safe_subn(
+            pattern.encode(), repl.encode(), target, *args, **kwargs
+        )
+    # if we reached here, the target is unicode, and pattern and repl are bytes
+    return safe_subn(
+        pattern.decode(), repl.decode(), target, *args, **kwargs
+    )
