@@ -8,6 +8,10 @@ try:
     import cStringIO
 except ImportError:
     import io as cStringIO  # python3
+try:
+    from io import BytesIO
+except ImportError:
+    BytesIO = cStringIO.StringIO
 import gzip, zlib
 
 __ALL__ = ["ENCODINGS"]
@@ -42,14 +46,14 @@ def identity(content):
     return content
 
 def decode_gzip(content):
-    gfile = gzip.GzipFile(fileobj=cStringIO.BytesIO(content))
+    gfile = gzip.GzipFile(fileobj=BytesIO(content))
     try:
         return gfile.read()
     except (IOError, EOFError):
         return None
 
 def encode_gzip(content):
-    s = cStringIO.BytesIO()
+    s = BytesIO()
     gf = gzip.GzipFile(fileobj=s, mode='wb')
     gf.write(content)
     gf.close()

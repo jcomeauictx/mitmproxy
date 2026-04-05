@@ -3,6 +3,10 @@ try:
     import cStringIO
 except ImportError:
     import io as cStringIO
+try:
+    from io import BytesIO
+except ImportError:
+    BytesIO = cStringIO.StringIO   # python2 fallback
 import urwid
 
 try: from PIL import Image
@@ -344,7 +348,7 @@ class ViewImage:
     ]
     def __call__(self, hdrs, content, limit):
         try:
-            img = Image.open(cStringIO.BytesIO(content))
+            img = Image.open(BytesIO(content))
         except IOError:
             return None
         parts = [
