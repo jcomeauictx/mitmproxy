@@ -945,9 +945,9 @@ class TestRequest:
         r.headers["content-encoding"] = ["identity"]
         assert r.get_decoded_content() == None
 
-        r.content = "falafel"
+        r.content = b'falafel'
         r.encode("gzip")
-        assert r.get_decoded_content() == "falafel"
+        assert r.get_decoded_content() == b'falafel'
 
     def test_get_cookies_none(self):
         h = flow.ODictCaseless()

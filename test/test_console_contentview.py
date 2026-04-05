@@ -168,7 +168,7 @@ Larry
         r = cv.get_content_view(
                 cv.get("Raw"),
                 [["content-type", "application/json"]],
-                "[1, 2, 3]",
+                b'[1, 2, 3]',
                 1000,
                 lambda x: None
               )
@@ -177,7 +177,7 @@ Larry
         r = cv.get_content_view(
                 cv.get("Auto"),
                 [["content-type", "application/json"]],
-                "[1, 2, 3]",
+                b'[1, 2, 3]',
                 1000,
                 lambda x: None
               )
@@ -186,7 +186,7 @@ Larry
         r = cv.get_content_view(
                 cv.get("Auto"),
                 [["content-type", "application/json"]],
-                "[1, 2",
+                b'[1, 2',
                 1000,
                 lambda x: None
               )
@@ -195,7 +195,7 @@ Larry
         r = cv.get_content_view(
                 cv.get("AMF"),
                 [],
-                "[1, 2",
+                b'[1, 2',
                 1000,
                 lambda x: None
               )

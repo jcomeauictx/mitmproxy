@@ -200,7 +200,10 @@ class TestHTTPS(tservers.HTTPProxTest, CommonMixin):
 class TestHTTPSNoUpstream(tservers.HTTPProxTest, CommonMixin):
     ssl = True
     no_upstream_cert = True
-    def test_cert_gen_error(self):
+    # the following fails in test_http with
+    # UnicodeError("label empty or too long"), which the double dots
+    # in 'foo..bar' is guaranteed to raise
+    def test_cert_gen_error(self):  # pragma: no cover
         f = self.pathoc_raw()
         f.connect(('foo..bar', 0))
         f.request("get:/")
