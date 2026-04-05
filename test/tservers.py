@@ -13,7 +13,7 @@ except ImportError:
 try:
     u''.encode('string_escape')
     STRING_ESCAPE = 'string_escape'
-except LookupError:
+except (TypeError, LookupError):
     STRING_ESCAPE = 'unicode_escape'
 
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
