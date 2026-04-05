@@ -90,7 +90,7 @@ def default_options():
 
 def beautify(string, opts = default_options() ):
     b = Beautifier()
-    return b.beautify(string, opts)
+    return b.beautify(string.decode(), opts)
 
 def beautify_file(file_name, opts = default_options() ):
 
