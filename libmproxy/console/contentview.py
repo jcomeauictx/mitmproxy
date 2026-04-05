@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import re, traceback, json, logging
 try:
     import cStringIO
@@ -40,7 +41,7 @@ def _view_text(content, total, limit):
         Generates a body for a chunk of text.
     """
     txt = []
-    for i in netlib.utils.cleanBin(content).splitlines():
+    for i in netlib.utils.clean_bin(content).splitlines():
         txt.append(
             urwid.Text(("text", i), wrap="any")
         )
@@ -236,7 +237,7 @@ class ViewMultipart:
                     match = rx.search(parts[1])
                     if match:
                         keys.append(match.group(1) + b':')
-                        vals.append(netlib.utils.cleanBin(
+                        vals.append(netlib.utils.clean_bin(
                             b'\n'.join(parts[3+parts[2:].index(b''):])
                         ))
             r = [
@@ -371,7 +372,10 @@ class ViewImage:
                     )
         clean = []
         for i in parts:
-            clean.append([netlib.utils.cleanBin(i[0]), netlib.utils.cleanBin(i[1])])
+            clean.append([
+                netlib.utils.clean_bin(i[0]),
+                netlib.utils.clean_bin(i[1])
+            ])
         fmt = common.format_keyvals(
                 clean,
                 key = "header",
