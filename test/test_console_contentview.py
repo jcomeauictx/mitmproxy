@@ -208,7 +208,7 @@ Larry
                     ["content-type", "application/json"],
                     ["content-encoding", "gzip"]
                 ],
-                encoding.encode('gzip', "[1, 2, 3]"),
+                encoding.encode('gzip', b'[1, 2, 3]'),
                 1000,
                 lambda x: None
               )
@@ -221,7 +221,7 @@ Larry
                     ["content-type", "application/json"],
                     ["content-encoding", "gzip"]
                 ],
-                encoding.encode('gzip', "[1, 2, 3]"),
+                encoding.encode('gzip', b'[1, 2, 3]'),
                 1000,
                 lambda x: None
               )
