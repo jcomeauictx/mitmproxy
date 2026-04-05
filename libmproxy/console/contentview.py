@@ -222,11 +222,11 @@ class ViewMultipart:
             v = utils.parse_content_type(v)
             if not v:
                 return
-            boundary = v[2].get("boundary")
+            boundary = v[2].get('boundary', '').encode()
             if not boundary:
                 return
 
-            rx = re.compile(r'\bname="([^"]+)"')
+            rx = re.compile(b'\\bname="([^"]+)"')
             keys = []
             vals = []
 
