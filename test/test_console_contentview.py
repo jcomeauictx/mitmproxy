@@ -109,13 +109,13 @@ class TestContentView:
 
     def test_view_raw(self):
         v = cv.ViewRaw()
-        assert v([], "foo", 1000)
+        assert v([], b'foo', 1000)
 
     def test_view_javascript(self):
         v = cv.ViewJavaScript()
-        assert v([], "[1, 2, 3]", 100)
-        assert v([], "[1, 2, 3", 100)
-        assert v([], "function(a){[1, 2, 3]}", 100)
+        assert v([], b'[1, 2, 3]', 100)
+        assert v([], b'[1, 2, 3', 100)
+        assert v([], b'function(a){[1, 2, 3]}', 100)
 
     def test_view_hex(self):
         v = cv.ViewHex()
@@ -135,17 +135,17 @@ class TestContentView:
         p = tutils.test_data.path("data/image.ico")
         assert v([], file(p,"rb").read(), sys.maxint)
 
-        assert not v([], "flibble", sys.maxint)
+        assert not v([], b'flibble', sys.maxint)
 
     def test_view_multipart(self):
         view = cv.ViewMultipart()
-        v = """
+        v = b'''
 --AaB03x
 Content-Disposition: form-data; name="submit-name"
 
 Larry
 --AaB03x
-        """.strip()
+        '''.strip()
         h = flow.ODictCaseless(
             [("Content-Type", "multipart/form-data; boundary=AaB03x")]
         )
