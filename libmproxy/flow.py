@@ -1066,7 +1066,7 @@ class StickyCookieState:
             # FIXME: We now know that Cookie.py screws up some cookies with
             # valid RFC 822/1123 datetime specifications for expiry. Sigh.
             c = SimpleCookie(str(i))
-            m = c.values()[0]
+            m = list(c.values())[0]
             k = self.ckey(m, f)
             if self.domain_match(f.request.host, k[0]):
                 self.jar[self.ckey(m, f)] = m
