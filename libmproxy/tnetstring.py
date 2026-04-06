@@ -379,7 +379,7 @@ def pop(string,encoding=None):
     except ValueError:
         raise ValueError('not a tnetstring: missing or invalid length prefix')
     try:
-        (data,_type,remain) = (rest[:dlen],rest[dlen],rest[dlen+1:])
+        (data,_type,remain) = (rest[:dlen],rest[dlen:dlen+1],rest[dlen+1:])
     except IndexError:
         #  This fires if len(rest) < dlen, meaning we don't need
         #  to further validate that data is the right length.
