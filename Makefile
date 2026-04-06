@@ -27,13 +27,7 @@ install: setup.py build \
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
 	$(PYTHON) $< $@ --user --force
 build: setup.py clean .FORCE | .installed/python3
-	# build companion projects before mitmproxy
-	if [ "$(PACKAGE)" = "mitmproxy" ]; then \
-	 for sibling in $(filter-out $(PACKAGE),$(SIBLINGS)); do \
-	  (cd ../$$sibling && git checkout $(BRANCH)); \
-	  $(MAKE) -C ../$$sibling $@; \
-	 done; \
-	fi
+	# should probably build companion projects before mitmproxy
 	$(PYTHON) $< $@
 # this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
