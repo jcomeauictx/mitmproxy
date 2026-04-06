@@ -287,9 +287,9 @@ def loads(string,encoding=None):
     return pop(string,encoding)[0]
 
 
-def load(file,encoding=None):
+def load(infile, encoding=None):
     '''
-    load(file,encoding=None) -> object
+    load(infile,encoding=None) -> object
 
     This function reads a tnetstring from a file and parses it into a
     python object.  The file must support the read() method, and this
@@ -297,27 +297,31 @@ def load(file,encoding=None):
     '''
     #  Read the length prefix one char at a time.
     #  Note that the netstring spec explicitly forbids padding zeros.
-    c = file.read(1)
+    def nextbyte(count=1):
+        found = infile.read(count)
+        logging.debug('next bytes: %r', found)
+        return found
+    c = nextbyte()
     if not c.isdigit():
         raise ValueError('not a tnetstring: missing or invalid length prefix')
     datalen = ord(c) - ord(b'0')
-    c = file.read(1)
+    c = nextbyte()
     if datalen != 0:
         while c.isdigit():
             datalen = (10 * datalen) + (ord(c) - ord(b'0'))
             if datalen > 999999999:
                 errmsg = 'not a tnetstring: absurdly large length prefix'
                 raise ValueError(errmsg)
-            c = file.read(1)
+            c = nextbyte()
     if c != b':':
         raise ValueError('not a tnetstring: missing or invalid length prefix')
     #  Now we can read and parse the payload.
     #  This repeats the dispatch logic of pop() so we can avoid
     #  re-constructing the outermost tnetstring.
-    data = file.read(datalen)
+    data = nextbyte(datalen)
     if len(data) != datalen:
         raise ValueError('not a tnetstring: length prefix too big')
-    _type = file.read(1)
+    _type = nextbyte()
     if _type == b',':
         if encoding is not None:
             return data.decode(encoding)
