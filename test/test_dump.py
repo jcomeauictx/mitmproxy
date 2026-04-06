@@ -133,7 +133,7 @@ class TestDumpMaster:
     def test_basic(self):
         for i in (1, 2, 3):
             assert "GET" in self._dummy_cycle(1, "~s", "", verbosity=i, eventlog=True)
-            assert "GET" in self._dummy_cycle(1, "~s", "\x00\x00\x00", verbosity=i)
+            assert "GET" in self._dummy_cycle(1, "~s", b'\x00\x00\x00', verbosity=i)
             assert "GET" in self._dummy_cycle(1, "~s", "ascii", verbosity=i)
 
     def test_write(self):

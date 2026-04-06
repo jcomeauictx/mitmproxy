@@ -97,7 +97,7 @@ class ViewHex:
     content_types = []
     def __call__(self, hdrs, content, limit):
         txt = []
-        for offset, hexa, s in netlib.utils.hexdump(content[:limit]).decode():
+        for offset, hexa, s in netlib.utils.hexdump(content[:limit]):
             txt.append(urwid.Text([
                 ("offset", offset),
                 " ",

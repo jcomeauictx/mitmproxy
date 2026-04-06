@@ -33,11 +33,11 @@ def format_timestamp(s):
 
 
 def isBin(s):
-    """
-        Does this string have any non-ASCII characters?
-    """
-    for i in s:
-        i = ord(i)
+    '''
+    Does this unicode or bytes object have any non-ASCII characters?
+    '''
+    for j in range(len(s)):
+        i = ord(s[j:j + 1])
         if i < 9:
             return True
         elif i > 13 and i < 32:
@@ -48,10 +48,21 @@ def isBin(s):
 
 
 def isXML(s):
+    '''
+    does this string or bytes object appear to be XML?
+
+    i.e., does it start with a `<` after possibly some whitespace?
+    '''
+    if isinstance(s, bytes):
+        whitespace = b' \n\t'
+        xml_marker = b'<'
+    else:
+        whitespace = ' \n\t'
+        xml_marker = '<'
     for i in s:
-        if i in "\n \t":
+        if i in whitespace:
             continue
-        elif i == "<":
+        elif i == xml_marker:
             return True
         else:
             return False
