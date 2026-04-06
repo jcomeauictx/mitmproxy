@@ -790,9 +790,9 @@ class Response(HTTPMsg):
         logging.debug('_assemble: head=%s', head)
         # should this be bytes or strings?!
         if self.content:
-            return head.encode() + self.content
+            return head + self.content
         else:
-            return head.encode()
+            return head
 
     def replace(self, pattern, repl, *args, **kwargs):
         """
