@@ -76,6 +76,8 @@ diff:
 	git diff $* || true
 push pull status:
 	git $@
+log:
+	git $@ | head
 commit:
 	git $@ -a
 env:
