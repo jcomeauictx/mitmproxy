@@ -317,46 +317,46 @@ def load(file,encoding=None):
     data = file.read(datalen)
     if len(data) != datalen:
         raise ValueError('not a tnetstring: length prefix too big')
-    type = file.read(1)
-    if type == b',':
+    _type = file.read(1)
+    if _type == b',':
         if encoding is not None:
             return data.decode(encoding)
         return data
-    if type == b'#':
+    if _type == b'#':
         try:
             return int(data)
         except ValueError:
             raise ValueError('not a tnetstring: invalid integer literal')
-    if type == b'^':
+    if _type == b'^':
         try:
             return float(data)
         except ValueError:
             raise ValueError('not a tnetstring: invalid float literal')
-    if type == b'!':
+    if _type == b'!':
         if data == b'true':
             return True
         elif data == b'false':
             return False
         else:
             raise ValueError('not a tnetstring: invalid boolean literal')
-    if type == b'~':
+    if _type == b'~':
         if data:
             raise ValueError('not a tnetstring: invalid null literal')
         return None
-    if type == b']':
+    if _type == b']':
         l = []
         while data:
             (item,data) = pop(data,encoding)
             l.append(item)
         return l
-    if type == b'}':
+    if _type == b'}':
         d = {}
         while data:
             (key,data) = pop(data,encoding)
             (val,data) = pop(data,encoding)
             d[key] = val
         return d
-    raise ValueError('unknown type tag')
+    raise ValueError('unknown type tag %r in tnetstring %r' % (_type, string))
 
 
 
@@ -375,48 +375,48 @@ def pop(string,encoding=None):
     except ValueError:
         raise ValueError('not a tnetstring: missing or invalid length prefix')
     try:
-        (data,type,remain) = (rest[:dlen],rest[dlen],rest[dlen+1:])
+        (data,_type,remain) = (rest[:dlen],rest[dlen],rest[dlen+1:])
     except IndexError:
         #  This fires if len(rest) < dlen, meaning we don't need
         #  to further validate that data is the right length.
         raise ValueError('not a tnetstring: invalid length prefix')
     #  Parse the data based on the type tag.
-    if type == b',':
+    if _type == b',':
         if encoding is not None:
             return (data.decode(encoding),remain)
         return (data,remain)
-    if type == b'#':
+    if _type == b'#':
         try:
             return (int(data),remain)
         except ValueError:
             raise ValueError('not a tnetstring: invalid integer literal')
-    if type == b'^':
+    if _type == b'^':
         try:
             return (float(data),remain)
         except ValueError:
             raise ValueError('not a tnetstring: invalid float literal')
-    if type == b'!':
+    if _type == b'!':
         if data == b'true':
             return (True,remain)
         elif data == b'false':
             return (False,remain)
         else:
             raise ValueError('not a tnetstring: invalid boolean literal')
-    if type == b'~':
+    if _type == b'~':
         if data:
             raise ValueError('not a tnetstring: invalid null literal')
         return (None,remain)
-    if type == b']':
+    if _type == b']':
         l = []
         while data:
             (item,data) = pop(data,encoding)
             l.append(item)
         return (l,remain)
-    if type == b'}':
+    if _type == b'}':
         d = {}
         while data:
             (key,data) = pop(data,encoding)
             (val,data) = pop(data,encoding)
             d[key] = val
         return (d,remain)
-    raise ValueError('unknown type tag')
+    raise ValueError('unknown type tag %r in tnetstring %r' % (_type, string))
