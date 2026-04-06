@@ -173,7 +173,7 @@ class HTTPProxTest(ProxTestBase):
         """
         logging.debug('HTTProxTest.pathod: making pathod GET request')
         p = self.pathoc(sni=sni)
-        spec = spec.encode(STRING_ESCAPE)
+        spec = spec.encode(STRING_ESCAPE).decode('ascii')
         if self.ssl:
             q = "get:'/p/%s'"%spec
         else:
