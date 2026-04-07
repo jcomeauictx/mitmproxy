@@ -1,4 +1,4 @@
-import os
+import os, logging
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -9,6 +9,8 @@ try:
 except ImportError:
     from . import tutils
 import mock
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 def test_strfuncs():
     t = tutils.tresp()
@@ -92,10 +94,13 @@ class TestDumpMaster:
             m = dump.DumpMaster(None, o, None, outfile=cs)
 
     def test_read(self):
+        logging.debug('TestDumpMaster.test_read: starting')
         with tutils.tmpdir() as t:
             p = os.path.join(t, "read")
             self._flowfile(p)
-            assert "GET" in self._dummy_cycle(0, None, "", verbosity=1, rfile=p)
+            output = self._dummy_cycle(0, None, "", verbosity=1, rfile=p)
+            logging.debug('TestDumpMaster.test_read: output=%r', output)
+            assert b'GET' in output
 
             tutils.raises(
                 dump.DumpError, self._dummy_cycle,
@@ -103,7 +108,9 @@ class TestDumpMaster:
             )
 
             # We now just ignore errors
-            self._dummy_cycle(0, None, "", verbosity=1, rfile=tutils.test_data.path("test_dump.py"))
+            self._dummy_cycle(0, None, "", verbosity=1,
+                              rfile=tutils.test_data.path("test_dump.py"))
+        logging.debug('TestDumpMaster.test_read: ending')
 
     def test_options(self):
         o = dump.Options(verbosity = 2)
