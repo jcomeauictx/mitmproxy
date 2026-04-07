@@ -74,15 +74,15 @@ class TestContentView:
 
     def test_view_html(self):
         v = cv.ViewHTML()
-        s = "<html><br><br></br><p>one</p></html>"
+        s = b'<html><br><br></br><p>one</p></html>'
         assert v([], s, 1000)
 
-        s = "gobbledygook"
+        s = b'gobbledygook'
         assert not v([], s, 1000)
 
     def test_view_html_outline(self):
         v = cv.ViewHTMLOutline()
-        s = "<html><br><br></br><p>one</p></html>"
+        s = b'<html><br><br></br><p>one</p></html>'
         assert v([], s, 1000)
 
     def test_view_json(self):
@@ -97,14 +97,14 @@ class TestContentView:
         v = cv.ViewXML()
         assert v([], "<foo></foo>", 1000)
         assert not v([], "<foo>", 1000)
-        s = """<?xml version="1.0" encoding="UTF-8"?>
+        s = b'''<?xml version="1.0" encoding="UTF-8"?>
             <?xml-stylesheet title="XSL_formatting"?>
             <rss
                 xmlns:media="http://search.yahoo.com/mrss/"
                 xmlns:atom="http://www.w3.org/2005/Atom"
                 version="2.0">
             </rss>
-        """
+        '''
         assert v([], s, 1000)
 
     def test_view_raw(self):
