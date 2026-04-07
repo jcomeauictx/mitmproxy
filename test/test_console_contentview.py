@@ -95,8 +95,8 @@ class TestContentView:
 
     def test_view_xml(self):
         v = cv.ViewXML()
-        assert v([], "<foo></foo>", 1000)
-        assert not v([], "<foo>", 1000)
+        assert v([], b'<foo></foo>', 1000)
+        assert not v([], b'<foo>', 1000)
         s = b'''<?xml version="1.0" encoding="UTF-8"?>
             <?xml-stylesheet title="XSL_formatting"?>
             <rss
