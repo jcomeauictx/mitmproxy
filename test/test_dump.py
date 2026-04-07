@@ -164,6 +164,7 @@ class TestDumpMaster:
             1, None, "",
             script=tutils.test_data.path("scripts/all.py"), verbosity=0, eventlog=True
         )
+        logging.debug('TestDumpMaster.test_script: ret=%r', ret)
         assert "XCLIENTCONNECT" in ret
         assert "XREQUEST" in ret
         assert "XRESPONSE" in ret
