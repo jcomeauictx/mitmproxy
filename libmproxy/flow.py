@@ -599,7 +599,7 @@ class Request(HTTPMsg):
                 self.httpversion[0],
                 self.httpversion[1],
                 str(headers)
-            ).encode()
+            )
 
     def _assemble(self, _proxy = False):
         """
