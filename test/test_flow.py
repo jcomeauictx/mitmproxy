@@ -37,13 +37,17 @@ class TestStickyCookieState:
             "Expires=Wed, 13-Jan-2021 22:23:01 GMT; Secure; "
 
         s, f = self._response(c, "host")
-        assert not s.jar.keys()
+        assert not list(s.jar.keys())
 
         s, f = self._response(c, "www.google.com")
-        assert s.jar.keys()
+        assert list(s.jar.keys())
 
         s, f = self._response("SSID=mooo", "www.google.com")
-        assert s.jar.keys()[0] == ('www.google.com', 80, '/')
+        keys = list(s.jar.keys())
+        logging.debug(
+            'TestStickyCookieState.test_handle_response, keys: %r', keys
+        )
+        assert keys[0] == ('www.google.com', 80, '/')
 
     def test_handle_request(self):
         s, f = self._response("SSID=mooo", "www.google.com")
