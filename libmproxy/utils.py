@@ -32,7 +32,7 @@ def format_timestamp(s):
     return d.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def isBin(s):
+def is_bin(s):
     '''
     Does this unicode or bytes object have any non-ASCII characters?
     '''
@@ -47,7 +47,7 @@ def isBin(s):
     return False
 
 
-def isXML(s):
+def is_XML(s):
     '''
     does this string or bytes object appear to be XML?
 
@@ -59,10 +59,11 @@ def isXML(s):
     else:
         whitespace = ' \n\t'
         xml_marker = '<'
-    for i in s:
-        if i in whitespace:
+    for i in range(len(s)):
+        c = s[i:i + 1]
+        if c in whitespace:
             continue
-        elif i == xml_marker:
+        elif c == xml_marker:
             return True
         else:
             return False

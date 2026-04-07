@@ -1211,6 +1211,7 @@ class TestClientConnect:
 
 def test_decoded():
     r = tutils.treq()
+    logging.debug('test_flow.test_decoded: r: %r', r)
     assert r.content == "content"
     assert not r.headers["content-encoding"]
     r.encode("gzip")

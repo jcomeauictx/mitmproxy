@@ -14,17 +14,17 @@ def test_format_timestamp():
     assert utils.format_timestamp(utils.timestamp())
 
 
-def test_isBin():
-    assert not utils.isBin("testing\n\r")
-    assert utils.isBin("testing\x01")
-    assert utils.isBin("testing\x0e")
-    assert utils.isBin("testing\x7f")
+def test_is_bin():
+    assert not utils.is_bin("testing\n\r")
+    assert utils.is_bin("testing\x01")
+    assert utils.is_bin("testing\x0e")
+    assert utils.is_bin("testing\x7f")
 
 
-def test_isXml():
-    assert not utils.isXML("foo")
-    assert utils.isXML("<foo")
-    assert utils.isXML("  \n<foo")
+def test_is_XML():
+    assert not utils.is_XML("foo")
+    assert utils.is_XML("<foo")
+    assert utils.is_XML("  \n<foo")
 
 
 def test_del_all():

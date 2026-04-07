@@ -75,7 +75,7 @@ class ViewAuto:
             ct = "%s/%s"%(ct[0], ct[1])
             if ct in content_types_map:
                 return content_types_map[ct][0](hdrs, content, limit)
-            elif utils.isXML(content):
+            elif utils.is_XML(content):
                 return get("XML")(hdrs, content, limit)
         return get("Raw")(hdrs, content, limit)
 
@@ -176,12 +176,18 @@ class ViewHTML:
     prompt = ("html", "h")
     content_types = ["text/html"]
     def __call__(self, hdrs, content, limit):
-        if utils.isXML(content):
-            parser = lxml.etree.HTMLParser(strip_cdata=True, remove_blank_text=True)
+        logging.debug('ViewHTML: content=%r', content)
+        if utils.is_XML(content):
+            logging.debug('ViewHTML: content is deemed XML')
+            parser = lxml.etree.HTMLParser(
+                strip_cdata=True, remove_blank_text=True)
             d = lxml.html.fromstring(content, parser=parser)
             docinfo = d.getroottree().docinfo
-            s = lxml.etree.tostring(d, pretty_print=True, doctype=docinfo.doctype)
+            s = lxml.etree.tostring(
+                d, pretty_print=True, doctype=docinfo.doctype)
             return "HTML", _view_text(s[:limit], len(s), limit)
+        else:
+            logging.debug('ViewHTML: content was not deemed XML')
 
 
 class ViewHTMLOutline:

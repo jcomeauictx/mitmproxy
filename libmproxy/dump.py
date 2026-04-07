@@ -170,7 +170,7 @@ class DumpMaster(flow.FlowMaster):
             if self.o.verbosity > 1:
                 result = result + "\n\n" + self.indent(4, f.response.headers)
             if self.o.verbosity > 2:
-                if utils.isBin(f.response.content):
+                if utils.is_bin(f.response.content):
                     d = netlib.utils.hexdump(f.response.content)
                     d = "\n".join("%s\t%s %s"%i for i in d)
                     cont = self.indent(4, d)
@@ -194,7 +194,7 @@ class DumpMaster(flow.FlowMaster):
         elif self.o.verbosity >= 3:
             print(str_request(f.request, self.showhost), file=self.outfile)
             print(self.indent(4, f.request.headers), file=self.outfile)
-            if utils.isBin(f.request.content):
+            if utils.is_bin(f.request.content):
                 print(self.indent(4, netlib.utils.hexdump(f.request.content)), file=self.outfile)
             elif f.request.content:
                 print(self.indent(4, f.request.content), file=self.outfile)
