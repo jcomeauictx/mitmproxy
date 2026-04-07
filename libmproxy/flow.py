@@ -30,6 +30,7 @@ try:
     import controller, version, app
 except ImportError:
     from . import controller, version, app
+
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.WARNING)
 
 HDR_FORM_URLENCODED = "application/x-www-form-urlencoded"
@@ -1070,6 +1071,10 @@ class StickyCookieState:
             c = SimpleCookie(str(i))
             m = list(c.values())[0]
             k = self.ckey(m, f)
+            logging.debug(
+                'StickyCookieState.handle_response: %r=%r ? %r=%r',
+                f.request.host, k[0], self.ckey(m, f), m
+            )
             if self.domain_match(f.request.host, k[0]):
                 self.jar[self.ckey(m, f)] = m
 
