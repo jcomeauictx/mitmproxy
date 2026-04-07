@@ -11,13 +11,13 @@ from libmproxy import flow, proxy
 
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
-"""
-    Note that the choice of response code in these tests matters more than you
-    might think. libcurl treats a 304 response code differently from, say, a
-    200 response code - it will correctly terminate a 304 response with no
-    content-length header, whereas it will block forever waiting for content
-    for a 200 response.
-"""
+'''
+Note that the choice of response code in these tests matters more than you
+might think. libcurl treats a 304 response code differently from, say, a
+200 response code - it will correctly terminate a 304 response with no
+content-length header, whereas it will block forever waiting for content
+for a 200 response.
+'''
 
 class CommonMixin:
     def test_large(self):
@@ -56,7 +56,7 @@ class CommonMixin:
         t.connect()
         t.wfile.write(b'invalid\r\n\r\n')
         t.wfile.flush()
-        assert b"Bad Request" in t.rfile.readline()
+        assert b'Bad Request' in t.rfile.readline()
 
 
 
@@ -266,8 +266,11 @@ class TestProxy(tservers.HTTPProxTest):
         connection.connect(("127.0.0.1", self.proxy.port))
 
         # call pathod server, wait a second to complete the request
-        connection.send("GET http://localhost:%d/p/304:b@1k HTTP/1.1\r\n"%self.server.port)
-        connection.send("\r\n");
+        connection.send(
+            b'GET http://localhost:%d/p/304:b@1k HTTP/1.1\r\n' %
+            self.server.port
+        )
+        connection.send(b'\r\n');
         connection.recv(50000)
         connection.close()
 
@@ -294,11 +297,17 @@ class TestProxy(tservers.HTTPProxTest):
         # while others do not
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.connect(("localhost", self.proxy.port))
-        connection.send("GET http://localhost:%d/p/304:b@1k HTTP/1.1\r\n"%self.server.port)
-        connection.send("\r\n");
+        connection.send(
+            b'GET http://localhost:%d/p/304:b@1k HTTP/1.1\r\n' %
+            self.server.port
+        )
+        connection.send(b'\r\n');
         connection.recv(5000)
-        connection.send("GET http://localhost:%d/p/304:b@1k HTTP/1.1\r\n"%self.server.port)
-        connection.send("\r\n");
+        connection.send(
+            b'GET http://localhost:%d/p/304:b@1k HTTP/1.1\r\n' %
+            self.server.port
+        )
+        connection.send(b'\r\n');
         connection.recv(5000)
         connection.close()
 
@@ -314,7 +323,7 @@ class TestProxySSL(tservers.HTTPProxTest):
     ssl=True
     def test_request_ssl_setup_timestamp_presence(self):
         # tests that the ssl timestamp is present when ssl is used
-        f = self.pathod("304:b@10k")
+        f = self.pathod('304:b@10k')
         assert f.status_code == 304
         first_request = self.master.state.view[0].request
         assert first_request.ssl_setup_timestamp
@@ -328,7 +337,7 @@ class MasterFakeResponse(tservers.TestMaster):
 class TestFakeResponse(tservers.HTTPProxTest):
     masterclass = MasterFakeResponse
     def test_fake(self):
-        f = self.pathod("200")
+        f = self.pathod('200')
         assert "header_response" in f.headers.keys()
 
 
