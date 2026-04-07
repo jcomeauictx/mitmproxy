@@ -1,9 +1,11 @@
-import argparse
+import argparse, logging
 from libmproxy import cmdline
 try:
     import tutils
 except ImportError:
     from . import tutils
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 def test_parse_replace_hook():
     x = cmdline.parse_replace_hook("/foo/bar/voing")
@@ -96,6 +98,7 @@ def test_common():
     p = tutils.test_data.path("data/replace")
     opts.replace_file = [("/foo/bar/%s"%p)]
     v = cmdline.get_common_options(opts)["replacements"]
+    logging.debug('test_cmdline: v=%r', v)
     assert len(v) == 1
-    assert v[0][2].strip() == "replacecontents"
+    assert v[0][2].strip() == b'replacecontents'
 
