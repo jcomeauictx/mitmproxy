@@ -1,9 +1,11 @@
+import logging
 try:
     import cStringIO
 except ImportError:
     import io as cStringIO
 from libmproxy import filt, flow
 
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 class TestParsing:
     def _dump(self, x):
@@ -41,6 +43,8 @@ class TestParsing:
         assert a.expr == "foobar"
 
         a = filt.parse(r"~u 'foobar\"\''")
+        logging.debug('TestParsing.test_quoting: a=%r, a.expr=%r',
+                      vars(a), a.expr)
         assert a.expr == "foobar\"'"
 
         a = filt.parse(r'~u "foo \'bar"')
