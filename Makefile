@@ -11,6 +11,8 @@ SIBLINGS := netlib mitmproxy pathod
 # use python3 nosetests by default, override on command line
 # by using `make NOSETESTS=nosetests-2.7 tests`
 NOSETESTS := $(PYTHON) -m nose
+# limit lines of output for `make log`
+LOGLIMIT ?= 10000
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
 ifneq ($(SHOWENV),)
@@ -71,7 +73,7 @@ diff:
 push pull status:
 	git $@
 log:
-	git $@ | head
+	git $@ | head -n $(LOGLIMIT)
 commit:
 	git $@ -a
 env:
