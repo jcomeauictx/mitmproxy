@@ -790,7 +790,7 @@ class Response(HTTPMsg):
         logging.debug('_assemble: head=%s', head)
         # should this be bytes or strings?!
         if self.content:
-            return head + self.content
+            return head + self.content.decode()
         else:
             return head
 
