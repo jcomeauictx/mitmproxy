@@ -11,9 +11,9 @@ try:
 except ImportError:
     from . import tutils
 try:
-    u''.encode('string_escape')
+    b'\x80'.encode('string_escape')
     STRING_ESCAPE = 'string_escape'
-except (TypeError, LookupError):
+except AttributeError:
     STRING_ESCAPE = 'unicode_escape'
 
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)

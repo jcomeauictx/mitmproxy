@@ -788,9 +788,11 @@ class Response(HTTPMsg):
             return None
         head = self._assemble_head()
         logging.debug('_assemble: head=%s', head)
-        # should this be bytes or strings?!
+        # treating as strings, but strings of random data, which is what
+        # pathod seems to generate.
+        # NOTE: may need to revisit these assumptions
         if self.content:
-            return head + self.content.decode()
+            return head + self.content.decode('latin-1')
         else:
             return head
 
