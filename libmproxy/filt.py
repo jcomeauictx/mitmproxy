@@ -32,9 +32,10 @@
         rex         Equivalent to ~u rex
 """
 from __future__ import print_function
-import re, sys
+import re, sys, logging
 from libpathod.contrib import pyparsing as pp
 
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 class _Token:
     def dump(self, indent=0, fp=sys.stdout):
@@ -165,9 +166,12 @@ class FBod(_Rex):
     code = "b"
     help = "Body"
     def __call__(self, f):
+        logging.debug('Fbod: self.expr=%r, content: %r',
+                      self.expr, f.request.content)
         if f.request.content and re.search(self.expr, f.request.content):
             return True
-        elif f.response and f.response.content and re.search(self.expr, f.response.content):
+        elif f.response and f.response.content and re.search(
+                self.expr, f.response.content):
             return True
         return False
 

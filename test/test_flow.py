@@ -198,8 +198,11 @@ class TestFlow:
 
     def test_match(self):
         f = tutils.tflow()
+        logging.debug('TestFlow.test_match: f=%r', vars(f))
         f.response = tutils.tresp()
         f.request = f.response.request
+        logging.debug('TestFlow.test_match: f.response: %r, f.request: %r',
+                      vars(f.response), vars(f.request))
         assert not f.match("~b test")
         assert f.match(None)
         assert not f.match("~b test")
