@@ -1712,9 +1712,12 @@ class FlowReader:
         try:
             while 1:
                 data = tnetstring.load(self.fo)
+                logging.debug('Flow.stream: data: %r', data)
                 if tuple(data["version"][:2]) != version.IVERSION[:2]:
                     v = ".".join(str(i) for i in data["version"])
-                    raise FlowReadError("Incompatible serialized data version: %s"%v)
+                    raise FlowReadError(
+                        "Incompatible serialized data version: %s" % v
+                    )
                 off = self.fo.tell()
                 yield Flow._from_state(data)
         except ValueError as v:

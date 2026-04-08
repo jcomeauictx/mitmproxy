@@ -100,7 +100,7 @@ class TestDumpMaster:
             self._flowfile(p)
             output = self._dummy_cycle(0, None, "", verbosity=1, rfile=p)
             logging.debug('TestDumpMaster.test_read: output=%r', output)
-            assert b'GET' in output
+            assert 'GET' in output
 
             tutils.raises(
                 dump.DumpError, self._dummy_cycle,

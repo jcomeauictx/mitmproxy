@@ -60,10 +60,10 @@ By default tnetstrings work only with byte strings, not unicode.  If you want
 unicode strings then pass an optional encoding to the various functions,
 like so::
 
-    >>> print(repr(tnetstring.loads("2:\\xce\\xb1,")))
+    >>> print(repr(tnetstring.loads(b'2:\\xce\\xb1,')))
     '\\xce\\xb1'
     >>>
-    >>> print(repr(tnetstring.loads("2:\\xce\\xb1,","utf8")))
+    >>> print(repr(tnetstring.loads(b'2:\\xce\\xb1,','utf-8')))
     u'\u03b1'
 
 """
@@ -91,9 +91,9 @@ try:
 except NameError:
     unicode = str
 
-def dumps(value,encoding=None):
+def dumps(value, encoding='utf-8'):
     '''
-    dumps(object,encoding=None) -> string
+    dumps(object, encoding) -> string
 
     This function dumps a python object as a tnetstring (bytes).
     '''
@@ -104,23 +104,23 @@ def dumps(value,encoding=None):
     #  consider the _gdumps() function instead; it's a standard top-down
     #  generator that's simpler to understand but much less efficient.
     q = deque()
-    _rdumpq(q,0,value,encoding)
+    _rdumpq(q, 0, value, encoding)
     #logging.debug('q before joining: %s', q)
     return b''.join(q)
 
 
-def dump(value,file,encoding=None):
+def dump(value, file, encoding='latin-1'):
     '''
-    dump(object,file,encoding=None)
+    dump(object, file, encoding)
 
     This function dumps a python object as a tnetstring and writes it to
     the given file.
     '''
-    file.write(dumps(value,encoding))
+    file.write(dumps(value, encoding))
     file.flush()
 
 
-def _rdumpq(q,size,value,encoding=None):
+def _rdumpq(q, size, value, encoding='latin-1'):
     '''
     Dump value as a tnetstring, to a deque instance, last chunks first.
 
@@ -147,9 +147,9 @@ def _rdumpq(q,size,value,encoding=None):
         write(b'5:false!')
         return size + 8
     if isinstance(value,(int,long)):
-        data = str(value).encode(encoding or 'utf-8')
+        data = str(value).encode(encoding)
         ldata = len(data)
-        span = str(ldata).encode(encoding or 'utf-8')
+        span = str(ldata).encode(encoding)
         write(b'#')
         write(data)
         write(b':')
@@ -160,9 +160,9 @@ def _rdumpq(q,size,value,encoding=None):
         #  It round-trips more accurately.
         #  Probably unnecessary in later python versions that
         #  use David Gay's ftoa routines.
-        data = repr(value).encode(encoding or 'utf-8')
+        data = repr(value).encode(encoding)
         ldata = len(data)
-        span = str(ldata).encode(encoding or 'utf-8')
+        span = str(ldata).encode(encoding)
         write(b'^')
         write(data)
         write(b':')
@@ -170,7 +170,7 @@ def _rdumpq(q,size,value,encoding=None):
         return size + 2 + len(span) + ldata
     if isinstance(value,bytes):
         lvalue = len(value)
-        span = str(lvalue).encode(encoding or 'utf-8')
+        span = str(lvalue).encode(encoding)
         write(b',')
         write(value)
         write(b':')
@@ -180,8 +180,8 @@ def _rdumpq(q,size,value,encoding=None):
         write(b']')
         init_size = size = size + 1
         for item in reversed(value):
-            size = _rdumpq(q,size,item,encoding)
-        span = str(size - init_size).encode(encoding or 'utf-8')
+            size = _rdumpq(q, size, item, encoding)
+        span = str(size - init_size).encode(encoding)
         write(b':')
         write(span)
         return size + 1 + len(span)
@@ -189,20 +189,20 @@ def _rdumpq(q,size,value,encoding=None):
         write(b'}')
         init_size = size = size + 1
         for (k,v) in value.items():
-            size = _rdumpq(q,size,v,encoding)
-            size = _rdumpq(q,size,k,encoding)
-        span = str(size - init_size).encode(encoding or 'utf-8')
+            size = _rdumpq(q, size, v, encoding)
+            size = _rdumpq(q, size, k, encoding)
+        span = str(size - init_size).encode(encoding)
         write(b':')
         write(span)
         return size + 1 + len(span)
-    if isinstance(value,unicode):
+    if isinstance(value, unicode):
         if encoding is None:
             raise ValueError(
                 'must specify encoding to dump unicode strings: %r' % value
             )
         value = value.encode(encoding)
         lvalue = len(value)
-        span = str(lvalue).encode(encoding or 'utf-8')
+        span = str(lvalue).encode(encoding)
         write(b',')
         write(value)
         write(b':')
@@ -211,7 +211,7 @@ def _rdumpq(q,size,value,encoding=None):
     raise ValueError('unserializable object %r' % value)
 
 
-def _gdumps(value,encoding):
+def _gdumps(value, encoding):
     '''
     Generate fragments of value dumped as a tnetstring.
 
@@ -228,19 +228,19 @@ def _gdumps(value,encoding):
     elif value is False:
         yield b'5:false!'
     elif isinstance(value,(int,long)):
-        data = str(value).encode(encoding or 'utf-8')
-        yield str(len(data)).encode(encoding or 'utf-8')
+        data = str(value).encode(encoding)
+        yield str(len(data)).encode(encoding)
         yield b':'
         yield data
         yield b'#'
     elif isinstance(value,(float,)):
-        data = repr(value).encode(encoding or 'utf-8')
-        yield str(len(data)).encode(encoding or 'utf-8')
+        data = repr(value).encode(encoding)
+        yield str(len(data)).encode(encoding)
         yield b':'
         yield data
         yield b'^'
     elif isinstance(value,(str,)):
-        yield str(len(value)).encode(encoding or 'utf-8')
+        yield str(len(value)).encode(encoding)
         yield b':'
         yield value
         yield b','
@@ -249,7 +249,7 @@ def _gdumps(value,encoding):
         for item in value:
             sub.extend(_gdumps(item))
         sub = b''.join(sub)
-        yield str(len(sub)).encode(encoding or 'utf-8')
+        yield str(len(sub)).encode(encoding)
         yield b':'
         yield sub
         yield b']'
@@ -259,15 +259,15 @@ def _gdumps(value,encoding):
             sub.extend(_gdumps(k))
             sub.extend(_gdumps(v))
         sub = b''.join(sub)
-        yield str(len(sub)).encode(encoding or 'utf-8')
+        yield str(len(sub)).encode(encoding)
         yield b':'
         yield sub
         yield b'}'
-    elif isinstance(value,(unicode,)):
+    elif isinstance(value, (unicode,)):
         if encoding is None:
             raise ValueError('must specify encoding to dump unicode strings')
         value = value.encode(encoding)
-        yield str(len(value)).encode(encoding or 'utf-8')
+        yield str(len(value)).encode(encoding)
         yield b':'
         yield value
         yield b','
@@ -275,21 +275,21 @@ def _gdumps(value,encoding):
         raise ValueError('unserializable object')
 
 
-def loads(string,encoding=None):
+def loads(string, encoding='latin-1'):
     '''
-    loads(bytestring,encoding=None) -> object
+    loads(bytestring, encoding) -> object
 
     This function parses a tnetstring into a python object.
     '''
     #  No point duplicating effort here.  In the C-extension version,
     #  loads() is measurably faster then pop() since it can avoid
     #  the overhead of building a second string.
-    return pop(string,encoding)[0]
+    return pop(string, encoding)[0]
 
 
-def load(infile, encoding=None):
+def load(infile, encoding='latin-1'):
     '''
-    load(infile,encoding=None) -> object
+    load(infile, encoding) -> object
 
     This function reads a tnetstring from a file and parses it into a
     python object.  The file must support the read() method, and this
@@ -350,23 +350,23 @@ def load(infile, encoding=None):
     if _type == b']':
         l = []
         while data:
-            (item,data) = pop(data,encoding)
+            (item, data) = pop(data, encoding)
             l.append(item)
         return l
     if _type == b'}':
         d = {}
         while data:
-            (key,data) = pop(data,encoding)
-            (val,data) = pop(data,encoding)
+            (key, data) = pop(data, encoding)
+            (val, data) = pop(data, encoding)
             d[key] = val
         return d
     raise ValueError('unknown type tag %r in tnetstring %r' % (_type, string))
 
 
 
-def pop(string,encoding=None):
+def pop(string, encoding='latin-1'):
     '''
-    pop(string,encoding=None) -> (object, remain)
+    pop(string, encoding) -> (object, remain)
 
     This function parses a tnetstring into a python object.
     It returns a tuple giving the parsed object and a string
@@ -387,8 +387,8 @@ def pop(string,encoding=None):
     #  Parse the data based on the type tag.
     if _type == b',':
         if encoding is not None:
-            return (data.decode(encoding),remain)
-        return (data,remain)
+            return (data.decode(encoding), remain)
+        return (data, remain)
     if _type == b'#':
         try:
             return (int(data),remain)
@@ -413,14 +413,14 @@ def pop(string,encoding=None):
     if _type == b']':
         l = []
         while data:
-            (item,data) = pop(data,encoding)
+            (item, data) = pop(data, encoding)
             l.append(item)
         return (l,remain)
     if _type == b'}':
         d = {}
         while data:
-            (key,data) = pop(data,encoding)
-            (val,data) = pop(data,encoding)
+            (key, data) = pop(data, encoding)
+            (val, data) = pop(data, encoding)
             d[key] = val
         return (d,remain)
     raise ValueError('unknown type tag %r in tnetstring %r' % (_type, string))
