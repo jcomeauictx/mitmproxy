@@ -25,7 +25,8 @@ install: setup.py build \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
  .installed/build-base .installed/py3-flask .installed/py3-urwid \
- .installed/py3-asn1 .installed/py3-openssl
+ .installed/py3-asn1 .installed/py3-openssl .installed/py3-lxml \
+ .installed/py3-requests .installed/python2-dev
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
 	$(PYTHON) $< $@ --user --force
 build: setup.py clean .FORCE | .installed/python3
