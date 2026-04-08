@@ -33,8 +33,10 @@ def tresp(req=None):
         req = treq()
     headers = flow.ODictCaseless()
     headers["header_response"] = ["svalue"]
-    cert = certutils.SSLCert.from_der(file(test_data.path("data/dercert"),"rb").read())
-    resp = flow.Response(req, (1, 1), 200, b'message', headers, b'content_response', cert)
+    cert = certutils.SSLCert.from_der(
+        file(test_data.path("data/dercert"),"rb").read())
+    resp = flow.Response(req, (1, 1), 200, 'message', headers,
+                         b'content_response', cert)
     resp.reply = controller.DummyReply()
     return resp
 

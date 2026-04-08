@@ -336,15 +336,15 @@ class FlowView(common.WWrap):
                 self.flow.response = flow.Response(
                     self.flow.request,
                     self.flow.request.httpversion,
-                    200, "OK", flow.ODictCaseless(), "", None
+                    200, "OK", flow.ODictCaseless(), b'', None
                 )
                 self.flow.response.reply = controller.DummyReply()
             conn = self.flow.response
 
         self.flow.backup()
         if part == "r":
-            c = self.master.spawn_editor(conn.content or "")
-            conn.content = c.rstrip("\n") # what?
+            c = self.master.spawn_editor(conn.content or b'')
+            conn.content = c.rstrip(b'\n')  # why not b'\r\n'? binary?!
         elif part == "f":
             if not conn.get_form_urlencoded() and conn.content:
                 self.master.prompt_onekey(

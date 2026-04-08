@@ -792,7 +792,9 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["test"] = ["test"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         u = r.get_url()
         assert r.set_url(u)
         assert not r.set_url("")
@@ -819,7 +821,9 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["test"] = ["test"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         assert r.get_url() == "https://host:22/"
         assert r.get_url(hostheader=True) == "https://host:22/"
         r.headers["Host"] = ["foo.com"]
@@ -829,9 +833,13 @@ class TestRequest:
     def test_path_components(self):
         h = flow.ODictCaseless()
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         assert r.get_path_components() == []
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/foo/bar", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/foo/bar", h, "content"
+        )
         assert r.get_path_components() == ["foo", "bar"]
         q = flow.ODict()
         q["test"] = ["123"]
@@ -850,7 +858,10 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["content-type"] = [flow.HDR_FORM_URLENCODED]
         d = flow.ODict([("one", "two"), ("three", "four")])
-        r = flow.Request(None, (1, 1), "host", 22, "https", "GET", "/", h, utils.urlencode(d.lst))
+        r = flow.Request(
+            None, (1, 1), "host", 22, "https",
+            "GET", "/", h, utils.urlencode(d.lst)
+        )
         assert r.get_form_urlencoded() == d
 
         d = flow.ODict([("x", "y")])
@@ -863,19 +874,29 @@ class TestRequest:
     def test_getset_query(self):
         h = flow.ODictCaseless()
 
-        r = flow.Request(None, (1, 1), "host", 22, "https", "GET", "/foo?x=y&a=b", h, "content")
+        r = flow.Request(
+            None, (1, 1), "host", 22, "https", "GET",
+            "/foo?x=y&a=b", h, "content"
+        )
         q = r.get_query()
         assert q.lst == [("x", "y"), ("a", "b")]
 
-        r = flow.Request(None, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            None, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         q = r.get_query()
         assert not q
 
-        r = flow.Request(None, (1, 1), "host", 22, "https", "GET", "/?adsfa", h, "content")
+        r = flow.Request(
+            None, (1, 1), "host", 22, "https", "GET", "/?adsfa", h, "content"
+        )
         q = r.get_query()
         assert q.lst == [("adsfa", "")]
 
-        r = flow.Request(None, (1, 1), "host", 22, "https", "GET", "/foo?x=y&a=b", h, "content")
+        r = flow.Request(
+            None, (1, 1), "host", 22, "https", "GET",
+            "/foo?x=y&a=b", h, "content"
+        )
         assert r.get_query()
         r.set_query(flow.ODict([]))
         assert not r.get_query()
@@ -885,7 +906,9 @@ class TestRequest:
 
     def test_anticache(self):
         h = flow.ODictCaseless()
-        r = flow.Request(None, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            None, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         h["if-modified-since"] = ["test"]
         h["if-none-match"] = ["test"]
         r.anticache()
@@ -896,7 +919,9 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["test"] = ["test"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         state = r._get_state()
         assert flow.Request._from_state(state) == r
 
@@ -904,7 +929,9 @@ class TestRequest:
         state = r._get_state()
         assert flow.Request._from_state(state) == r
 
-        r2 = flow.Request(c, (1, 1), "testing", 20, "http", "PUT", "/foo", h, "test")
+        r2 = flow.Request(
+            c, (1, 1), "testing", 20, "http", "PUT", "/foo", h, "test"
+        )
         assert not r == r2
         r._load_state(r2._get_state())
         assert r == r2
@@ -971,23 +998,31 @@ class TestRequest:
     def test_get_cookies_none(self):
         h = flow.ODictCaseless()
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         assert r.get_cookies() == None
 
     def test_get_cookies_single(self):
         h = flow.ODictCaseless()
         h["Cookie"] = ["cookiename=cookievalue"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         result = r.get_cookies()
         assert len(result)==1
         assert result['cookiename']==('cookievalue',{})
 
     def test_get_cookies_double(self):
         h = flow.ODictCaseless()
-        h["Cookie"] = ["cookiename=cookievalue;othercookiename=othercookievalue"]
+        h["Cookie"] = [
+            "cookiename=cookievalue;othercookiename=othercookievalue"
+        ]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         result = r.get_cookies()
         assert len(result)==2
         assert result['cookiename']==('cookievalue',{})
@@ -995,9 +1030,13 @@ class TestRequest:
 
     def test_get_cookies_withequalsign(self):
         h = flow.ODictCaseless()
-        h["Cookie"] = ["cookiename=coo=kievalue;othercookiename=othercookievalue"]
+        h["Cookie"] = [
+            "cookiename=coo=kievalue;othercookiename=othercookievalue"
+        ]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         result = r.get_cookies()
         assert len(result)==2
         assert result['cookiename']==('coo=kievalue',{})
@@ -1007,7 +1046,9 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["headername"] = ["headervalue"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         result = r.get_header_size()
         assert result==43
 
@@ -1015,7 +1056,9 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["headername"] = ["headervalue"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
         result = r.get_transmitted_size()
         assert result==len("content")
         r.content = None
@@ -1025,7 +1068,9 @@ class TestRequest:
         h = flow.ODictCaseless()
         h["Content-Type"] = ["text/plain"]
         c = flow.ClientConnect(("addr", 2222))
-        r = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
+        r = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, b'content'
+        )
         assert r.get_content_type()=="text/plain"
 
 class TestResponse:
@@ -1033,8 +1078,12 @@ class TestResponse:
         h = flow.ODictCaseless()
         h["test"] = ["test"]
         c = flow.ClientConnect(("addr", 2222))
-        req = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
-        resp = flow.Response(req, (1, 1), 200, "msg", h.copy(), "content", None)
+        req = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, 'content'
+        )
+        resp = flow.Response(
+            req, (1, 1), 200, "msg", h.copy(), b'content', None
+        )
         assert resp._assemble()
         assert resp.size() == len(resp._assemble())
 
@@ -1080,13 +1129,19 @@ class TestResponse:
         h = flow.ODictCaseless()
         h["test"] = ["test"]
         c = flow.ClientConnect(("addr", 2222))
-        req = flow.Request(c, (1, 1), "host", 22, "https", "GET", "/", h, "content")
-        resp = flow.Response(req, (1, 1), 200, "msg", h.copy(), "content", None)
+        req = flow.Request(
+            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+        )
+        resp = flow.Response(
+            req, (1, 1), 200, "msg", h.copy(), b'content', None
+        )
 
         state = resp._get_state()
         assert flow.Response._from_state(req, state) == resp
 
-        resp2 = flow.Response(req, (1, 1), 220, "foo", h.copy(), "test", None)
+        resp2 = flow.Response(
+            req, (1, 1), 220, "foo", h.copy(), b'test', None
+        )
         assert not resp == resp2
         resp._load_state(resp2._get_state())
         assert resp == resp2
@@ -1133,13 +1188,17 @@ class TestResponse:
 
     def test_get_cookies_none(self):
         h = flow.ODictCaseless()
-        resp = flow.Response(None, (1, 1), 200, "OK", h, "content", None)
+        resp = flow.Response(
+            None, (1, 1), 200, "OK", h, b'content', None
+        )
         assert not resp.get_cookies()
 
     def test_get_cookies_simple(self):
         h = flow.ODictCaseless()
         h["Set-Cookie"] = ["cookiename=cookievalue"]
-        resp = flow.Response(None, (1, 1), 200, "OK", h, "content", None)
+        resp = flow.Response(
+            None, (1, 1), 200, "OK", h, b'content', None
+        )
         result = resp.get_cookies()
         assert len(result)==1
         assert "cookiename" in result
@@ -1147,8 +1206,11 @@ class TestResponse:
 
     def test_get_cookies_with_parameters(self):
         h = flow.ODictCaseless()
-        h["Set-Cookie"] = ["cookiename=cookievalue;domain=example.com;expires=Wed Oct  21 16:29:41 2015;path=/; HttpOnly"]
-        resp = flow.Response(None, (1, 1), 200, "OK", h, "content", None)
+        h['Set-Cookie'] = [
+            'cookiename=cookievalue;domain=example.com;'
+            'expires=Wed Oct  21 16:29:41 2015;path=/; HttpOnly'
+        ]
+        resp = flow.Response(None, (1, 1), 200, "OK", h, b'content', None)
         result = resp.get_cookies()
         assert len(result)==1
         assert "cookiename" in result
@@ -1162,7 +1224,7 @@ class TestResponse:
     def test_get_cookies_no_value(self):
         h = flow.ODictCaseless()
         h["Set-Cookie"] = ["cookiename=; Expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/"]
-        resp = flow.Response(None, (1, 1), 200, "OK", h, "content", None)
+        resp = flow.Response(None, (1, 1), 200, "OK", h, b'content', None)
         result = resp.get_cookies()
         assert len(result)==1
         assert "cookiename" in result
@@ -1172,7 +1234,7 @@ class TestResponse:
     def test_get_cookies_twocookies(self):
         h = flow.ODictCaseless()
         h["Set-Cookie"] = ["cookiename=cookievalue","othercookie=othervalue"]
-        resp = flow.Response(None, (1, 1), 200, "OK", h, "content", None)
+        resp = flow.Response(None, (1, 1), 200, "OK", h, b'content', None)
         result = resp.get_cookies()
         assert len(result)==2
         assert "cookiename" in result
@@ -1183,7 +1245,7 @@ class TestResponse:
     def test_get_content_type(self):
         h = flow.ODictCaseless()
         h["Content-Type"] = ["text/plain"]
-        resp = flow.Response(None, (1, 1), 200, "OK", h, "content", None)
+        resp = flow.Response(None, (1, 1), 200, "OK", h, b'content', None)
         assert resp.get_content_type()=="text/plain"
 
 
