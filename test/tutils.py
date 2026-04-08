@@ -23,10 +23,10 @@ def treq(conn=None):
     conn.reply = controller.DummyReply()
     headers = flow.ODictCaseless()
     headers["header"] = ["qvalue"]
-    r = flow.Request(conn, (1, 1), "host", 80, "http", "GET", "/path", headers, "content")
+    r = flow.Request(conn, (1, 1), "host", 80, "http",
+                     "GET", "/path", headers, b'content')
     r.reply = controller.DummyReply()
     return r
-
 
 def tresp(req=None):
     if not req:

@@ -1227,24 +1227,24 @@ class TestClientConnect:
 
 def test_decoded():
     r = tutils.treq()
-    logging.debug('test_flow.test_decoded: r: %r', r)
-    assert r.content == "content"
+    logging.debug('test_flow.test_decoded: r: %r', vars(r))
+    assert r.content == b'content'
     assert not r.headers["content-encoding"]
     r.encode("gzip")
     assert r.headers["content-encoding"]
-    assert r.content != "content"
+    assert r.content != b'content'
     with flow.decoded(r):
         assert not r.headers["content-encoding"]
-        assert r.content == "content"
+        assert r.content == b'content'
     assert r.headers["content-encoding"]
-    assert r.content != "content"
+    assert r.content != b'content'
 
     with flow.decoded(r):
-        r.content = "foo"
+        r.content = b'foo'
 
-    assert r.content != "foo"
+    assert r.content != b'foo'
     r.decode()
-    assert r.content == "foo"
+    assert r.content == b'foo'
 
 
 def test_replacehooks():
