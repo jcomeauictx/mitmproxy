@@ -303,7 +303,9 @@ def load(infile, encoding='latin-1'):
         return found
     c = nextbyte()
     if not c.isdigit():
-        raise ValueError('not a tnetstring: missing or invalid length prefix')
+        raise ValueError(
+            '%r not a tnetstring: missing or invalid length prefix' % c
+        )
     datalen = ord(c) - ord(b'0')
     c = nextbyte()
     if datalen != 0:

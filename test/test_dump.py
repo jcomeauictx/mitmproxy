@@ -2,7 +2,7 @@ import os, logging
 try:
     from cStringIO import StringIO
 except ImportError:
-    from io import StringIO
+    from io import BytesIO as StringIO
 from libmproxy import dump, flow, proxy
 try:
     import tutils

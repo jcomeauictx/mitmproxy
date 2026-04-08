@@ -564,6 +564,7 @@ class Request(HTTPMsg):
         FMT_PROXY = '%s %s://%s:%s%s HTTP/%s.%s\r\n%s\r\n'
 
         headers = self.headers.copy()
+        head = ''
         utils.del_all(
             headers,
             [
@@ -583,7 +584,7 @@ class Request(HTTPMsg):
         if self.close:
             headers["connection"] = ["close"]
         if not proxy:
-            return FMT % (
+            head = FMT % (
                 self.method,
                 self.path,
                 self.httpversion[0],
@@ -591,7 +592,7 @@ class Request(HTTPMsg):
                 str(headers)
             )
         else:
-            return FMT_PROXY % (
+            head = FMT_PROXY % (
                 self.method,
                 self.scheme,
                 self.host,
@@ -601,6 +602,7 @@ class Request(HTTPMsg):
                 self.httpversion[1],
                 str(headers)
             )
+        return head.encode()
 
     def _assemble(self, _proxy = False):
         """
@@ -612,8 +614,12 @@ class Request(HTTPMsg):
         if self.content == CONTENT_MISSING:
             return None
         head = self._assemble_head(_proxy)
+        content = b''
         if self.content:
-            return head + self.content
+            if not isinstance(self.content, bytes):
+                logging.warning('Flow._assemble: content should be bytes')
+                content = self.content.encode()
+            return head + content
         else:
             return head
 

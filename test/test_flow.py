@@ -4,7 +4,7 @@ try:
     from cStringIO import StringIO
 except ImportError:
     import queue as Queue
-    from io import StringIO
+    from io import BytesIO as StringIO
 import email.utils
 from libmproxy import filt, flow, controller, utils, tnetstring
 try:
