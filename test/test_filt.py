@@ -104,9 +104,9 @@ class TestMatching:
                     f.request,
                     (1, 1),
                     200,
-                    "message",
+                    b'message',
                     headers,
-                    "content_response",
+                    b'content_response',
                     None
                 )
         return f
