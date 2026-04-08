@@ -64,7 +64,7 @@ class AppMixin:
     def test_app(self):
         ret = self.app("/")
         assert ret.status_code == 200
-        assert "mitmproxy" in ret.content
+        assert b'mitmproxy' in ret.content
 
 
 
@@ -73,14 +73,14 @@ class TestHTTP(tservers.HTTPProxTest, CommonMixin, AppMixin):
         p = self.pathoc()
         ret = p.request("get:'http://errapp/'")
         assert ret.status_code == 500
-        assert "ValueError" in ret.content
+        assert b'ValueError' in ret.content
 
     def test_invalid_connect(self):
         t = tcp.TCPClient("127.0.0.1", self.proxy.port)
         t.connect()
         t.wfile.write("CONNECT invalid\n\n")
         t.wfile.flush()
-        assert "Bad Request" in t.rfile.readline()
+        assert b'Bad Request' in t.rfile.readline()
 
     def test_upstream_ssl_error(self):
         p = self.pathoc()
