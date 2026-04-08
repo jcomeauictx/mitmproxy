@@ -70,7 +70,7 @@ tests: | .installed/py3-nose .installed/py3-mock .installed/pathod
 diff:
 	git $@ || true
 %.diff:
-	git diff $* || true
+	git diff -w $* || true
 push pull status:
 	git $@
 log:
