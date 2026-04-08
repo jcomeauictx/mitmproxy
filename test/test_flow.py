@@ -550,7 +550,7 @@ class TestSerialize:
 
     def test_error(self):
         sio = StringIO()
-        sio.write("bogus")
+        sio.write(b'bogus')
         sio.seek(0)
         r = flow.FlowReader(sio)
         tutils.raises(flow.FlowReadError, list, r.stream())
@@ -810,7 +810,7 @@ class TestRequest:
         assert r.size() == len(r._assemble())
 
         r.close = True
-        assert "connection: close" in r._assemble()
+        assert b'connection: close' in r._assemble()
 
         assert r._assemble(True)
 
