@@ -173,7 +173,12 @@ class HTTPProxTest(ProxTestBase):
         """
         logging.debug('HTTProxTest.pathod: making pathod GET request')
         p = self.pathoc(sni=sni)
-        spec = spec.encode(STRING_ESCAPE).decode('ascii')
+        try:
+            spec = spec.encode(STRING_ESCAPE).decode('ascii')
+        except TypeError:
+            # python2 TypeError: esscape_encode() argument 1 must be string,
+            #  not umicode
+            spec = spec.encode().encode(STRING_ESCAPE).decode('ascii')
         if self.ssl:
             q = "get:'/p/%s'"%spec
         else:
