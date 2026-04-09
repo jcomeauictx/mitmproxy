@@ -130,6 +130,16 @@ class HandleSNI:
     def __init__(self, handler, client_conn, host, port, cert, key):
         self.handler, self.client_conn, self.host, self.port = handler, client_conn, host, port
         self.cert, self.key = cert, key
+        # attempt to fix functools AttributeError:
+        # HandleSNI instance has no attribute '__name__'
+        # NOTE: it must be bytes for python2, unicode for python3
+        if not hasattr(self, '__name__'):
+            if sys.version_info < (3,):
+                self.__name__ = b'HandleSNI'
+            else:
+                self.__name__ = 'HandleSNI'
+        else:
+            logging.debug('HandleSNI already has __name__ %r', self.__name__)
 
     def __call__(self, connection):
         try:
