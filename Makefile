@@ -20,7 +20,7 @@ export
 endif
 default: install
 	mitmdump --version
-install: setup.py build \
+install: setup.py build certs \
  .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
@@ -77,6 +77,9 @@ log:
 	git $@ | head -n $(LOGLIMIT)
 commit:
 	git $@ -a
+certs: $(wildcard test/data/Makefile test/data/clientcert/Makefile)
+	if [ "$<" ]; then $(MAKE) -C $(dir $<); fi
+	if [ "$(word 2, $+)" ]; then $(MAKE) -C $(dir $(word 2, $+)); fi
 env:
 ifeq ($(SHOWENV),1)
 	$@
