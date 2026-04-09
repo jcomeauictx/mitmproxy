@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import os, shutil, tempfile
 from contextlib import contextmanager
 from libmproxy import flow, utils, controller
