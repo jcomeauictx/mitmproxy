@@ -13,6 +13,14 @@ SIBLINGS := netlib mitmproxy pathod
 NOSETESTS := $(PYTHON) -m nose
 # limit lines of output for `make log`
 LOGLIMIT ?= 10000
+# pyOpenSSL 16.2.0 is the oldest that might work;
+# every older one failed with
+# AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
+# NOTE: the following order may be suboptimal
+PIP2_REQUIREMENTS := cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
+ ipaddress==1.0.23 pyopenssl==16.2.0 pyasn1==0.1.3 werkzeug==0.6.1 \
+ flask==0.5.2 urwid==1.1 pillow==2.5.3 lxml==3.8.0 mock==3.0.5 \
+ six==1.7.3
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
 ifneq ($(SHOWENV),)
