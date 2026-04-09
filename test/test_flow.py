@@ -520,6 +520,11 @@ class TestSerialize:
         assert len(l) == 1
 
         f2 = l[0]
+        logging.debug('f2._get_state(): %r, f._get_state(): %r',
+                      f2._get_state(), f._get_state())
+        # python2 assertion fails because f2 state[1]['content'] is unicode,
+        # while f state[1]['content'] is bytes
+        # maybe other elements as well, but content for sure
         assert f2._get_state() == f._get_state()
         assert f2.request._assemble() == f.request._assemble()
 
