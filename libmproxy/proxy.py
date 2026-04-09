@@ -1,10 +1,7 @@
 from __future__ import unicode_literals
 import sys, os, string, socket, time, logging
 import shutil, tempfile, threading
-try:
-    from OpenSSL import SSL
-except ImportError:
-    from netlib.openssl_compat import SSL
+from OpenSSL import SSL
 try:
     import SocketServer
 except ImportError:
