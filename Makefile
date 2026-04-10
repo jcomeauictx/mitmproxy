@@ -21,7 +21,7 @@ LOGLIMIT ?= 10000
 PIP2_REQUIRED := cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
  ipaddress==1.0.23 pyopenssl==16.2.0 pyasn1==0.1.3 werkzeug==0.6.1 \
  flask==0.5.2 urwid==1.1 pillow==2.5.3 lxml==3.8.0 mock==3.0.5 \
- six==1.7.3
+ six==1.7.3 requests==2.25.1
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
 ifneq ($(SHOWENV),)
