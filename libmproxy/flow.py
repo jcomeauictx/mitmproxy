@@ -462,6 +462,9 @@ class Request(HTTPMsg):
         # FIXME: If there's an existing content-type header indicating a
         # url-encoded form, leave it alone.
         self.headers["Content-Type"] = [HDR_FORM_URLENCODED]
+        logging.debug(
+            'Request: set_form_urlencoded: urlencoding %r', odict.lst
+        )
         self.content = utils.urlencode(odict.lst)
 
     def get_path_components(self):
