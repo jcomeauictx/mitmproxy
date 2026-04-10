@@ -11,13 +11,14 @@ SIBLINGS := netlib mitmproxy pathod
 # use python3 nosetests by default, override on command line
 # by using `make NOSETESTS=nosetests-2.7 tests`
 NOSETESTS := $(PYTHON) -m nose
+PIP := $(PYTHON) -m pip
 # limit lines of output for `make log`
 LOGLIMIT ?= 10000
 # pyOpenSSL 16.2.0 is the oldest that might work;
 # every older one failed with
 # AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
 # NOTE: the following order may be suboptimal
-PIP2_REQUIREMENTS := cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
+PIP2_REQUIRED := cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
  ipaddress==1.0.23 pyopenssl==16.2.0 pyasn1==0.1.3 werkzeug==0.6.1 \
  flask==0.5.2 urwid==1.1 pillow==2.5.3 lxml==3.8.0 mock==3.0.5 \
  six==1.7.3
@@ -35,7 +36,7 @@ install: setup.py build certs \
  .installed/build-base .installed/py3-flask .installed/py3-urwid \
  .installed/py3-asn1 .installed/py3-openssl .installed/py3-lxml \
  .installed/py3-requests .installed/python2-dev \
- $(addprefix .installed/py2-,$(PY2_REQUIRED))
+ $(addprefix .installed/pip2-,$(PIP2_REQUIRED))
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
 	$(PYTHON) $< $@ --user --force
 build: setup.py clean .FORCE | .installed/python3
@@ -53,10 +54,11 @@ $(HOME)/.abuild: | /etc/alpine-release
 .installed/py3-%: | .installed
 	sudo apk add $(@F)
 	touch $@
-.installed-py2-%: | .installed
+.installed/pip2-%: | .installed
 	if [ "$(notdir $(PYTHON))" = python2 ]; then \
-	 $(PYTHON) -m 2 pip install $(@F) && \
-	 touch $@; \
+	 $(PIP) install $* && touch $@; \
+	else \
+	 true; \
 	fi
 .installed:
 	mkdir $@
