@@ -34,7 +34,8 @@ install: setup.py build certs \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
  .installed/build-base .installed/py3-flask .installed/py3-urwid \
  .installed/py3-asn1 .installed/py3-openssl .installed/py3-lxml \
- .installed/py3-requests .installed/python2-dev
+ .installed/py3-requests .installed/python2-dev \
+ $(addprefix .installed/py2-,$(PY2_REQUIRED))
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
 	$(PYTHON) $< $@ --user --force
 build: setup.py clean .FORCE | .installed/python3
@@ -52,6 +53,11 @@ $(HOME)/.abuild: | /etc/alpine-release
 .installed/py3-%: | .installed
 	sudo apk add $(@F)
 	touch $@
+.installed-py2-%: | .installed
+	if [ "$(notdir $(PYTHON))" = python2 ]; then \
+	 $(PYTHON) -m 2 pip install $(@F) && \
+	 touch $@; \
+	fi
 .installed:
 	mkdir $@
 %.pylint: %.py .installed/py3-pylint
