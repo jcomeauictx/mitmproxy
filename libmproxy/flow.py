@@ -462,9 +462,6 @@ class Request(HTTPMsg):
         # FIXME: If there's an existing content-type header indicating a
         # url-encoded form, leave it alone.
         self.headers["Content-Type"] = [HDR_FORM_URLENCODED]
-        logging.debug(
-            'Request: set_form_urlencoded: urlencoding %r', odict.lst
-        )
         self.content = utils.urlencode(odict.lst)
 
     def get_path_components(self):
@@ -501,7 +498,10 @@ class Request(HTTPMsg):
             Takes an ODict object, and sets the request query string.
         """
         scheme, netloc, path, params, _, fragment = urlparse.urlparse(self.get_url())
-        query = utils.urlencode(odict.lst)
+        try:
+            query = utils.urlencode(odict.lst)
+        except TypeError:
+            raise ValueError('cannot urlencode %r' % odict.lst)
         self.set_url(urlparse.urlunparse([scheme, netloc, path, params, query, fragment]))
 
     def get_url(self, hostheader=False):
