@@ -37,8 +37,7 @@ def getunpackers():
             try:
                 module = __import__(modname, fromlist=interface)
             except ImportError:
-                logging.error('modname %r fails eligibility',
-                              modname, interface)
+                logging.error('modname %r fails eligibility', modname)
                 #raise UnpackingError('Bad unpacker: %s' % modname)
             else:
                 unpackers.append(module)
