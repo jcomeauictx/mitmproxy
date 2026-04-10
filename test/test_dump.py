@@ -28,6 +28,9 @@ def test_strfuncs():
 
 class TestDumpMaster:
     def _cycle(self, m, content):
+        if not isinstance(content, bytes):
+            logging.error('TestDumpMaster._cycle called with unicode contents')
+            content = content.encode()
         req = tutils.treq()
         req.content = content
         l = proxy.Log("connect")

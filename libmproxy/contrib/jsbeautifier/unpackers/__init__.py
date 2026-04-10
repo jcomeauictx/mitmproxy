@@ -7,10 +7,13 @@
 
 import pkgutil
 import re
+import logging
 try:
     from jsbeautifier.unpackers import evalbased
 except ImportError:
     from . import evalbased
+
+logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 # NOTE: AT THE MOMENT, IT IS DEACTIVATED FOR YOUR SECURITY: it runs js!
 BLACKLIST = ['jsbeautifier.unpackers.evalbased']
@@ -34,7 +37,9 @@ def getunpackers():
             try:
                 module = __import__(modname, fromlist=interface)
             except ImportError:
-                raise UnpackingError('Bad unpacker: %s' % modname)
+                logging.error('modname %r fails eligibility',
+                              modname, interface)
+                #raise UnpackingError('Bad unpacker: %s' % modname)
             else:
                 unpackers.append(module)
 
