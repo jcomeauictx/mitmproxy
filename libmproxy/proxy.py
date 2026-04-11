@@ -428,11 +428,11 @@ class ProxyHandler(tcp.BaseHandler):
             if connparts:
                 host, port, httpversion = connparts
                 headers = self.read_headers(authenticate=True)
-                self.wfile.write('\r\n'.join([
-                    'HTTP/1.1 200 Connection established',
-                    'Proxy-agent: %s' % self.server_version,
-                    ''
-                ]))
+                self.wfile.write(
+                    'HTTP/1.1 200 Connection established\r\n' +
+                    ('Proxy-agent: %s\r\n' % self.server_version) +
+                    '\r\n'
+                )
                 self.wfile.flush()
                 logging.debug('ProxyHandler.read_request_proxy: host=%r', host)
                 dummycert = self.find_cert(
