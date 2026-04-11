@@ -179,8 +179,6 @@ class TestHTTPConnectSSLError(tservers.HTTPProxTest):
         assert 'status_code == %s' % status == 'status_code == 400'
 
 
-# commenting out this class because it hangs on python2 (but not python3)
-'''
 class TestHTTPS(tservers.HTTPProxTest, CommonMixin):
     ssl = True
     ssloptions = pathod.SSLOptions(request_client_cert=True)
@@ -199,10 +197,8 @@ class TestHTTPS(tservers.HTTPProxTest, CommonMixin):
     def test_error_post_connect(self):
         p = self.pathoc()
         assert p.request("get:/:i0,'invalid\r\n\r\n'").status_code == 400
-'''
 
-# this one also hangs on python2
-'''
+
 class TestHTTPSNoUpstream(tservers.HTTPProxTest, CommonMixin):
     ssl = True
     no_upstream_cert = True
@@ -213,11 +209,11 @@ class TestHTTPSNoUpstream(tservers.HTTPProxTest, CommonMixin):
         f = self.pathoc_raw()
         f.connect(('foo..bar', 0))
         f.request("get:/")
+        logging.debug('TestHTTPSNoUpstream.test_cert_gen_error: log=%r',
+                      self.proxy.log)
         assert "dummy cert" in "".join(self.proxy.log)
-'''
 
-# pragma comment didn't fix it, commenting out the entire class
-'''
+
 class TestHTTPSCertfile(tservers.HTTPProxTest, CommonMixin):
     logging.debug('problematic TestHTTPSCertfile starting, may hang')
     ssl = True
@@ -226,7 +222,7 @@ class TestHTTPSCertfile(tservers.HTTPProxTest, CommonMixin):
     def test_certfile(self):  # pragma: no cover
         logging.debug('problematic TestHTTPSCertfile.test_certfile may hang')
         assert self.pathod("304")
-'''
+
 
 class TestReverse(tservers.ReverseProxTest, CommonMixin):
     reverse = True
@@ -313,8 +309,8 @@ class TestProxy(tservers.HTTPProxTest):
         assert diff < 0.1, "expected diff < 0.1, got %.3f" % diff
 
     def test_request_tcp_setup_timestamp_presence(self):
-        # tests that the first request in a tcp connection has a tcp_setup_timestamp
-        # while others do not
+        # tests that the first request in a tcp connection has
+        # a tcp_setup_timestamp while others do not
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.connect(("localhost", self.proxy.port))
         connection.send(
@@ -339,8 +335,6 @@ class TestProxy(tservers.HTTPProxTest):
         assert second_request.ssl_setup_timestamp == None
 
 
-# another hanging test, commented out for now
-'''
 class TestProxySSL(tservers.HTTPProxTest):
     ssl=True
     def test_request_ssl_setup_timestamp_presence(self):
@@ -349,7 +343,7 @@ class TestProxySSL(tservers.HTTPProxTest):
         assert f.status_code == 304
         first_request = self.master.state.view[0].request
         assert first_request.ssl_setup_timestamp
-'''
+
 
 class MasterFakeResponse(tservers.TestMaster):
     def handle_request(self, m):
@@ -414,6 +408,3 @@ class TestIncompleteResponse(tservers.HTTPProxTest):
     masterclass = MasterIncomplete
     def test_incomplete(self):
         assert self.pathod("200").status_code == 502
-
-
-
