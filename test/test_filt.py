@@ -91,7 +91,7 @@ class TestMatching:
                     "GET",
                     "/path",
                     headers,
-                    "content_request"
+                    b"content_request"
         )
         return flow.Flow(req)
 

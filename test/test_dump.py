@@ -132,7 +132,7 @@ class TestDumpMaster:
         o = dump.Options(replacements=[(".*", "content", "foo")])
         m = dump.DumpMaster(None, o, None)
         f = self._cycle(m, "content")
-        assert f.request.content == "foo"
+        assert f.request.content == b"foo"
 
     def test_setheader(self):
         o = dump.Options(setheaders=[(".*", "one", "two")])

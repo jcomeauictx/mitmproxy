@@ -925,7 +925,7 @@ class TestRequest:
         h["test"] = ["test"]
         c = flow.ClientConnect(("addr", 2222))
         r = flow.Request(
-            c, (1, 1), "host", 22, "https", "GET", "/", h, "content"
+            c, (1, 1), "host", 22, "https", "GET", "/", h, b"content"
         )
         state = r._get_state()
         assert flow.Request._from_state(state) == r
