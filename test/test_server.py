@@ -272,8 +272,8 @@ class TestProxy(tservers.HTTPProxTest):
         response = self.master.state.view[0].response
         start = response.timestamp_start
         end = response.timestamp_end
-        # pylint: disable=eval-used
-        assert eval("1 <= %.03f - %.03f <= 2.0" % (end, start))
+        diff = end - start
+        assert 1 <= diff <= 2.0, "expected 1 <= %.3f <= 2.0" % diff
 
     def test_request_timestamps(self):
         # test that we notice a delay between timestamps in request object
@@ -293,8 +293,8 @@ class TestProxy(tservers.HTTPProxTest):
         assert response.code == 304  # sanity test for our low level request
         start = request.timestamp_start
         end = request.timestamp_end
-        # pylint: disable=eval-used
-        assert eval("%.03f - %.03f > 0.0" % (end, start))
+        diff = end - start
+        assert diff > 0.0, "expected timestamp_end > timestamp_start, diff=%.3f" % diff
 
     def test_request_timestamps_not_affected_by_client_time(self):
         # test that don't include user wait time in request's timestamps
@@ -305,15 +305,12 @@ class TestProxy(tservers.HTTPProxTest):
         assert f.status_code == 304
 
         request = self.master.state.view[0].request
-        start = request.timestamp_start
-        end = request.timestamp_end
-        # pylint: disable=eval-used
-        assert eval("%.03f - %.03f < 0.1" % (end, start))
+        diff = request.timestamp_end - request.timestamp_start
+        assert diff < 0.1, "expected diff < 0.1, got %.3f" % diff
 
         request = self.master.state.view[1].request
-        start = request.timestamp_start
-        end = request.timestamp_end
-        assert eval("%.03f - %.03f < 0.1" % (end, start))
+        diff = request.timestamp_end - request.timestamp_start
+        assert diff < 0.1, "expected diff < 0.1, got %.3f" % diff
 
     def test_request_tcp_setup_timestamp_presence(self):
         # tests that the first request in a tcp connection has a tcp_setup_timestamp
