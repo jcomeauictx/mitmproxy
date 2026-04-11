@@ -269,7 +269,12 @@ class TestProxy(tservers.HTTPProxTest):
         assert f.status_code == 304
 
         response = self.master.state.view[0].response
-        assert 1 <= response.timestamp_end - response.timestamp_start <= 1.2
+        start = response.timestamp_start
+        end = response.timestamp_end
+        logging.debug('TestProxy.test_response_times: end=%s, start=%s',
+                      end, start)
+        # pylint: disable=eval-used
+        assert eval("1 <= %.2f <= 1.2" % (end - start))
 
     def test_request_timestamps(self):
         # test that we notice a delay between timestamps in request object
