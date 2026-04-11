@@ -263,18 +263,17 @@ class TestProxy(tservers.HTTPProxTest):
         assert l.response.code == 304
 
     def test_response_timestamps(self):
-        # test that we notice at least 2 sec delay between timestamps
-        # in response object
+        # test that we notice at least 1 sec delay between timestamps
+        # in response object. let the max be 2s to allow for slow processing
+        # like the iPhone 6 running under iSH.
         f = self.pathod("304:b@1k:p50,1")
         assert f.status_code == 304
 
         response = self.master.state.view[0].response
         start = response.timestamp_start
         end = response.timestamp_end
-        logging.debug('TestProxy.test_response_times: end=%s, start=%s',
-                      end, start)
         # pylint: disable=eval-used
-        assert eval("1 <= %.2f <= 1.2" % (end - start))
+        assert eval("1 <= %.03f - %.03f <= 2.0" % (end, start))
 
     def test_request_timestamps(self):
         # test that we notice a delay between timestamps in request object
@@ -292,7 +291,10 @@ class TestProxy(tservers.HTTPProxTest):
 
         request, response = self.master.state.view[0].request, self.master.state.view[0].response
         assert response.code == 304  # sanity test for our low level request
-        assert request.timestamp_end - request.timestamp_start > 0
+        start = request.timestamp_start
+        end = request.timestamp_end
+        # pylint: disable=eval-used
+        assert eval("%.03f - %.03f > 0.0" % (end, start))
 
     def test_request_timestamps_not_affected_by_client_time(self):
         # test that don't include user wait time in request's timestamps
@@ -303,10 +305,15 @@ class TestProxy(tservers.HTTPProxTest):
         assert f.status_code == 304
 
         request = self.master.state.view[0].request
-        assert request.timestamp_end - request.timestamp_start <= 0.1
+        start = request.timestamp_start
+        end = request.timestamp_end
+        # pylint: disable=eval-used
+        assert eval("%.03f - %.03f < 0.1" % (end, start))
 
         request = self.master.state.view[1].request
-        assert request.timestamp_end - request.timestamp_start <= 0.1
+        start = request.timestamp_start
+        end = request.timestamp_end
+        assert eval("%.03f - %.03f < 0.1" % (end, start))
 
     def test_request_tcp_setup_timestamp_presence(self):
         # tests that the first request in a tcp connection has a tcp_setup_timestamp
