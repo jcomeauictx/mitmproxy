@@ -1,4 +1,4 @@
-import argparse, logging
+import argparse, logging, socket
 from libmproxy import proxy, flow, cmdline
 try:
     import tutils
@@ -141,10 +141,20 @@ class TestProcessProxyOptions:
 
 class TestProxyServer:
     def test_err(self):
+        # Occupy a port, then try to bind the same port to guarantee EADDRINUSE
+        # (binding port 1 is unreliable - some envs allow it as root/CAP_NET_BIND_SERVICE)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('127.0.0.1', 0))
+        s.listen(1)
+        occupied_port = s.getsockname()[1]
         parser = argparse.ArgumentParser()
         cmdline.common_options(parser)
         opts = parser.parse_args(args=[])
-        tutils.raises("error starting proxy server", proxy.ProxyServer, opts, 1)
+        try:
+            tutils.raises("error starting proxy server", proxy.ProxyServer, opts, occupied_port)
+        finally:
+            s.close()
 
 
 class TestDummyServer:

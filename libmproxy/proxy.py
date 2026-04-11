@@ -559,7 +559,7 @@ class ProxyServerError(Exception): pass
 class ProxyServer(tcp.TCPServer):
     allow_reuse_address = True
     bound = True
-    def __init__(self, config, port, address='', server_version=version.NAMEVERSION):
+    def __init__(self, config, port, address='127.0.0.1', server_version=version.NAMEVERSION):
         """
             Raises ProxyServerError if there's a startup problem.
         """
