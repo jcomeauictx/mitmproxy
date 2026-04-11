@@ -91,7 +91,7 @@ try:
 except NameError:
     unicode = str
 
-def dumps(value, encoding='utf-8'):
+def dumps(value, encoding='latin-1'):
     '''
     dumps(object, encoding) -> string
 
