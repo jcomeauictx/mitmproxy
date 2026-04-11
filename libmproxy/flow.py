@@ -622,6 +622,8 @@ class Request(HTTPMsg):
             if not isinstance(self.content, bytes):
                 logging.warning('Flow._assemble: content should be bytes')
                 content = self.content.encode()
+            else:
+                content = self.content
             return head + content
         else:
             return head

@@ -151,7 +151,7 @@ class DumpMaster(flow.FlowMaster):
 
     def add_event(self, e, level="info"):
         if self.eventlog:
-            print(self.outfile, e, file=sys.stderr)
+            print(e, file=self.outfile)
             self.outfile.flush()
 
     def indent(self, n, t):

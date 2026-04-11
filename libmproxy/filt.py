@@ -167,39 +167,38 @@ class FBod(_Rex):
     help = "Body"
     def __call__(self, f):
         expr = self.expr
-        content = None
-        logging.debug('Fbod: self.expr=%r, content: %r',
-                      self.expr, f.request.content)
         if f.request.content:
             if isinstance(f.request.content, bytes):
-                expr = expr.encode()
-                content = f.request.content
+                if re.search(expr.encode(), f.request.content):
+                    return True
             else:
                 logging.warning(
                     'Fbod.__call__: request.content should be bytes'
                 )
-        elif f.response and f.response.content:
+        if f.response and f.response.content:
             if isinstance(f.response.content, bytes):
-                expr = expr.encode()
-                content = f.response.content
+                if re.search(expr.encode(), f.response.content):
+                    return True
             else:
                 logging.warning(
                     'Fbod.__call__: response.content should be bytes'
                 )
-        return bool(expr and content and re.search(expr, content))
+        return False
 
 
 class FBodRequest(_Rex):
     code = "bq"
     help = "Request body"
     def __call__(self, f):
+        expr = self.expr
+        content = None
         if f.request.content:
             if isinstance(f.request.content, bytes):
                 expr = expr.encode()
                 content = f.request.content
             else:
                 logging.warning(
-                    'Fbod.__call__: request.content should be bytes'
+                    'FBodRequest.__call__: request.content should be bytes'
                 )
         return bool(expr and content and re.search(expr, content))
 
@@ -208,13 +207,15 @@ class FBodResponse(_Rex):
     code = "bs"
     help = "Response body"
     def __call__(self, f):
+        expr = self.expr
+        content = None
         if f.response and f.response.content:
             if isinstance(f.response.content, bytes):
                 expr = expr.encode()
                 content = f.response.content
             else:
                 logging.warning(
-                    'Fbod.__call__: response.content should be bytes'
+                    'FBodResponse.__call__: response.content should be bytes'
                 )
         return bool(expr and content and re.search(expr, content))
 
