@@ -435,8 +435,12 @@ class ProxyHandler(tcp.BaseHandler):
                 )
                 self.wfile.flush()
                 logging.debug('ProxyHandler.read_request_proxy: host=%r', host)
+                try:
+                    sni = host.encode('idna')
+                except (ValueError, UnicodeError):
+                    raise ProxyError(502, 'Unable to generate dummy cert.')
                 dummycert = self.find_cert(
-                    client_conn, host, port, host.encode('idna')
+                    client_conn, host, port, sni
                 )
                 sni = HandleSNI(
                     self, client_conn, host, port,
