@@ -24,6 +24,10 @@ try:
     basestring
 except NameError:
     basestring = str
+try:
+    unicode
+except NameError:
+    unicode = str
 from email.utils import parsedate_tz, formatdate, mktime_tz
 from netlib import odict, http, certutils
 try:
@@ -428,7 +432,8 @@ class Request(HTTPMsg):
             str(state["method"]),
             str(state["path"]),
             ODictCaseless._from_state(state["headers"]),
-            state["content"],
+            state['content'].encode('latin-1') if isinstance(
+                state['content'], unicode) else state['content'],
             state["timestamp_start"],
             state["timestamp_end"],
             state["tcp_setup_timestamp"],
@@ -1702,7 +1707,7 @@ class FlowWriter:
 
     def add(self, flow):
         d = flow._get_state()
-        tnetstring.dump(d, self.fo, encoding='utf-8')
+        tnetstring.dump(d, self.fo, encoding='latin-1')
 
 
 class FlowReadError(Exception):
@@ -1747,5 +1752,5 @@ class FilteredFlowWriter:
         if self.filt and not f.match(self.filt):
             return
         d = f._get_state()
-        tnetstring.dump(d, self.fo, encoding='utf-8')
+        tnetstring.dump(d, self.fo, encoding='latin-1')
 
