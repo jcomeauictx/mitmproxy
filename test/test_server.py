@@ -173,8 +173,10 @@ class TestHTTPConnectSSLError(tservers.HTTPProxTest):
     def test_go(self):
         p = self.pathoc()
         req = "connect:'localhost:%s'"%self.proxy.port
-        assert p.request(req).status_code == 200
-        assert p.request(req).status_code == 400
+        status = p.request(req).status_code
+        assert 'status_code == %s' % status == 'status_code == 200'
+        status = p.request(req).status_code
+        assert 'status_code == %s' % status == 'status_code == 400'
 
 
 # commenting out this class because it hangs on python2 (but not python3)

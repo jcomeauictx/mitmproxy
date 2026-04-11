@@ -47,7 +47,7 @@ class TestServerConnection:
             proxy.ProxyConfig(), "http", self.d.IFACE, self.d.port, b'host.com'
         )
         sc.connect()
-        sc.settimeout(10.0)
+        sc.settimeout(10.0)  # set by jc@unternet.net to prevent hanging
         r = tutils.treq()
         r.path = "/p/200:da"
         logging.debug('TestServerConnection.test_simple sending %r', r)
