@@ -67,7 +67,6 @@ like so::
     u'\u03b1'
 
 """
-from __future__ import unicode_literals
 
 __ver_major__ = 0
 __ver_minor__ = 2

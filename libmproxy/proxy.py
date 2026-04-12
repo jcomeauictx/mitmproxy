@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 import sys, os, string, socket, time, logging
 import shutil, tempfile, threading
 from OpenSSL import SSL

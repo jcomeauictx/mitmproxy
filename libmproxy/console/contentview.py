@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 import re, traceback, json, logging
 try:
     import cStringIO

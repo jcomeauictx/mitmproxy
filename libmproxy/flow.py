@@ -2,7 +2,6 @@
 This module provides more sophisticated flow tracking. These match requests
 with their responses, and provide filtering and interception facilities.
 '''
-from __future__ import unicode_literals
 import hashlib, copy, re, os, logging
 try:
     import cookielib, urlparse

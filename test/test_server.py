@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 import socket, time, logging
 import mock
 from netlib import tcp, http_auth, http
