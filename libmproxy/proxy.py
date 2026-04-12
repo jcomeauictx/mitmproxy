@@ -451,7 +451,11 @@ class ProxyHandler(tcp.BaseHandler):
                 except tcp.NetLibError as v:
                     raise ProxyError(400, str(v))
                 self.proxy_connect_state = (host, port, httpversion)
-                line = self.rfile.readline(line)
+                # v0.9.2 had self.rfile.readline(line) for the following...
+                # it apparently doesn't trigger an error on python2, but
+                # python3 had it calling readline with an arg like
+                # b'CONNECT 127.0.0.1:46083 HTTP/1.1\r\n'
+                line = self.rfile.readline()
 
         if self.proxy_connect_state:
             r = http.parse_init_http(line)
