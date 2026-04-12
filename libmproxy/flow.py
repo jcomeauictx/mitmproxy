@@ -1738,7 +1738,7 @@ class FlowReader:
                 yield Flow._from_state(data)
         except ValueError as v:
             # Error is due to EOF
-            if self.fo.tell() == off and self.fo.read() == '':
+            if self.fo.tell() == off and not self.fo.read():
                 return
             raise FlowReadError("Invalid data format.")
 
