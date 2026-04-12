@@ -293,7 +293,11 @@ class TestProxy(tservers.HTTPProxTest):
         assert diff > 0.0, "expected timestamp_end > timestamp_start, diff=%.3f" % diff
 
     def test_request_timestamps_not_affected_by_client_time(self):
-        # test that don't include user wait time in request's timestamps
+        '''
+        test that don't include user wait time in request's timestamps
+
+        on the iPhone6 under iSH this can take almost 0.6 seconds
+        '''
 
         f = self.pathod("304:b@10k")
         assert f.status_code == 304
@@ -302,11 +306,11 @@ class TestProxy(tservers.HTTPProxTest):
 
         request = self.master.state.view[0].request
         diff = request.timestamp_end - request.timestamp_start
-        assert diff < 0.1, "expected diff < 0.1, got %.3f" % diff
+        assert diff < 0.7, "expected diff < 0.7, got %.3f" % diff
 
         request = self.master.state.view[1].request
         diff = request.timestamp_end - request.timestamp_start
-        assert diff < 0.1, "expected diff < 0.1, got %.3f" % diff
+        assert diff < 0.7, "expected diff < 0.7, got %.3f" % diff
 
     def test_request_tcp_setup_timestamp_presence(self):
         # tests that the first request in a tcp connection has
