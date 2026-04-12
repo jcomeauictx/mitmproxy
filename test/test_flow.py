@@ -510,7 +510,7 @@ class TestSerialize:
     def test_roundtrip(self):
         sio = StringIO()
         f = tutils.tflow()
-        f.request.content = "".join(chr(i) for i in range(255))
+        f.request.content = bytes(range(255))
         w = flow.FlowWriter(sio)
         w.add(f)
 
@@ -522,9 +522,6 @@ class TestSerialize:
         f2 = l[0]
         logging.debug('f2._get_state(): %r, f._get_state(): %r',
                       f2._get_state(), f._get_state())
-        # python2 assertion fails because f2 state[1]['content'] is unicode,
-        # while f state[1]['content'] is bytes
-        # maybe other elements as well, but content for sure
         assert f2._get_state() == f._get_state()
         assert f2.request._assemble() == f.request._assemble()
 
