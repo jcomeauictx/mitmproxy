@@ -1,14 +1,46 @@
 {% extends "frame.html" %}
-{% block body %}  
+{% block body %}
 
 
 <div class="masthead">
     <div class="container">
-        <h1>mitmproxy: pathological HTTP</h1>
+        <h1>mitmproxy: install CA certificate</h1>
 
-        <p>Here are some certs.</p>
+        <p>
+            To intercept HTTPS traffic, install the mitmproxy CA certificate in your browser or OS.
+        </p>
     </div>
 </div>
 
+<div class="container">
 
-{% endblock %}  
+{% if cert_info %}
+  {% if cert_info.error %}
+    <div class="alert alert-error">
+        <strong>Error loading certificate:</strong> {{ cert_info.error }}
+    </div>
+  {% else %}
+    <h3>CA Certificate</h3>
+    <table class="table table-bordered table-condensed">
+        <tr><th>Common Name</th><td>{{ cert_info.cn }}</td></tr>
+        <tr><th>Valid From</th><td>{{ cert_info.not_before }}</td></tr>
+        <tr><th>Valid Until</th><td>{{ cert_info.not_after }}</td></tr>
+        <tr><th>Serial</th><td>{{ cert_info.serial }}</td></tr>
+        <tr><th>SHA-256</th><td><code>{{ cert_info.sha256 }}</code></td></tr>
+    </table>
+
+    <h3>Download</h3>
+    <ul>
+        <li><a href="/cert/pem">PEM (mitmproxy-ca-cert.pem)</a> &mdash; Linux, macOS, Firefox</li>
+        <li><a href="/cert/der">DER/CER (mitmproxy-ca-cert.cer)</a> &mdash; Windows, Android, iOS</li>
+    </ul>
+  {% endif %}
+{% else %}
+    <div class="alert alert-error">
+        No CA certificate found. Is mitmproxy configured with a CA cert?
+    </div>
+{% endif %}
+
+</div>
+
+{% endblock %}
