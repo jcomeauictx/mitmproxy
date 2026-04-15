@@ -2,6 +2,9 @@
 SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
 WHICH := command -v
 PYTHON ?= $(word 1, $(shell $(WHICH) python3 python python2))
+INSTALL_DIR := $(shell $(PYTHON) -c "from site \
+ import getusersitepackages as installdir; \
+ print(installdir())")
 BRANCH := $(shell git branch --show-current)
 PACKAGE := $(notdir $(CURDIR))
 $(warning PACKAGE is $(PACKAGE))
@@ -29,7 +32,8 @@ export
 endif
 default: install
 	mitmdump --version
-install: setup.py build certs \
+install: $(INSTALL_DIR)/$(PACKAGE)/setup.py
+$(INSTALL_DIR)/$(PACKAGE)/%: % certs \
  .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
