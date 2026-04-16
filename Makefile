@@ -7,7 +7,8 @@ INSTALL_DIR := $(shell $(PYTHON) -c "from site \
  print(installdir())")
 BRANCH := $(shell git branch --show-current)
 PACKAGE := $(notdir $(CURDIR))
-$(warning PACKAGE is $(PACKAGE))
+INSTALLED_PACKAGE = $(shell awk -F'"' '$1 ~ /^packages,/ {print $2}' setup.py)
+$(warning PACKAGE is $(PACKAGE), installed as $(INSTALLED_PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 SIBLINGS := netlib mitmproxy pathod
@@ -32,8 +33,8 @@ export
 endif
 default: install
 	mitmdump --version
-install: $(INSTALL_DIR)/$(PACKAGE)/setup.py
-$(INSTALL_DIR)/$(PACKAGE)/%: % certs \
+install: $(INSTALL_DIR)/$(INSTALLED_PACKAGE)/setup.py
+$(INSTALL_DIR)/$(INSTALLED_PACKAGE)/%: % certs \
  .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
