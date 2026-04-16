@@ -1,5 +1,5 @@
 SUBJ ?= /C=AU/ST=Some-State/O=Internet Widgits Pty Ltd
-all: serverkey.see testkey.pem
+all: serverkey.pem testkey.pem
 %.pem %.key: Makefile
 	openssl req \
 	 -x509 \
