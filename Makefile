@@ -35,7 +35,7 @@ endif
 default: install
 	mitmdump --version
 install: $(INSTALL_DIR)/$(INSTALLED_PACKAGE)
-$(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) certs \
+$(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) .installed/certs \
  .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
@@ -44,6 +44,7 @@ $(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) certs \
  .installed/py3-requests .installed/python2-dev \
  $(addprefix .installed/pip2-,$(PIP2_REQUIRED))
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
+	echo reinstalling due to newer $? >&2
 	$(PYTHON) setup.py install --user --force
 build: setup.py clean .FORCE | .installed/python3
 	# should probably build companion projects before mitmproxy
@@ -99,9 +100,10 @@ log:
 	git $@ | head -n $(LOGLIMIT)
 commit:
 	git $@ -a
-certs: $(wildcard test/data/Makefile test/data/clientcert/Makefile)
+.installed/certs: $(wildcard test/data/Makefile test/data/clientcert/Makefile)
 	if [ "$<" ]; then $(MAKE) -C $(dir $<); fi
 	if [ "$(word 2, $+)" ]; then $(MAKE) -C $(dir $(word 2, $+)); fi
+	touch $@
 env:
 ifeq ($(SHOWENV),1)
 	$@
