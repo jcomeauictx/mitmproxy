@@ -42,7 +42,7 @@ $(INSTALL_DIR)/$(PACKAGE)/%: % certs \
  .installed/py3-requests .installed/python2-dev \
  $(addprefix .installed/pip2-,$(PIP2_REQUIRED))
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
-	$(PYTHON) $< $@ --user --force
+	$(PYTHON) $< install --user --force
 build: setup.py clean .FORCE | .installed/python3
 	# should probably build companion projects before mitmproxy
 	$(PYTHON) $< $@
