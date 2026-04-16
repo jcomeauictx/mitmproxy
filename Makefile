@@ -7,7 +7,7 @@ INSTALL_DIR := $(shell $(PYTHON) -c "from site \
  print(installdir())")
 BRANCH := $(shell git branch --show-current)
 PACKAGE := $(notdir $(CURDIR))
-INSTALLED_PACKAGE = $(shell awk -F'"' '$1 ~ /^packages,/ {print $2}' setup.py)
+INSTALLED_PACKAGE = $(shell awk -F'"' '$$1 ~ /^packages,/ {print $$2}' setup.py)
 $(warning PACKAGE is $(PACKAGE), installed as $(INSTALLED_PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
@@ -26,6 +26,7 @@ PIP2_REQUIRED := cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
  ipaddress==1.0.23 pyopenssl==16.2.0 pyasn1==0.1.3 werkzeug==0.6.1 \
  flask==0.5.2 urwid==1.1 pillow==2.5.3 lxml==3.8.0 mock==3.0.5 \
  six==1.7.3 requests==2.25.1
+FILES := $(shell git ls-files)
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
 ifneq ($(SHOWENV),)
@@ -33,8 +34,8 @@ export
 endif
 default: install
 	mitmdump --version
-install: $(INSTALL_DIR)/$(INSTALLED_PACKAGE)/setup.py
-$(INSTALL_DIR)/$(INSTALLED_PACKAGE)/%: % certs \
+install: $(INSTALL_DIR)/$(INSTALLED_PACKAGE)
+$(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) certs \
  .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
  .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
  .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
@@ -43,14 +44,14 @@ $(INSTALL_DIR)/$(INSTALLED_PACKAGE)/%: % certs \
  .installed/py3-requests .installed/python2-dev \
  $(addprefix .installed/pip2-,$(PIP2_REQUIRED))
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
-	$(PYTHON) $< install --user --force
+	$(PYTHON) setup.py install --user --force
 build: setup.py clean .FORCE | .installed/python3
 	# should probably build companion projects before mitmproxy
 	$(PYTHON) $< $@
 # this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
-.installed/python3 .installed/gcc: .FORCE | .installed 
+.installed/python3 .installed/gcc: | .installed 
 	if [ -z "$(WHICH) $(@F)" ]; then \
 	 echo cannot find $(@F), installing... >&2; \
 	 sudo apk add $(@F); \
