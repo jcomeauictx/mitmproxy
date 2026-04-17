@@ -69,7 +69,7 @@ $(INSTALLED)/pip2-%: | $(INSTALLED)
 	 true; \
 	fi
 $(INSTALLED):
-	mkdir $@
+	mkdir --parents $@
 %.pylint: %.py $(INSTALLED)/py3-pylint
 	pylint $<
 pylint: $(LINT)
@@ -101,7 +101,8 @@ log:
 	git $@ | head -n $(LOGLIMIT)
 commit:
 	git $@ -a
-$(INSTALLED)/certs: $(wildcard test/data/Makefile test/data/clientcert/Makefile)
+$(INSTALLED)/certs: $(wildcard test/data/Makefile \
+ test/data/clientcert/Makefile) | $(INSTALLED)
 	if [ "$<" ]; then $(MAKE) -C $(dir $<); fi
 	if [ "$(word 2, $+)" ]; then $(MAKE) -C $(dir $(word 2, $+)); fi
 	touch $@
