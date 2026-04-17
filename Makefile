@@ -7,8 +7,9 @@ INSTALL_DIR := $(shell $(PYTHON) -c "from site \
  print(installdir())")
 BRANCH := $(shell git branch --show-current)
 PACKAGE := $(notdir $(CURDIR))
+INSTALLED := $(HOME)/.$(PACKAGE)/.installed
 INSTALLED_PACKAGE = $(shell awk -F'"' '$$1 ~ /^packages,/ {print $$2}' setup.py)
-$(warning PACKAGE is $(PACKAGE), installed as $(INSTALLED_PACKAGE))
+$(warning PACKAGE is $(PACKAGE),$(INSTALLED) as $(INSTALLED_PACKAGE))
 SCRIPTS := $(shell find . -type f -name '*.py')
 LINT := $(SCRIPTS:.py=.pylint)
 SIBLINGS := netlib mitmproxy pathod
@@ -35,59 +36,59 @@ endif
 default: install
 	mitmdump --version
 install: $(INSTALL_DIR)/$(INSTALLED_PACKAGE)
-$(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) .installed/certs \
- .installed/libxslt-dev .installed/libxml2-dev .installed/gcc \
- .installed/python3-dev .installed/py3-libxml2 .installed/musl-dev \
- .installed/py3-pillow .installed/openssl-dev .installed/libffi-dev \
- .installed/build-base .installed/py3-flask .installed/py3-urwid \
- .installed/py3-asn1 .installed/py3-openssl .installed/py3-lxml \
- .installed/py3-requests .installed/python2-dev \
- $(addprefix .installed/pip2-,$(PIP2_REQUIRED))
+$(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) $(INSTALLED)/certs \
+ $(INSTALLED)/libxslt-dev $(INSTALLED)/libxml2-dev $(INSTALLED)/gcc \
+ $(INSTALLED)/python3-dev $(INSTALLED)/py3-libxml2 $(INSTALLED)/musl-dev \
+ $(INSTALLED)/py3-pillow $(INSTALLED)/openssl-dev $(INSTALLED)/libffi-dev \
+ $(INSTALLED)/build-base $(INSTALLED)/py3-flask $(INSTALLED)/py3-urwid \
+ $(INSTALLED)/py3-asn1 $(INSTALLED)/py3-openssl $(INSTALLED)/py3-lxml \
+ $(INSTALLED)/py3-requests $(INSTALLED)/python2-dev \
+ $(addprefix $(INSTALLED)/pip2-,$(PIP2_REQUIRED))
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
 	echo reinstalling due to newer $? >&2
 	$(PYTHON) setup.py install --user --force
-build: setup.py clean .FORCE | .installed/python3
+build: setup.py clean .FORCE | $(INSTALLED)/python3
 	# should probably build companion projects before mitmproxy
 	$(PYTHON) $< $@
 # this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
-.installed/python3 .installed/gcc: | .installed 
+$(INSTALLED)/python3 $(INSTALLED)/gcc: | $(INSTALLED) 
 	if [ -z "$(WHICH) $(@F)" ]; then \
 	 echo cannot find $(@F), installing... >&2; \
 	 sudo apk add $(@F); \
 	fi
 	touch $@
-.installed/py3-%: | .installed
+$(INSTALLED)/py3-%: | $(INSTALLED)
 	sudo apk add $(@F)
 	touch $@
-.installed/pip2-%: | .installed
+$(INSTALLED)/pip2-%: | $(INSTALLED)
 	if [ "$(notdir $(PYTHON))" = python2 ]; then \
 	 $(PIP) install $* && touch $@; \
 	else \
 	 true; \
 	fi
-.installed:
+$(INSTALLED):
 	mkdir $@
-%.pylint: %.py .installed/py3-pylint
+%.pylint: %.py $(INSTALLED)/py3-pylint
 	pylint $<
 pylint: $(LINT)
-pip3-install: .installed/py3-pip
+pip3-install: $(INSTALLED)/py3-pip
 	pip3 --verbose install --force-reinstall \
 	 git+https://github.com/jcomeauictx/$(PACKAGE)@alpine-ish
-.installed/%-dev .installed/%-base: | .installed
+$(INSTALLED)/%-dev $(INSTALLED)/%-base: | $(INSTALLED)
 	sudo apk add $(@F)
 	touch $@
-.installed/%.pip3: | .installed
+$(INSTALLED)/%.pip3: | $(INSTALLED)
 	pip3 install $*
 	touch $@
-.installed/pathod: | .installed
+$(INSTALLED)/pathod: | $(INSTALLED)
 	cd ../$(@F) && $(MAKE) install
 clean:
 	rm -rf build dist *.egg_info
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -name '*.py[co]' -delete
-tests: | .installed/py3-nose .installed/py3-mock .installed/pathod
+tests: | $(INSTALLED)/py3-nose $(INSTALLED)/py3-mock $(INSTALLED)/pathod
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
 	$(NOSETESTS) --verbose --detailed-errors --nocapture --nologcapture .
 diff:
@@ -100,7 +101,7 @@ log:
 	git $@ | head -n $(LOGLIMIT)
 commit:
 	git $@ -a
-.installed/certs: $(wildcard test/data/Makefile test/data/clientcert/Makefile)
+$(INSTALLED)/certs: $(wildcard test/data/Makefile test/data/clientcert/Makefile)
 	if [ "$<" ]; then $(MAKE) -C $(dir $<); fi
 	if [ "$(word 2, $+)" ]; then $(MAKE) -C $(dir $(word 2, $+)); fi
 	touch $@
