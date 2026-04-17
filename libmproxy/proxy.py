@@ -234,13 +234,13 @@ class ProxyHandler(tcp.BaseHandler):
 
             app = self.server.apps.get(request)
             if app:
-                logging.debug('proxy: passing on request to app %s', vars(app))
+                #logging.debug('proxy: passing on request to app %s', vars(app))
                 err = app.serve(request, self.wfile)
                 if err:
                     self.log(cc, "Error in wsgi app.", err.split("\n"))
                     return
             else:
-                logging.debug('proxy: passing on request')
+                #logging.debug('proxy: passing on request')
                 request_reply = self.channel.ask(request)
                 if request_reply is None or request_reply == KILL:
                     return
@@ -423,10 +423,10 @@ class ProxyHandler(tcp.BaseHandler):
         line = self.get_line(self.rfile)
         if not line:
             return None
-        logging.debug('read_request_proxy: line=%r', line)
+        #logging.debug('read_request_proxy: line=%r', line)
         if not self.proxy_connect_state:
             connparts = http.parse_init_connect(line)
-            logging.debug('read_request_proxy: connparts=%r', connparts)
+            #logging.debug('read_request_proxy: connparts=%r', connparts)
             if connparts:
                 host, port, httpversion = connparts
                 headers = self.read_headers(authenticate=True)
