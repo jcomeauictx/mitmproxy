@@ -60,10 +60,19 @@ $(INSTALLED)/python3 $(INSTALLED)/gcc: | $(INSTALLED)
 	 sudo apk add $(@F); \
 	fi
 	touch $@
+$(INSTALLED)/pip: $(INSTALLED)/$(PYTHON)/pip
+	touch $@
+$(INSTALLED)/python2/pip: | get-pip.py $(INSTALLED)/python2
+	python2 get-pip.py
+	touch $@
+$(INSTALLED)/python3/pip: | $(INSTALLED)/python3
+	$(PIP_GET)
+	$(PIP) install --upgrade pip
+	touch $@
 $(INSTALLED)/py3-%: | $(INSTALLED)
 	sudo apk add $(@F)
 	touch $@
-$(INSTALLED)/pip2-%: | $(INSTALLED)
+$(INSTALLED)/pip2-%: | $(INSTALLED)/pip
 	if [ "$(notdir $(PYTHON))" = python2 ]; then \
 	 $(PIP) install $* && touch $@; \
 	else \
