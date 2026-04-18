@@ -1,7 +1,8 @@
 # prefer ash on alpine/iSH
 SHELL := $(word 1, $(wildcard /bin/ash /bin/bash))
 WHICH := command -v
-PYTHON ?= $(word 1, $(shell $(WHICH) python3 python python2))
+PYTHON ?= $(word 1, $(shell $(WHICH) python3 python2))
+V := $(shell $(PYTHON) -c "import sys; print(sys.version_info[0])")
 INSTALL_DIR := $(shell $(PYTHON) -c "from site \
  import getusersitepackages as installdir; \
  print(installdir())")
@@ -23,10 +24,11 @@ LOGLIMIT ?= 10000
 # every older one failed with
 # AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
 # NOTE: the following order may be suboptimal
-PIP2_REQUIRED := cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
+PYTHON2_REQUIRED := $(addprefix $(INSTALLED)/pip2-, \
+ cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
  ipaddress==1.0.23 pyopenssl==16.2.0 pyasn1==0.1.3 werkzeug==0.6.1 \
  flask==0.5.2 urwid==1.1 pillow==2.5.3 lxml==3.8.0 mock==3.0.5 \
- six==1.7.3 requests==2.25.1
+ six==1.7.3 requests==2.25.1)
 FILES := $(shell git ls-files)
 # WARNING: deferred evaluations follow
 # NOTE: end of deferred evaluations
@@ -42,8 +44,7 @@ $(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) $(INSTALLED)/certs \
  $(INSTALLED)/py3-pillow $(INSTALLED)/openssl-dev $(INSTALLED)/libffi-dev \
  $(INSTALLED)/build-base $(INSTALLED)/py3-flask $(INSTALLED)/py3-urwid \
  $(INSTALLED)/py3-asn1 $(INSTALLED)/py3-openssl $(INSTALLED)/py3-lxml \
- $(INSTALLED)/py3-requests $(INSTALLED)/python2-dev \
- $(addprefix $(INSTALLED)/pip2-,$(PIP2_REQUIRED))
+ $(INSTALLED)/py3-requests $(INSTALLED)/python2-dev $(PYTHON$(V)_REQUIRED)
 	echo installing $(PACKAGE) from $(CURDIR) called from $(PWD) >&2
 	echo reinstalling due to newer $? >&2
 	$(PYTHON) setup.py install --user --force
