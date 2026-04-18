@@ -24,7 +24,7 @@ LOGLIMIT ?= 10000
 # every older one failed with
 # AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
 # NOTE: the following order may be suboptimal
-PYTHON2_REQUIRED := $(addprefix $(INSTALLED)/pip2-, \
+PYTHON2_REQUIRED := $(addprefix $(INSTALLED)/py2-, \
  cffi==1.15.1 cryptography==3.3.2 enum34==1.1.10 \
  ipaddress==1.0.23 pyopenssl==16.2.0 pyasn1==0.1.3 werkzeug==0.6.1 \
  flask==0.5.2 urwid==1.1 pillow==2.5.3 lxml==3.8.0 mock==3.0.5 \
@@ -54,6 +54,10 @@ build: setup.py clean .FORCE | $(INSTALLED)/python3
 # this really isn't necessary until/unless we want to build an apk package
 $(HOME)/.abuild: | /etc/alpine-release
 	abuild-keygen -an
+$(INSTALLED):
+	mkdir --parents $@
+$(INSTALLED)/%:
+	mkdir --parents $@
 $(INSTALLED)/python3 $(INSTALLED)/gcc: | $(INSTALLED) 
 	if [ -z "$(WHICH) $(@F)" ]; then \
 	 echo cannot find $(@F), installing... >&2; \
@@ -72,14 +76,12 @@ $(INSTALLED)/python3/pip: | $(INSTALLED)/python3
 $(INSTALLED)/py3-%: | $(INSTALLED)
 	sudo apk add $(@F)
 	touch $@
-$(INSTALLED)/pip2-%: | $(INSTALLED)/pip
+$(INSTALLED)/py2-%: | $(INSTALLED)/pip
 	if [ "$(notdir $(PYTHON))" = python2 ]; then \
 	 $(PIP) install $* && touch $@; \
 	else \
 	 true; \
 	fi
-$(INSTALLED):
-	mkdir --parents $@
 %.pylint: %.py $(INSTALLED)/py3-pylint
 	pylint $<
 pylint: $(LINT)
@@ -98,7 +100,7 @@ clean:
 	rm -rf build dist *.egg_info
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -name '*.py[co]' -delete
-tests: | $(INSTALLED)/py3-nose $(INSTALLED)/py3-mock $(INSTALLED)/pathod
+tests: | $(INSTALLED)/py$(V)-nose $(INSTALLED)/py$(V)-mock $(INSTALLED)/pathod
 	@echo "running $(NOSETESTS) in $(CURDIR)" >&2
 	$(NOSETESTS) --verbose --detailed-errors --nocapture --nologcapture .
 diff:
