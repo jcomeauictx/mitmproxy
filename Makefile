@@ -38,6 +38,9 @@ endif
 default: install
 	mitmdump --version
 install: $(INSTALL_DIR)/$(INSTALLED_PACKAGE)
+uninstall:
+	rm -f $(INSTALL_DIR)/$(PACKAGE)-*.egg-info
+	rm -rf $(INSTALL_DIR)/$(INSTALLED_PACKAGE)
 $(INSTALL_DIR)/$(INSTALLED_PACKAGE): $(FILES) $(INSTALLED)/certs \
  $(INSTALLED)/libxslt-dev $(INSTALLED)/libxml2-dev $(INSTALLED)/gcc \
  $(INSTALLED)/python3-dev $(INSTALLED)/py3-libxml2 $(INSTALLED)/musl-dev \
